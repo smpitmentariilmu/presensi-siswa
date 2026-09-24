@@ -82,19 +82,45 @@
         ::-webkit-scrollbar-thumb:hover { background: theme('colors.mi.text2'); }
 
         /* Modern Pill Tabs */
+        /* =========================================
+        TAB NAVIGATION - MODERN PILL
+        ========================================= */
+
         .tab-btn {
-            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+            transition:
+                background-color 0.2s ease,
+                color 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
             border-radius: 9999px;
+            color: #6B7C78;
+            border: 1px solid transparent;
+            background-color: transparent;
         }
+
+        /* Hover */
         .tab-btn:hover {
-            background-color: #F0F7F5;
-            color: theme('colors.mi.primary');
+            background-color: #F0F7F5 !important;
+            color: #124F47 !important;
+            border-color: #D7EAE5;
         }
+
+        /* ACTIVE */
         .tab-btn.active {
-            background-color: theme('colors.mi.soft');
-            color: theme('colors.mi.primary');
-            box-shadow: inset 0 0 0 1px #C8E3DD;
+            background-color: #E8F3F0 !important;
+            color: #124F47 !important;
+            border: 1px solid #B8D9D2 !important;
+            box-shadow:
+                0 2px 6px rgba(18, 79, 71, 0.08),
+                inset 0 0 0 1px rgba(18, 79, 71, 0.04);
             font-weight: 600;
+        }
+
+        /* Active + hover */
+        .tab-btn.active:hover {
+            background-color: #DCEFEA !important;
+            color: #0D3F39 !important;
+            border-color: #A9D0C8 !important;
         }
         
         /* Modal Transitions & Overlay */
@@ -271,7 +297,7 @@
             <!-- Card 1: Total Siswa (Ref Style 1) -->
             <div class="group bg-card-blue rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-blue-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <!-- Decorative BG Image with Zoom on Hover -->
-                <img src="https://mentariilmu.org/assets/2.png" alt="" class="absolute -right-2 -bottom-2 w-[100px] h-[100px] md:w-[135px] md:h-[135px] lg:w-[150px] lg:h-[150px] object-contain opacity-[0.18] group-hover:opacity-[0.26] pointer-events-none origin-bottom-right transition-all duration-500 ease-out group-hover:scale-[1.18]" onerror="this.style.display='none'">
+                <img src="https://mentariilmu.org/assets/2.png" alt="" class="absolute -right-2 -bottom-2 w-[85px] h-[85px] md:w-[100px] md:h-[100px] lg:w-[110px] lg:h-[110px] object-contain opacity-[0.15] group-hover:opacity-[0.25] pointer-events-none origin-bottom-right transition-transform duration-500 ease-out group-hover:scale-[1.15]" onerror="this.style.display='none'">
                 
                 <div class="relative z-10 flex justify-between items-start w-full">
                     <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-blue-600 text-white flex items-center justify-center text-sm md:text-lg shadow-sm">
@@ -288,7 +314,7 @@
             <!-- Card 2: Hadir (Ref Style 2) -->
             <div class="group bg-card-green rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-green-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <!-- Decorative BG Image with Zoom on Hover -->
-                <img src="https://mentariilmu.org/assets/3.png" alt="" class="absolute -right-2 -bottom-2 w-[100px] h-[100px] md:w-[135px] md:h-[135px] lg:w-[150px] lg:h-[150px] object-contain opacity-[0.18] group-hover:opacity-[0.26] pointer-events-none origin-bottom-right transition-all duration-500 ease-out group-hover:scale-[1.18]" onerror="this.style.display='none'">
+                <img src="https://mentariilmu.org/assets/3.png" alt="" class="absolute -right-2 -bottom-2 w-[85px] h-[85px] md:w-[100px] md:h-[100px] lg:w-[110px] lg:h-[110px] object-contain opacity-[0.15] group-hover:opacity-[0.25] pointer-events-none origin-bottom-right transition-transform duration-500 ease-out group-hover:scale-[1.15]" onerror="this.style.display='none'">
                 
                 <div class="relative z-10 flex justify-between items-start w-full">
                     <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-[#D97706] text-white flex items-center justify-center text-sm md:text-lg shadow-sm">
@@ -303,7 +329,7 @@
             </div>
 
             <!-- Card 3: Sakit (Custom Orange) -->
-            <div class="bg-card-orange rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-orange-100 shadow-sm">
+            <div class="group bg-card-orange rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-orange-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <!-- Decorative Shapes -->
                 <div class="blob-bg">
                     <div class="blob-shape bg-orange-200 rounded-full w-24 h-24 -right-8 -bottom-8"></div>
@@ -323,7 +349,7 @@
             </div>
 
             <!-- Card 4: Izin (Custom Cyan) -->
-            <div class="bg-card-cyan rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-cyan-100 shadow-sm">
+            <div class="group bg-card-cyan rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-cyan-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                  <!-- Decorative Shapes -->
                  <div class="blob-bg">
                     <div class="blob-shape bg-cyan-200 rounded-full w-24 h-24 -right-4 -bottom-10"></div>
@@ -343,7 +369,7 @@
             </div>
 
             <!-- Card 5: Alpa (Custom Rose) -->
-            <div class="bg-card-rose rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-rose-100 shadow-sm">
+            <div class="group bg-card-rose rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-rose-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <!-- Decorative Shapes -->
                 <div class="blob-bg">
                     <div class="blob-shape bg-rose-200 rounded-full w-28 h-28 -right-12 -bottom-6"></div>
@@ -362,7 +388,7 @@
             </div>
 
             <!-- Card 6: Kehadiran (Mentari Ilmu Primary) -->
-            <div class="bg-mi-primary rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-mi-dark shadow-sm">
+            <div class="group bg-mi-primary rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-mi-dark shadow-sm hover:shadow-md transition-shadow duration-300">
                 <!-- Decorative Shapes -->
                 <div class="absolute -right-8 -top-8 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
                 <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-emerald-400/20 rounded-full blur-xl pointer-events-none"></div>
@@ -385,13 +411,13 @@
             <!-- TABS -->
             <div class="px-4 md:px-6 pt-4 md:pt-6 pb-2 border-b border-mi-border">
                 <div class="flex space-x-2 overflow-x-auto hide-scrollbar">
-                    <button onclick="switchTab('riwayat')" id="tab-riwayat" class="tab-btn active px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
+                    <button onclick="switchTab('riwayat')" id="tab-riwayat" class="tab-btn active px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-medium whitespace-nowrap flex items-center gap-2">
                         <i class="fa-regular fa-clock"></i> Riwayat Detail
                     </button>
-                    <button onclick="switchTab('rekap')" id="tab-rekap" class="tab-btn px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
+                    <button onclick="switchTab('rekap')" id="tab-rekap" class="tab-btn px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-medium whitespace-nowrap flex items-center gap-2">
                         <i class="fa-solid fa-table-list"></i> Rekap Presensi
                     </button>
-                    <button onclick="switchTab('analisa')" id="tab-analisa" class="tab-btn px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
+                    <button onclick="switchTab('analisa')" id="tab-analisa" class="tab-btn px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-medium whitespace-nowrap flex items-center gap-2">
                         <i class="fa-solid fa-chart-simple"></i> Analisa Data
                     </button>
                 </div>
@@ -657,22 +683,22 @@
     </div>
 
     <!-- MOBILE FOOTER NAV -->
-    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-mi-border shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-40 px-2 py-1.5 flex justify-between items-center pb-[calc(env(safe-area-inset-bottom)+6px)]">
-        <button onclick="switchTab('riwayat')" id="nav-riwayat" class="flex flex-col items-center justify-center w-1/4 text-mi-primary transition-colors">
+    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-mi-border shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-40 px-2 py-1.5 flex justify-between items-center pb-[calc(env(safe-area-inset-bottom)+6px)] gap-1">
+        <button onclick="switchTab('riwayat')" id="nav-riwayat" class="flex flex-col items-center justify-center w-1/4 py-1 rounded-xl text-mi-primary bg-mi-soft font-semibold transition-all">
             <i class="fa-regular fa-clock text-xl mb-1"></i>
-            <span class="text-[10px] font-medium">Riwayat</span>
+            <span class="text-[10px]">Riwayat</span>
         </button>
-        <button onclick="switchTab('rekap')" id="nav-rekap" class="flex flex-col items-center justify-center w-1/4 text-gray-400 hover:text-mi-primary transition-colors">
+        <button onclick="switchTab('rekap')" id="nav-rekap" class="flex flex-col items-center justify-center w-1/4 py-1 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
             <i class="fa-solid fa-table-list text-xl mb-1"></i>
-            <span class="text-[10px] font-medium">Rekap</span>
+            <span class="text-[10px]">Rekap</span>
         </button>
-        <button onclick="switchTab('analisa')" id="nav-analisa" class="flex flex-col items-center justify-center w-1/4 text-gray-400 hover:text-mi-primary transition-colors">
+        <button onclick="switchTab('analisa')" id="nav-analisa" class="flex flex-col items-center justify-center w-1/4 py-1 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
             <i class="fa-solid fa-chart-simple text-xl mb-1"></i>
-            <span class="text-[10px] font-medium">Analisa</span>
+            <span class="text-[10px]">Analisa</span>
         </button>
-        <button onclick="handleRefresh()" class="flex flex-col items-center justify-center w-1/4 text-gray-400 hover:text-mi-primary transition-colors">
+        <button onclick="handleRefresh()" class="flex flex-col items-center justify-center w-1/4 py-1 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
             <i class="fa-solid fa-rotate-right text-xl mb-1"></i>
-            <span class="text-[10px] font-medium">Refresh</span>
+            <span class="text-[10px]">Refresh</span>
         </button>
     </nav>
 
@@ -1234,14 +1260,14 @@
             navIds.forEach(nav => {
                 const el = document.getElementById(nav);
                 if (el) {
-                    el.classList.remove('text-mi-primary');
-                    el.classList.add('text-gray-400');
+                    el.classList.remove('text-mi-primary', 'bg-mi-soft', 'font-semibold');
+                    el.classList.add('text-gray-400', 'font-medium');
                 }
             });
             const activeMobileNav = document.getElementById(`nav-${tabId}`);
             if (activeMobileNav) {
-                activeMobileNav.classList.remove('text-gray-400');
-                activeMobileNav.classList.add('text-mi-primary');
+                activeMobileNav.classList.remove('text-gray-400', 'font-medium');
+                activeMobileNav.classList.add('text-mi-primary', 'bg-mi-soft', 'font-semibold');
             }
 
             // Sync Contents
