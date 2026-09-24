@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Presensi - Mentari Ilmu</title>
     
-    <!-- Tailwind CSS & Config -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -31,10 +30,20 @@
                             izinTxt: '#155e75', /* cyan-800 */
                             alpa: '#ffe4e6', /* rose-100 */
                             alpaTxt: '#9f1239' /* rose-800 */
+                        },
+                        card: {
+                            blue: '#F0F7FF',
+                            green: '#F0FDF4',
+                            orange: '#FFF7ED',
+                            cyan: '#ECFEFF',
+                            rose: '#FFF1F2'
                         }
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -4px rgba(18, 79, 71, 0.05)',
                     }
                 }
             }
@@ -58,7 +67,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         body {
@@ -112,64 +121,96 @@
 
         /* Card Shadow Styling */
         .card-shadow {
-            box-shadow: 0 4px 24px -6px rgba(18, 79, 71, 0.08);
+            box-shadow: theme('boxShadow.soft');
+        }
+
+        /* Abstract blobs for summary cards */
+        .blob-bg {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            overflow: hidden;
+            border-radius: inherit;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .blob-shape {
+            position: absolute;
+            opacity: 0.4;
+        }
+
+        /* Hide scrollbar for tabs */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
-<!-- pb-24 for mobile footer spacing, md:pb-12 for normal padding on desktop -->
 <body class="antialiased min-h-screen pb-24 md:pb-12 relative">
 
     <!-- HEADER -->
     <div class="bg-mi-surface border-b border-mi-border sticky top-0 z-30 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div class="flex items-center gap-4">
-                    <img src="https://mentariilmu.org/logo.png" alt="Logo Mentari Ilmu" class="h-12 w-auto object-contain">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4">
+                
+                <!-- Logo & Title -->
+                <div class="flex items-center gap-3 md:gap-4">
+                    <img src="https://mentariilmu.org/logo.png" alt="Logo Mentari Ilmu" class="h-10 md:h-12 w-auto object-contain">
                     <div>
-                        <h1 class="text-xl md:text-2xl font-bold text-mi-text1 leading-tight">
+                        <h1 class="text-lg md:text-xl lg:text-2xl font-bold text-mi-text1 leading-tight">
                             Rekap & Riwayat Presensi Siswa
                         </h1>
-                        <p class="text-xs md:text-sm text-mi-text2 mt-1">Pantau kehadiran siswa, analisa presensi, dan bagikan laporan secara otomatis.</p>
+                        <p class="text-[11px] md:text-xs lg:text-sm text-mi-text2 mt-0.5 md:mt-1 max-w-sm md:max-w-none">
+                            Pantau kehadiran siswa, analisa presensi, dan bagikan laporan otomatis.
+                        </p>
                     </div>
                 </div>
-                <div class="flex flex-wrap items-center gap-2">
-                    <button onclick="handleRefresh()" class="px-4 py-2 bg-mi-soft hover:bg-[#DDEFEA] text-mi-primary rounded-xl text-sm font-medium transition-colors border border-[#C8E3DD] shadow-sm flex items-center gap-2">
-                        <i class="fa-solid fa-rotate-right"></i> Refresh
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap items-center gap-2 mt-1 md:mt-0">
+                    <button onclick="handleRefresh()" class="flex-1 sm:flex-none justify-center px-3 md:px-4 py-1.5 md:py-2 bg-mi-soft hover:bg-[#DDEFEA] text-mi-primary rounded-xl text-xs md:text-sm font-medium transition-colors border border-[#C8E3DD] shadow-sm flex items-center gap-1.5 md:gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> <span class="hidden sm:inline">Refresh</span><span class="sm:hidden">Muat Ulang</span>
                     </button>
-                    <button onclick="exportExcel()" class="px-4 py-2 bg-[#E8F3F0] hover:bg-[#D9EEE8] text-[#18794E] rounded-xl text-sm font-medium transition-colors border border-[#C8E3DD] shadow-sm flex items-center gap-2" title="Export Excel sesuai Tab yang aktif">
-                        <i class="fa-solid fa-file-excel"></i> Export Excel
+                    <button onclick="exportExcel()" class="flex-1 sm:flex-none justify-center px-3 md:px-4 py-1.5 md:py-2 bg-[#E8F3F0] hover:bg-[#D9EEE8] text-[#18794E] rounded-xl text-xs md:text-sm font-medium transition-colors border border-[#C8E3DD] shadow-sm flex items-center gap-1.5 md:gap-2" title="Export Excel sesuai Tab yang aktif">
+                        <i class="fa-solid fa-file-excel"></i> <span class="hidden lg:inline">Export Excel</span><span class="lg:hidden">Excel</span>
                     </button>
-                    <button onclick="exportPDF()" class="px-4 py-2 bg-[#FFF1F2] hover:bg-[#FFE4E6] text-[#BE123C] rounded-xl text-sm font-medium transition-colors border border-[#FFE4E6] shadow-sm flex items-center gap-2" title="Export PDF sesuai Tab yang aktif">
-                        <i class="fa-solid fa-file-pdf"></i> Export PDF
+                    <button onclick="exportPDF()" class="flex-1 sm:flex-none justify-center px-3 md:px-4 py-1.5 md:py-2 bg-[#FFF1F2] hover:bg-[#FFE4E6] text-[#BE123C] rounded-xl text-xs md:text-sm font-medium transition-colors border border-[#FFE4E6] shadow-sm flex items-center gap-1.5 md:gap-2" title="Export PDF sesuai Tab yang aktif">
+                        <i class="fa-solid fa-file-pdf"></i> <span class="hidden lg:inline">Export PDF</span><span class="lg:hidden">PDF</span>
                     </button>
-                    <button onclick="openWhatsAppModal()" class="px-5 py-2 bg-mi-primary hover:bg-mi-dark text-white rounded-xl text-sm font-medium transition-colors shadow-md flex items-center gap-2">
-                        <i class="fa-brands fa-whatsapp text-lg"></i> Bagikan Laporan
+                    <button onclick="openWhatsAppModal()" class="w-full sm:w-auto justify-center px-4 md:px-5 py-1.5 md:py-2 bg-mi-primary hover:bg-mi-dark text-white rounded-xl text-xs md:text-sm font-medium transition-colors shadow-md flex items-center gap-1.5 md:gap-2">
+                        <i class="fa-brands fa-whatsapp text-sm md:text-lg"></i> <span>Bagikan Laporan</span>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 md:mt-8">
         
         <!-- FILTER DATA -->
-        <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow p-6 mb-8">
-            <div class="flex items-center justify-between mb-5">
-                <h2 class="text-sm font-bold text-mi-text1 tracking-wide uppercase"><i class="fa-solid fa-sliders text-mi-text2 mr-2"></i>Filter Data</h2>
-                <div class="flex gap-3">
-                    <button onclick="resetFilter()" class="text-sm text-[#6B7C78] hover:text-mi-primary hover:bg-[#E9EEEC] bg-[#F5F7F6] border border-[#E5ECE9] font-medium px-4 py-2 rounded-xl transition-colors flex items-center gap-2 shadow-sm">
+        <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow p-4 md:p-6 mb-6 md:mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 md:mb-5 gap-3">
+                <h2 class="text-xs md:text-sm font-bold text-mi-text1 tracking-wide uppercase flex items-center"><i class="fa-solid fa-sliders text-mi-text2 mr-2"></i>Filter Data</h2>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button onclick="resetFilter()" class="flex-1 sm:flex-none justify-center text-xs md:text-sm text-[#6B7C78] hover:text-mi-primary hover:bg-[#E9EEEC] bg-[#F5F7F6] border border-[#E5ECE9] font-medium px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-colors flex items-center gap-2 shadow-sm">
                         <i class="fa-solid fa-rotate-left"></i> Reset
                     </button>
-                    <button onclick="applyFilters()" class="bg-mi-primary hover:bg-mi-dark text-white text-sm font-medium px-5 py-2 rounded-xl transition-colors shadow-sm">
+                    <button onclick="applyFilters()" class="flex-1 sm:flex-none justify-center bg-mi-primary hover:bg-mi-dark text-white text-xs md:text-sm font-medium px-4 md:px-5 py-1.5 md:py-2 rounded-xl transition-colors shadow-sm">
                         Terapkan Filter
                     </button>
                 </div>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
-                <div class="lg:col-span-1">
-                    <label class="block text-xs font-semibold text-mi-text2 mb-1.5 uppercase tracking-wider">Periode</label>
-                    <select id="filterPeriode" onchange="handlePeriodChange()" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary sm:text-sm transition-all text-mi-text1">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 lg:gap-5">
+                <div class="sm:col-span-2 lg:col-span-1">
+                    <label class="block text-[10px] md:text-xs font-semibold text-mi-text2 mb-1 md:mb-1.5 uppercase tracking-wider">Periode</label>
+                    <select id="filterPeriode" onchange="handlePeriodChange()" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2 md:py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary text-xs md:text-sm transition-all text-mi-text1">
                         <option value="today" selected>Hari Ini</option>
                         <option value="this_week">Minggu Ini</option>
                         <option value="this_month">Bulan Ini</option>
@@ -177,28 +218,28 @@
                     </select>
                 </div>
 
-                <div class="lg:col-span-2 grid grid-cols-2 gap-3" id="customDateContainer">
+                <div class="sm:col-span-2 lg:col-span-2 grid grid-cols-2 gap-3" id="customDateContainer">
                     <div>
-                        <label class="block text-xs font-semibold text-mi-text2 mb-1.5 uppercase tracking-wider">Mulai</label>
-                        <input type="date" id="filterStartDate" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary sm:text-sm disabled:opacity-50 transition-all text-mi-text1">
+                        <label class="block text-[10px] md:text-xs font-semibold text-mi-text2 mb-1 md:mb-1.5 uppercase tracking-wider">Mulai</label>
+                        <input type="date" id="filterStartDate" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2 md:py-2.5 px-2 md:px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary text-xs md:text-sm disabled:opacity-50 transition-all text-mi-text1">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-mi-text2 mb-1.5 uppercase tracking-wider">Selesai</label>
-                        <input type="date" id="filterEndDate" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary sm:text-sm disabled:opacity-50 transition-all text-mi-text1">
+                        <label class="block text-[10px] md:text-xs font-semibold text-mi-text2 mb-1 md:mb-1.5 uppercase tracking-wider">Selesai</label>
+                        <input type="date" id="filterEndDate" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2 md:py-2.5 px-2 md:px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary text-xs md:text-sm disabled:opacity-50 transition-all text-mi-text1">
                     </div>
                 </div>
 
-                <div class="lg:col-span-1">
-                    <label class="block text-xs font-semibold text-mi-text2 mb-1.5 uppercase tracking-wider">Kelas</label>
-                    <select id="filterKelas" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary sm:text-sm transition-all text-mi-text1">
+                <div class="sm:col-span-1 lg:col-span-1">
+                    <label class="block text-[10px] md:text-xs font-semibold text-mi-text2 mb-1 md:mb-1.5 uppercase tracking-wider">Kelas</label>
+                    <select id="filterKelas" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2 md:py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary text-xs md:text-sm transition-all text-mi-text1">
                         <option value="all">Semua Kelas</option>
                         <!-- Options generated in JS -->
                     </select>
                 </div>
 
-                <div class="lg:col-span-1" id="filterStatusContainer" style="display: none;">
-                    <label class="block text-xs font-semibold text-mi-text2 mb-1.5 uppercase tracking-wider">Status</label>
-                    <select id="filterStatus" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary sm:text-sm transition-all text-mi-text1">
+                <div class="sm:col-span-1 lg:col-span-1" id="filterStatusContainer" style="display: none;">
+                    <label class="block text-[10px] md:text-xs font-semibold text-mi-text2 mb-1 md:mb-1.5 uppercase tracking-wider">Status</label>
+                    <select id="filterStatus" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2 md:py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary text-xs md:text-sm transition-all text-mi-text1">
                         <option value="all">Semua Status</option>
                         <option value="Hadir">Hadir</option>
                         <option value="Sakit">Sakit</option>
@@ -207,94 +248,151 @@
                     </select>
                 </div>
 
-                <div class="lg:col-span-1" id="filterSearchContainer">
-                    <label class="block text-xs font-semibold text-mi-text2 mb-1.5 uppercase tracking-wider">Cari Nama</label>
+                <div class="sm:col-span-2 lg:col-span-1" id="filterSearchContainer">
+                    <label class="block text-[10px] md:text-xs font-semibold text-mi-text2 mb-1 md:mb-1.5 uppercase tracking-wider">Cari Nama</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fa-solid fa-search text-mi-text2"></i>
+                            <i class="fa-solid fa-search text-mi-text2 text-xs md:text-sm"></i>
                         </div>
-                        <input type="text" id="filterSearch" placeholder="Ketik nama..." class="block w-full pl-9 border-mi-border border rounded-xl bg-mi-bg focus:bg-white py-2.5 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary sm:text-sm transition-all text-mi-text1">
+                        <input type="text" id="filterSearch" placeholder="Ketik nama..." class="block w-full pl-8 md:pl-9 border-mi-border border rounded-xl bg-mi-bg focus:bg-white py-2 md:py-2.5 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary text-xs md:text-sm transition-all text-mi-text1">
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- SUMMARY CARDS -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-5 mb-8">
-            <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow p-5 flex flex-col justify-between">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
+        <!-- 
+             Mobile: grid-cols-2
+             Tablet: grid-cols-3
+             Desktop: grid-cols-6
+        -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 lg:gap-5 mb-6 md:mb-8">
+            
+            <!-- Card 1: Total Siswa (Ref Style 1) -->
+            <div class="bg-card-blue rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-blue-100 shadow-sm">
+                <!-- Decorative BG Image -->
+                <img src="https://mentariilmu.org/assets/2.png" alt="" class="absolute -right-4 -bottom-4 w-24 h-24 md:w-32 md:h-32 object-contain opacity-20 pointer-events-none" onerror="this.style.display='none'">
+                
+                <div class="relative z-10 flex justify-between items-start w-full">
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-blue-600 text-white flex items-center justify-center text-sm md:text-lg shadow-sm">
                         <i class="fa-solid fa-users"></i>
                     </div>
-                    <span class="text-xs font-semibold text-mi-text2 uppercase tracking-wider">Total Siswa</span>
+                    <!-- Badge optional, omitted to keep clean unless needed -->
                 </div>
-                <div class="text-3xl font-bold text-mi-text1" id="cardTotalSiswa">-</div>
+                
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[10px] md:text-xs font-bold text-blue-700 uppercase tracking-wider mb-0.5">Total Siswa</div>
+                    <div class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-mi-text1 leading-none" id="cardTotalSiswa">-</div>
+                </div>
             </div>
             
-            <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow p-5 flex flex-col justify-between">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+            <!-- Card 2: Hadir (Ref Style 2) -->
+            <div class="bg-card-green rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-green-100 shadow-sm">
+                <!-- Decorative BG Image -->
+                <img src="https://mentariilmu.org/assets/3.png" alt="" class="absolute -right-2 -bottom-2 w-20 h-20 md:w-28 md:h-28 object-contain opacity-[0.15] pointer-events-none" onerror="this.style.display='none'">
+                
+                <div class="relative z-10 flex justify-between items-start w-full">
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-[#D97706] text-white flex items-center justify-center text-sm md:text-lg shadow-sm">
                         <i class="fa-solid fa-check"></i>
                     </div>
-                    <span class="text-xs font-semibold text-mi-text2 uppercase tracking-wider">Hadir</span>
                 </div>
-                <div class="text-3xl font-bold text-mi-text1" id="cardHadir">-</div>
+                
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[10px] md:text-xs font-bold text-[#B45309] uppercase tracking-wider mb-0.5">Hadir</div>
+                    <div class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-mi-text1 leading-none" id="cardHadir">-</div>
+                </div>
             </div>
 
-            <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow p-5 flex flex-col justify-between">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center text-lg">
+            <!-- Card 3: Sakit (Custom Orange) -->
+            <div class="bg-card-orange rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-orange-100 shadow-sm">
+                <!-- Decorative Shapes -->
+                <div class="blob-bg">
+                    <div class="blob-shape bg-orange-200 rounded-full w-24 h-24 -right-8 -bottom-8"></div>
+                    <div class="blob-shape bg-orange-100 rounded-full w-16 h-16 right-10 -bottom-4"></div>
+                </div>
+                
+                <div class="relative z-10 flex justify-between items-start w-full">
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-orange-500 text-white flex items-center justify-center text-sm md:text-lg shadow-sm">
                         <i class="fa-solid fa-thermometer-half"></i>
                     </div>
-                    <span class="text-xs font-semibold text-mi-text2 uppercase tracking-wider">Sakit</span>
                 </div>
-                <div class="text-3xl font-bold text-mi-text1" id="cardSakit">-</div>
+                
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[10px] md:text-xs font-bold text-orange-700 uppercase tracking-wider mb-0.5">Sakit</div>
+                    <div class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-mi-text1 leading-none" id="cardSakit">-</div>
+                </div>
             </div>
 
-            <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow p-5 flex flex-col justify-between">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-lg">
+            <!-- Card 4: Izin (Custom Cyan) -->
+            <div class="bg-card-cyan rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-cyan-100 shadow-sm">
+                 <!-- Decorative Shapes -->
+                 <div class="blob-bg">
+                    <div class="blob-shape bg-cyan-200 rounded-full w-24 h-24 -right-4 -bottom-10"></div>
+                    <div class="blob-shape bg-cyan-100 rounded-full w-20 h-20 -right-8 bottom-4"></div>
+                </div>
+                
+                <div class="relative z-10 flex justify-between items-start w-full">
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-cyan-600 text-white flex items-center justify-center text-sm md:text-lg shadow-sm">
                         <i class="fa-solid fa-envelope-open-text"></i>
                     </div>
-                    <span class="text-xs font-semibold text-mi-text2 uppercase tracking-wider">Izin</span>
                 </div>
-                <div class="text-3xl font-bold text-mi-text1" id="cardIzin">-</div>
+                
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[10px] md:text-xs font-bold text-cyan-700 uppercase tracking-wider mb-0.5">Izin</div>
+                    <div class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-mi-text1 leading-none" id="cardIzin">-</div>
+                </div>
             </div>
 
-            <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow p-5 flex flex-col justify-between">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-lg">
+            <!-- Card 5: Alpa (Custom Rose) -->
+            <div class="bg-card-rose rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-rose-100 shadow-sm">
+                <!-- Decorative Shapes -->
+                <div class="blob-bg">
+                    <div class="blob-shape bg-rose-200 rounded-full w-28 h-28 -right-12 -bottom-6"></div>
+                </div>
+
+                <div class="relative z-10 flex justify-between items-start w-full">
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-rose-600 text-white flex items-center justify-center text-sm md:text-lg shadow-sm">
                         <i class="fa-solid fa-xmark"></i>
                     </div>
-                    <span class="text-xs font-semibold text-mi-text2 uppercase tracking-wider">Alpa</span>
                 </div>
-                <div class="text-3xl font-bold text-mi-text1" id="cardAlpa">-</div>
+                
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[10px] md:text-xs font-bold text-rose-700 uppercase tracking-wider mb-0.5">Alpa</div>
+                    <div class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-mi-text1 leading-none" id="cardAlpa">-</div>
+                </div>
             </div>
 
-            <div class="bg-mi-primary rounded-2xl card-shadow p-5 flex flex-col justify-between relative overflow-hidden">
-                <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
-                <div class="flex items-center gap-3 mb-4 relative z-10">
-                    <div class="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center text-lg backdrop-blur-sm">
+            <!-- Card 6: Kehadiran (Mentari Ilmu Primary) -->
+            <div class="bg-mi-primary rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-mi-dark shadow-sm">
+                <!-- Decorative Shapes -->
+                <div class="absolute -right-8 -top-8 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+                <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-emerald-400/20 rounded-full blur-xl pointer-events-none"></div>
+
+                <div class="relative z-10 flex justify-between items-start w-full">
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-white/20 text-white flex items-center justify-center text-sm md:text-lg backdrop-blur-sm shadow-sm">
                         <i class="fa-solid fa-chart-pie"></i>
                     </div>
-                    <span class="text-xs font-semibold text-mi-soft uppercase tracking-wider">Kehadiran</span>
                 </div>
-                <div class="text-3xl font-bold text-white relative z-10" id="cardPersentase">-</div>
+                
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[10px] md:text-xs font-bold text-mi-soft uppercase tracking-wider mb-0.5">Kehadiran</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-white leading-none" id="cardPersentase">-</div>
+                </div>
             </div>
         </div>
 
         <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow overflow-hidden mb-8">
             
             <!-- TABS -->
-            <div class="px-6 pt-6 pb-2 border-b border-mi-border">
+            <div class="px-4 md:px-6 pt-4 md:pt-6 pb-2 border-b border-mi-border">
                 <div class="flex space-x-2 overflow-x-auto hide-scrollbar">
-                    <button onclick="switchTab('riwayat')" id="tab-riwayat" class="tab-btn active px-5 py-2.5 text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
+                    <button onclick="switchTab('riwayat')" id="tab-riwayat" class="tab-btn active px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
                         <i class="fa-regular fa-clock"></i> Riwayat Detail
                     </button>
-                    <button onclick="switchTab('rekap')" id="tab-rekap" class="tab-btn px-5 py-2.5 text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
+                    <button onclick="switchTab('rekap')" id="tab-rekap" class="tab-btn px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
                         <i class="fa-solid fa-table-list"></i> Rekap Presensi
                     </button>
-                    <button onclick="switchTab('analisa')" id="tab-analisa" class="tab-btn px-5 py-2.5 text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
+                    <button onclick="switchTab('analisa')" id="tab-analisa" class="tab-btn px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
                         <i class="fa-solid fa-chart-simple"></i> Analisa Data
                     </button>
                 </div>
@@ -306,12 +404,12 @@
                     <table class="min-w-full divide-y divide-mi-border">
                         <thead class="bg-mi-bg/50">
                             <tr>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider w-16">No</th>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider w-40">Tanggal</th>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Nama Siswa</th>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Kelas</th>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Status</th>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Keterangan</th>
+                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider w-12 md:w-16">No</th>
+                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider w-32 md:w-40">Tanggal</th>
+                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Nama Siswa</th>
+                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Kelas</th>
+                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Keterangan</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-riwayat" class="bg-white divide-y divide-mi-border">
@@ -319,15 +417,15 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="bg-mi-bg/30 px-6 py-4 border-t border-mi-border flex items-center justify-between mt-auto">
-                    <div class="text-sm text-mi-text2 font-medium" id="riwayat-info">Menampilkan 1-50 data terbaru...</div>
-                    <div class="text-xs text-mi-text2/70">*Dibatasi max 500 baris. Gunakan export untuk data lengkap.</div>
+                <div class="bg-mi-bg/30 px-4 md:px-6 py-3 md:py-4 border-t border-mi-border flex flex-col sm:flex-row items-center justify-between mt-auto gap-2 text-center sm:text-left">
+                    <div class="text-xs md:text-sm text-mi-text2 font-medium" id="riwayat-info">Menampilkan 1-50 data terbaru...</div>
+                    <div class="text-[10px] md:text-xs text-mi-text2/70">*Dibatasi max 500 baris. Gunakan export untuk data lengkap.</div>
                 </div>
                 <div id="empty-riwayat" class="hidden py-16 text-center w-full">
-                    <div class="w-16 h-16 bg-mi-bg rounded-full flex items-center justify-center mx-auto mb-4 text-mi-text2 text-2xl">
+                    <div class="w-12 h-12 md:w-16 md:h-16 bg-mi-bg rounded-full flex items-center justify-center mx-auto mb-4 text-mi-text2 text-xl md:text-2xl">
                         <i class="fa-solid fa-search-minus"></i>
                     </div>
-                    <p class="text-mi-text2 font-medium">Tidak ada riwayat presensi yang sesuai dengan filter.</p>
+                    <p class="text-sm md:text-base text-mi-text2 font-medium px-4">Tidak ada riwayat presensi yang sesuai dengan filter.</p>
                 </div>
             </div>
 
@@ -337,15 +435,15 @@
                     <table class="min-w-full divide-y divide-mi-border">
                         <thead class="bg-mi-bg/50">
                             <tr>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider w-16">No</th>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Nama Siswa</th>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Kelas</th>
-                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Hadir">H</th>
-                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Sakit">S</th>
-                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Izin">I</th>
-                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Alpa">A</th>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider min-w-[200px]">% Kehadiran</th>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider w-12 md:w-16">No</th>
+                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Nama Siswa</th>
+                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Kelas</th>
+                                <th scope="col" class="px-2 md:px-4 py-3 md:py-4 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Hadir">H</th>
+                                <th scope="col" class="px-2 md:px-4 py-3 md:py-4 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Sakit">S</th>
+                                <th scope="col" class="px-2 md:px-4 py-3 md:py-4 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Izin">I</th>
+                                <th scope="col" class="px-2 md:px-4 py-3 md:py-4 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Alpa">A</th>
+                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider min-w-[150px] md:min-w-[200px]">% Kehadiran</th>
+                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Status</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-rekap" class="bg-white divide-y divide-mi-border">
@@ -353,46 +451,46 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="empty-rekap" class="hidden py-16 text-center">
-                    <div class="w-16 h-16 bg-mi-bg rounded-full flex items-center justify-center mx-auto mb-4 text-mi-text2 text-2xl">
+                <div id="empty-rekap" class="hidden py-16 text-center w-full">
+                    <div class="w-12 h-12 md:w-16 md:h-16 bg-mi-bg rounded-full flex items-center justify-center mx-auto mb-4 text-mi-text2 text-xl md:text-2xl">
                         <i class="fa-solid fa-folder-open"></i>
                     </div>
-                    <p class="text-mi-text2 font-medium">Tidak ada data rekap yang sesuai dengan filter.</p>
+                    <p class="text-sm md:text-base text-mi-text2 font-medium px-4">Tidak ada data rekap yang sesuai dengan filter.</p>
                 </div>
             </div>
 
             <!-- TAB 3: ANALISA -->
-            <div id="content-analisa" class="p-6 hidden min-h-[400px]">
+            <div id="content-analisa" class="p-4 md:p-6 hidden min-h-[400px]">
                 
                 <!-- Charts Section -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
                     <!-- Distribusi -->
-                    <div class="bg-mi-surface border border-mi-border rounded-2xl p-6 shadow-sm">
-                        <h3 class="text-sm font-bold text-mi-text1 uppercase tracking-wide mb-6 text-center">Distribusi Status Presensi</h3>
-                        <div class="relative h-64 w-full flex justify-center">
+                    <div class="bg-mi-surface border border-mi-border rounded-2xl p-4 md:p-6 shadow-sm">
+                        <h3 class="text-xs md:text-sm font-bold text-mi-text1 uppercase tracking-wide mb-4 md:mb-6 text-center">Distribusi Status Presensi</h3>
+                        <div class="relative h-48 md:h-64 w-full flex justify-center">
                             <canvas id="chartDistribusi"></canvas>
                         </div>
                     </div>
 
                     <!-- Bar Chart / Tabel Kelas -->
-                    <div class="lg:col-span-2 bg-mi-surface border border-mi-border rounded-2xl p-6 shadow-sm flex flex-col">
-                        <h3 class="text-sm font-bold text-mi-text1 uppercase tracking-wide mb-6" id="titleAnalisaKelas">Perbandingan Kehadiran Antar Kelas</h3>
+                    <div class="lg:col-span-2 bg-mi-surface border border-mi-border rounded-2xl p-4 md:p-6 shadow-sm flex flex-col overflow-hidden">
+                        <h3 class="text-xs md:text-sm font-bold text-mi-text1 uppercase tracking-wide mb-4 md:mb-6" id="titleAnalisaKelas">Perbandingan Kehadiran Antar Kelas</h3>
                         
-                        <div class="relative h-64 w-full mb-6" id="containerChartKelas">
+                        <div class="relative h-48 md:h-64 w-full mb-4 md:mb-6" id="containerChartKelas">
                             <canvas id="chartKelas"></canvas>
                         </div>
 
-                        <div class="overflow-x-auto flex-grow" id="containerTableKelas">
-                            <table class="min-w-full divide-y divide-mi-border text-sm border border-mi-border rounded-lg overflow-hidden">
+                        <div class="overflow-x-auto flex-grow -mx-4 md:mx-0 px-4 md:px-0" id="containerTableKelas">
+                            <table class="min-w-full divide-y divide-mi-border text-xs md:text-sm border border-mi-border rounded-lg overflow-hidden">
                                 <thead class="bg-mi-bg">
                                     <tr>
-                                        <th class="px-4 py-3 text-left font-semibold text-mi-text2">Kelas</th>
-                                        <th class="px-4 py-3 text-center font-semibold text-mi-text2">Siswa</th>
-                                        <th class="px-4 py-3 text-center font-semibold text-emerald-600">Hadir</th>
-                                        <th class="px-4 py-3 text-center font-semibold text-orange-500">Sakit</th>
-                                        <th class="px-4 py-3 text-center font-semibold text-cyan-600">Izin</th>
-                                        <th class="px-4 py-3 text-center font-semibold text-rose-600">Alpa</th>
-                                        <th class="px-4 py-3 text-center font-bold text-mi-primary">%</th>
+                                        <th class="px-3 md:px-4 py-2 md:py-3 text-left font-semibold text-mi-text2">Kelas</th>
+                                        <th class="px-2 md:px-4 py-2 md:py-3 text-center font-semibold text-mi-text2">Siswa</th>
+                                        <th class="px-2 md:px-4 py-2 md:py-3 text-center font-semibold text-emerald-600">Hadir</th>
+                                        <th class="px-2 md:px-4 py-2 md:py-3 text-center font-semibold text-orange-500">Sakit</th>
+                                        <th class="px-2 md:px-4 py-2 md:py-3 text-center font-semibold text-cyan-600">Izin</th>
+                                        <th class="px-2 md:px-4 py-2 md:py-3 text-center font-semibold text-rose-600">Alpa</th>
+                                        <th class="px-3 md:px-4 py-2 md:py-3 text-center font-bold text-mi-primary">%</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbody-analisa-kelas" class="divide-y divide-mi-border bg-white">
@@ -402,25 +500,25 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-mi-surface border border-mi-border rounded-2xl p-6 shadow-sm relative overflow-hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <div class="bg-mi-surface border border-mi-border rounded-2xl p-4 md:p-6 shadow-sm relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
-                        <h3 class="text-sm font-bold text-mi-text1 uppercase tracking-wide mb-4 flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center"><i class="fa-solid fa-list-check"></i></div>
+                        <h3 class="text-xs md:text-sm font-bold text-mi-text1 uppercase tracking-wide mb-3 md:mb-4 flex items-center gap-2">
+                            <div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center text-xs md:text-base"><i class="fa-solid fa-list-check"></i></div>
                             Kesimpulan
                         </h3>
-                        <p class="text-mi-text2 text-sm leading-relaxed" id="analisaKesimpulan">
+                        <p class="text-mi-text2 text-xs md:text-sm leading-relaxed" id="analisaKesimpulan">
                             <!-- Generated by JS -->
                         </p>
                     </div>
 
-                    <div class="bg-mi-surface border border-mi-border rounded-2xl p-6 shadow-sm relative overflow-hidden">
+                    <div class="bg-mi-surface border border-mi-border rounded-2xl p-4 md:p-6 shadow-sm relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>
-                        <h3 class="text-sm font-bold text-mi-text1 uppercase tracking-wide mb-4 flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-500 flex items-center justify-center"><i class="fa-regular fa-lightbulb"></i></div>
+                        <h3 class="text-xs md:text-sm font-bold text-mi-text1 uppercase tracking-wide mb-3 md:mb-4 flex items-center gap-2">
+                            <div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-amber-50 text-amber-500 flex items-center justify-center text-xs md:text-base"><i class="fa-regular fa-lightbulb"></i></div>
                             Rekomendasi
                         </h3>
-                        <ul class="text-mi-text2 text-sm leading-relaxed list-none space-y-2" id="analisaRekomendasi">
+                        <ul class="text-mi-text2 text-xs md:text-sm leading-relaxed list-none space-y-2" id="analisaRekomendasi">
                             <!-- Generated by JS -->
                         </ul>
                     </div>
@@ -437,51 +535,51 @@
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
             
             <div class="inline-block align-bottom bg-mi-surface rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl w-full border border-mi-border">
-                <div class="px-6 pt-6 pb-6">
-                    <div class="flex justify-between items-start mb-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 bg-mi-soft text-mi-primary rounded-2xl flex items-center justify-center text-2xl font-bold">
+                <div class="px-4 md:px-6 pt-5 md:pt-6 pb-5 md:pb-6">
+                    <div class="flex justify-between items-start mb-5 md:mb-6">
+                        <div class="flex items-center gap-3 md:gap-4">
+                            <div class="w-10 h-10 md:w-14 md:h-14 bg-mi-soft text-mi-primary rounded-xl md:rounded-2xl flex items-center justify-center text-xl md:text-2xl font-bold">
                                 <i class="fa-regular fa-user"></i>
                             </div>
                             <div>
-                                <h3 class="text-xl font-bold text-mi-text1" id="detailName">Nama Siswa</h3>
-                                <p class="text-sm text-mi-text2 mt-1 font-medium"><i class="fa-solid fa-graduation-cap mr-1 text-mi-primary"></i> <span id="detailClass">Kelas</span></p>
+                                <h3 class="text-lg md:text-xl font-bold text-mi-text1" id="detailName">Nama Siswa</h3>
+                                <p class="text-xs md:text-sm text-mi-text2 mt-0.5 md:mt-1 font-medium"><i class="fa-solid fa-graduation-cap mr-1 text-mi-primary"></i> <span id="detailClass">Kelas</span></p>
                             </div>
                         </div>
-                        <button onclick="closeModal('modalStudent')" class="w-8 h-8 rounded-full bg-mi-bg hover:bg-gray-200 text-mi-text2 flex items-center justify-center transition-colors">
-                            <i class="fa-solid fa-xmark text-lg"></i>
+                        <button onclick="closeModal('modalStudent')" class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-mi-bg hover:bg-gray-200 text-mi-text2 flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-xmark text-base md:text-lg"></i>
                         </button>
                     </div>
 
                     <!-- Ringkasan Detail -->
-                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8 bg-mi-bg p-5 rounded-2xl border border-mi-border">
+                    <div class="grid grid-cols-5 gap-2 md:gap-4 mb-6 md:mb-8 bg-mi-bg p-3 md:p-5 rounded-xl md:rounded-2xl border border-mi-border">
                         <div class="text-center">
-                            <div class="text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Hadir</div>
-                            <div class="text-2xl font-bold text-emerald-600" id="detH">-</div>
+                            <div class="text-[9px] md:text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Hadir</div>
+                            <div class="text-lg md:text-2xl font-bold text-emerald-600" id="detH">-</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Sakit</div>
-                            <div class="text-2xl font-bold text-orange-500" id="detS">-</div>
+                            <div class="text-[9px] md:text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Sakit</div>
+                            <div class="text-lg md:text-2xl font-bold text-orange-500" id="detS">-</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Izin</div>
-                            <div class="text-2xl font-bold text-cyan-600" id="detI">-</div>
+                            <div class="text-[9px] md:text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Izin</div>
+                            <div class="text-lg md:text-2xl font-bold text-cyan-600" id="detI">-</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Alpa</div>
-                            <div class="text-2xl font-bold text-rose-600" id="detA">-</div>
+                            <div class="text-[9px] md:text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Alpa</div>
+                            <div class="text-lg md:text-2xl font-bold text-rose-600" id="detA">-</div>
                         </div>
-                        <div class="text-center sm:border-l border-mi-border flex flex-col justify-center">
-                            <div class="text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Kehadiran</div>
-                            <div class="text-2xl font-bold text-mi-primary" id="detPct">-</div>
+                        <div class="text-center border-l border-mi-border flex flex-col justify-center">
+                            <div class="text-[9px] md:text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">%</div>
+                            <div class="text-sm md:text-2xl font-bold text-mi-primary" id="detPct">-</div>
                         </div>
                     </div>
 
                     <!-- Chart Kecil & Tabel History -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                         <div class="md:col-span-1">
-                            <h4 class="text-xs font-bold text-mi-text1 uppercase tracking-wide mb-4 text-center">Statistik</h4>
-                            <div class="relative h-44 flex justify-center">
+                            <h4 class="text-xs font-bold text-mi-text1 uppercase tracking-wide mb-3 md:mb-4 text-center">Statistik</h4>
+                            <div class="relative h-32 md:h-44 flex justify-center">
                                 <canvas id="chartStudentDetail"></canvas>
                             </div>
                             <div class="mt-4 text-center" id="detStatusBadgeContainer">
@@ -489,14 +587,14 @@
                             </div>
                         </div>
                         <div class="md:col-span-2">
-                            <h4 class="text-xs font-bold text-mi-text1 uppercase tracking-wide mb-4">Riwayat pada periode terpilih</h4>
-                            <div class="max-h-56 overflow-y-auto border border-mi-border rounded-xl">
-                                <table class="min-w-full divide-y divide-mi-border text-sm">
+                            <h4 class="text-xs font-bold text-mi-text1 uppercase tracking-wide mb-3 md:mb-4 text-center md:text-left">Riwayat pada periode terpilih</h4>
+                            <div class="max-h-48 md:max-h-56 overflow-y-auto border border-mi-border rounded-xl">
+                                <table class="min-w-full divide-y divide-mi-border text-xs md:text-sm">
                                     <thead class="bg-mi-bg sticky top-0 z-10">
                                         <tr>
-                                            <th class="px-4 py-3 text-left font-semibold text-mi-text2">Tanggal</th>
-                                            <th class="px-4 py-3 text-left font-semibold text-mi-text2">Status</th>
-                                            <th class="px-4 py-3 text-left font-semibold text-mi-text2">Keterangan</th>
+                                            <th class="px-3 md:px-4 py-2 md:py-3 text-left font-semibold text-mi-text2">Tanggal</th>
+                                            <th class="px-3 md:px-4 py-2 md:py-3 text-left font-semibold text-mi-text2">Status</th>
+                                            <th class="px-3 md:px-4 py-2 md:py-3 text-left font-semibold text-mi-text2">Keterangan</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbody-detail-riwayat" class="divide-y divide-mi-border bg-white">
@@ -508,14 +606,14 @@
                     </div>
                 </div>
                 <!-- Modal Detail Footer (Export & Close) -->
-                <div class="bg-mi-bg/50 px-6 py-4 flex flex-col sm:flex-row-reverse gap-3 border-t border-mi-border">
-                    <button type="button" onclick="closeModal('modalStudent')" class="w-full inline-flex justify-center items-center rounded-xl border border-mi-border shadow-sm px-5 py-2.5 bg-white text-sm font-medium text-mi-text1 hover:bg-gray-50 transition-colors sm:w-auto">
+                <div class="bg-mi-bg/50 px-4 md:px-6 py-3 md:py-4 flex flex-col sm:flex-row-reverse gap-2 md:gap-3 border-t border-mi-border">
+                    <button type="button" onclick="closeModal('modalStudent')" class="w-full inline-flex justify-center items-center rounded-xl border border-mi-border shadow-sm px-4 md:px-5 py-2 md:py-2.5 bg-white text-sm font-medium text-mi-text1 hover:bg-gray-50 transition-colors sm:w-auto">
                         Tutup
                     </button>
-                    <button type="button" onclick="exportStudentDetailExcel()" class="w-full inline-flex justify-center items-center rounded-xl px-5 py-2.5 bg-[#E8F3F0] hover:bg-[#D9EEE8] border border-[#C8E3DD] shadow-sm text-sm font-medium text-[#18794E] transition-colors sm:w-auto">
+                    <button type="button" onclick="exportStudentDetailExcel()" class="w-full inline-flex justify-center items-center rounded-xl px-4 md:px-5 py-2 md:py-2.5 bg-[#E8F3F0] hover:bg-[#D9EEE8] border border-[#C8E3DD] shadow-sm text-sm font-medium text-[#18794E] transition-colors sm:w-auto">
                         <i class="fa-solid fa-file-excel mr-2"></i> Excel XLSX
                     </button>
-                    <button type="button" onclick="exportStudentDetailPDF()" class="w-full inline-flex justify-center items-center rounded-xl px-5 py-2.5 bg-[#FFF1F2] hover:bg-[#FFE4E6] border border-[#FFE4E6] shadow-sm text-sm font-medium text-[#BE123C] transition-colors sm:w-auto">
+                    <button type="button" onclick="exportStudentDetailPDF()" class="w-full inline-flex justify-center items-center rounded-xl px-4 md:px-5 py-2 md:py-2.5 bg-[#FFF1F2] hover:bg-[#FFE4E6] border border-[#FFE4E6] shadow-sm text-sm font-medium text-[#BE123C] transition-colors sm:w-auto">
                         <i class="fa-solid fa-file-pdf mr-2"></i> PDF
                     </button>
                 </div>
@@ -530,28 +628,28 @@
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
             
             <div class="inline-block align-bottom bg-mi-surface rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md w-full border border-mi-border">
-                <div class="px-6 pt-6 pb-4">
-                    <div class="flex justify-between items-center mb-5">
-                        <h3 class="text-lg font-bold text-mi-text1 flex items-center gap-2">
-                            <i class="fa-brands fa-whatsapp text-green-500 text-2xl"></i> Preview WhatsApp
+                <div class="px-4 md:px-6 pt-5 md:pt-6 pb-4">
+                    <div class="flex justify-between items-center mb-4 md:mb-5">
+                        <h3 class="text-base md:text-lg font-bold text-mi-text1 flex items-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-green-500 text-xl md:text-2xl"></i> Preview WhatsApp
                         </h3>
-                        <button onclick="closeModal('modalWhatsApp')" class="w-8 h-8 rounded-full bg-mi-bg hover:bg-gray-200 text-mi-text2 flex items-center justify-center transition-colors">
+                        <button onclick="closeModal('modalWhatsApp')" class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-mi-bg hover:bg-gray-200 text-mi-text2 flex items-center justify-center transition-colors">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
                     
-                    <div class="bg-[#efeae2] p-4 rounded-xl border border-mi-border shadow-inner h-[26rem] overflow-y-auto">
-                        <div class="bg-white p-4 rounded-xl shadow-sm text-[13px] text-gray-800 whitespace-pre-wrap font-sans" id="waPreviewText" style="line-height: 1.6;">
+                    <div class="bg-[#efeae2] p-3 md:p-4 rounded-xl border border-mi-border shadow-inner h-64 md:h-[26rem] overflow-y-auto">
+                        <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm text-xs md:text-[13px] text-gray-800 whitespace-pre-wrap font-sans" id="waPreviewText" style="line-height: 1.5 md:line-height: 1.6;">
                             <!-- WA Text generated by JS -->
                         </div>
                     </div>
-                    <p class="text-[11px] text-mi-text2 mt-3 font-medium">*Pesan dihasilkan otomatis berdasarkan filter periode dan kelas.</p>
+                    <p class="text-[10px] md:text-[11px] text-mi-text2 mt-2 md:mt-3 font-medium">*Pesan dihasilkan otomatis berdasarkan filter periode dan kelas.</p>
                 </div>
-                <div class="bg-mi-bg/50 px-6 py-4 flex flex-col sm:flex-row-reverse gap-3 border-t border-mi-border">
-                    <button type="button" onclick="shareToWhatsApp()" class="w-full inline-flex justify-center items-center rounded-xl px-5 py-2.5 bg-green-600 hover:bg-green-700 text-sm font-medium text-white transition-colors sm:w-auto shadow-sm">
+                <div class="bg-mi-bg/50 px-4 md:px-6 py-3 md:py-4 flex flex-col sm:flex-row-reverse gap-2 md:gap-3 border-t border-mi-border">
+                    <button type="button" onclick="shareToWhatsApp()" class="w-full inline-flex justify-center items-center rounded-xl px-4 md:px-5 py-2 md:py-2.5 bg-green-600 hover:bg-green-700 text-sm font-medium text-white transition-colors sm:w-auto shadow-sm">
                         <i class="fa-brands fa-whatsapp mr-2"></i> Share WhatsApp
                     </button>
-                    <button type="button" onclick="copyWhatsAppReport()" class="w-full inline-flex justify-center items-center rounded-xl border border-mi-border shadow-sm px-5 py-2.5 bg-white text-sm font-medium text-mi-text1 hover:bg-gray-50 transition-colors sm:w-auto">
+                    <button type="button" onclick="copyWhatsAppReport()" class="w-full inline-flex justify-center items-center rounded-xl border border-mi-border shadow-sm px-4 md:px-5 py-2 md:py-2.5 bg-white text-sm font-medium text-mi-text1 hover:bg-gray-50 transition-colors sm:w-auto">
                         <i class="fa-regular fa-copy mr-2"></i> Salin Pesan
                     </button>
                 </div>
@@ -578,7 +676,6 @@
             <span class="text-[10px] font-medium">Refresh</span>
         </button>
     </nav>
-
 
     <script>
         
@@ -694,18 +791,18 @@
         }
 
         function getStatusBadgeHtml(percentage) {
-            if (percentage >= 95) return `<span class="px-3 py-1 inline-flex text-[11px] leading-4 font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Sangat Baik</span>`;
-            if (percentage >= 90) return `<span class="px-3 py-1 inline-flex text-[11px] leading-4 font-bold rounded-full bg-blue-50 text-blue-700 border border-blue-200">Baik</span>`;
-            if (percentage >= 80) return `<span class="px-3 py-1 inline-flex text-[11px] leading-4 font-bold rounded-full bg-orange-50 text-orange-700 border border-orange-200">Perlu Perhatian</span>`;
-            return `<span class="px-3 py-1 inline-flex text-[11px] leading-4 font-bold rounded-full bg-rose-50 text-rose-700 border border-rose-200">Perlu Pembinaan</span>`;
+            if (percentage >= 95) return `<span class="px-2 md:px-3 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Sangat Baik</span>`;
+            if (percentage >= 90) return `<span class="px-2 md:px-3 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-blue-50 text-blue-700 border border-blue-200">Baik</span>`;
+            if (percentage >= 80) return `<span class="px-2 md:px-3 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-orange-50 text-orange-700 border border-orange-200">Perlu Perhatian</span>`;
+            return `<span class="px-2 md:px-3 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-rose-50 text-rose-700 border border-rose-200">Perlu Pembinaan</span>`;
         }
 
         function getStatusColor(status) {
             switch(status) {
-                case 'Hadir': return `<span class="px-2.5 py-1 inline-flex text-[11px] font-bold rounded-md bg-[#d1fae5] text-[#065f46]"><i class="fa-solid fa-check mr-1.5 mt-0.5"></i> Hadir</span>`;
-                case 'Sakit': return `<span class="px-2.5 py-1 inline-flex text-[11px] font-bold rounded-md bg-[#ffedd5] text-[#9a3412]"><i class="fa-solid fa-thermometer-half mr-1.5 mt-0.5"></i> Sakit</span>`;
-                case 'Izin':  return `<span class="px-2.5 py-1 inline-flex text-[11px] font-bold rounded-md bg-[#cffafe] text-[#155e75]"><i class="fa-solid fa-envelope-open-text mr-1.5 mt-0.5"></i> Izin</span>`;
-                case 'Alpa':  return `<span class="px-2.5 py-1 inline-flex text-[11px] font-bold rounded-md bg-[#ffe4e6] text-[#9f1239]"><i class="fa-solid fa-xmark mr-1.5 mt-0.5"></i> Alpa</span>`;
+                case 'Hadir': return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#d1fae5] text-[#065f46]"><i class="fa-solid fa-check mr-1 md:mr-1.5 mt-0.5"></i> Hadir</span>`;
+                case 'Sakit': return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#ffedd5] text-[#9a3412]"><i class="fa-solid fa-thermometer-half mr-1 md:mr-1.5 mt-0.5"></i> Sakit</span>`;
+                case 'Izin':  return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#cffafe] text-[#155e75]"><i class="fa-solid fa-envelope-open-text mr-1 md:mr-1.5 mt-0.5"></i> Izin</span>`;
+                case 'Alpa':  return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#ffe4e6] text-[#9f1239]"><i class="fa-solid fa-xmark mr-1 md:mr-1.5 mt-0.5"></i> Alpa</span>`;
                 default: return status;
             }
         }
@@ -902,9 +999,9 @@
                 const pctFormatted = formatPercentage(row.pct);
                 
                 const pctHtml = `
-                    <div class="flex flex-col gap-1.5 w-full max-w-[140px]">
-                        <span class="font-bold text-mi-text1 text-[15px]">${pctFormatted}</span>
-                        <div class="w-full h-1.5 bg-mi-border rounded-full overflow-hidden">
+                    <div class="flex flex-col gap-1 md:gap-1.5 w-full max-w-[100px] md:max-w-[140px]">
+                        <span class="font-bold text-mi-text1 text-xs md:text-[15px]">${pctFormatted}</span>
+                        <div class="w-full h-1 md:h-1.5 bg-mi-border rounded-full overflow-hidden">
                             <div class="h-full ${barColor} transition-all duration-500 ease-out" style="width: ${barWidth}%"></div>
                         </div>
                     </div>
@@ -914,20 +1011,20 @@
                 const initials = row.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
 
                 tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-mi-text2">${index + 1}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-mi-soft text-mi-primary flex items-center justify-center text-xs font-bold">${initials}</div>
-                            <span class="text-sm font-bold text-mi-text1">${row.name}</span>
+                    <td class="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-mi-text2">${index + 1}</td>
+                    <td class="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap">
+                        <div class="flex items-center gap-2 md:gap-3">
+                            <div class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-mi-soft text-mi-primary flex items-center justify-center text-[10px] md:text-xs font-bold">${initials}</div>
+                            <span class="text-xs md:text-sm font-bold text-mi-text1">${row.name}</span>
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-mi-text2 font-medium">${row.className}</td>
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-center font-semibold text-mi-text1">${row.h}</td>
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-center font-semibold text-mi-text1">${row.s}</td>
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-center font-semibold text-mi-text1">${row.i}</td>
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-center font-semibold text-mi-text1">${row.a}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${pctHtml}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${getStatusBadgeHtml(row.pct)}</td>
+                    <td class="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-mi-text2 font-medium">${row.className}</td>
+                    <td class="px-2 md:px-4 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.h}</td>
+                    <td class="px-2 md:px-4 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.s}</td>
+                    <td class="px-2 md:px-4 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.i}</td>
+                    <td class="px-2 md:px-4 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.a}</td>
+                    <td class="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap">${pctHtml}</td>
+                    <td class="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap">${getStatusBadgeHtml(row.pct)}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -955,12 +1052,12 @@
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-mi-soft/50 transition-colors';
                 tr.innerHTML = `
-                    <td class="px-6 py-3 whitespace-nowrap text-sm text-mi-text2">${index + 1}</td>
-                    <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-mi-text1">${formatDateIndo(row.date)}</td>
-                    <td class="px-6 py-3 whitespace-nowrap text-sm font-bold text-mi-text1">${row.studentName}</td>
-                    <td class="px-6 py-3 whitespace-nowrap text-sm text-mi-text2 font-medium">${row.className}</td>
-                    <td class="px-6 py-3 whitespace-nowrap text-sm">${getStatusColor(row.status)}</td>
-                    <td class="px-6 py-3 whitespace-nowrap text-sm text-mi-text2">${row.notes}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-[11px] md:text-sm text-mi-text2">${index + 1}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-[11px] md:text-sm font-medium text-mi-text1">${formatDateIndo(row.date)}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-[11px] md:text-sm font-bold text-mi-text1">${row.studentName}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-[11px] md:text-sm text-mi-text2 font-medium">${row.className}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-[11px] md:text-sm">${getStatusColor(row.status)}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-[11px] md:text-sm text-mi-text2">${row.notes}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -985,8 +1082,8 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { font: { family: 'Inter' } } } },
-                    cutout: '75%'
+                    plugins: { legend: { position: 'bottom', labels: { font: { family: 'Inter', size: window.innerWidth < 768 ? 10 : 12 } } } },
+                    cutout: '70%'
                 }
             });
 
@@ -1013,13 +1110,13 @@
                         const tr = document.createElement('tr');
                         tr.className = 'hover:bg-mi-soft/30 transition-colors';
                         tr.innerHTML = `
-                            <td class="px-4 py-3 whitespace-nowrap text-sm font-bold text-mi-text1">${c}</td>
-                            <td class="px-4 py-3 whitespace-nowrap text-sm text-center text-mi-text2">${dat.studentCount}</td>
-                            <td class="px-4 py-3 whitespace-nowrap text-sm text-center font-semibold text-emerald-600">${dat.h}</td>
-                            <td class="px-4 py-3 whitespace-nowrap text-sm text-center font-semibold text-orange-500">${dat.s}</td>
-                            <td class="px-4 py-3 whitespace-nowrap text-sm text-center font-semibold text-cyan-600">${dat.i}</td>
-                            <td class="px-4 py-3 whitespace-nowrap text-sm text-center font-semibold text-rose-600">${dat.a}</td>
-                            <td class="px-4 py-3 whitespace-nowrap text-sm text-center font-bold text-mi-primary">${formatPercentage(dat.pct)}</td>
+                            <td class="px-3 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm font-bold text-mi-text1">${c}</td>
+                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center text-mi-text2">${dat.studentCount}</td>
+                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-emerald-600">${dat.h}</td>
+                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-orange-500">${dat.s}</td>
+                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-cyan-600">${dat.i}</td>
+                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-rose-600">${dat.a}</td>
+                            <td class="px-3 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-bold text-mi-primary">${formatPercentage(dat.pct)}</td>
                         `;
                         tbody.appendChild(tr);
                     }
@@ -1042,7 +1139,7 @@
                         label: selectedClass === 'all' ? 'Persentase Kehadiran (%)' : 'Jumlah Hari',
                         data: dataPct,
                         backgroundColor: selectedClass === 'all' ? '#124F47' : ['#34D399', '#FB923C', '#38BDF8', '#F87171'],
-                        borderRadius: 6
+                        borderRadius: 4
                     }]
                 },
                 options: {
@@ -1050,8 +1147,8 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: { 
-                        y: { beginAtZero: true, max: selectedClass === 'all' ? 100 : undefined, grid: { color: '#E5ECE9' } },
-                        x: { grid: { display: false } }
+                        y: { beginAtZero: true, max: selectedClass === 'all' ? 100 : undefined, grid: { color: '#E5ECE9' }, ticks: {font: {size: window.innerWidth < 768 ? 9 : 12}} },
+                        x: { grid: { display: false }, ticks: {font: {size: window.innerWidth < 768 ? 9 : 12}} }
                     }
                 }
             });
@@ -1167,7 +1264,7 @@
 
         function handleRefresh() {
             Swal.fire({
-                title: '<span class="text-mi-text1 font-bold">Memuat Data</span>',
+                title: '<span class="text-mi-text1 font-bold text-sm md:text-base">Memuat Data</span>',
                 html: '<div class="loader mt-2"></div>',
                 showConfirmButton: false,
                 allowOutsideClick: false,
@@ -1213,7 +1310,7 @@
                             borderColor: '#ffffff'
                         }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins:{ legend:{position:'right', labels:{boxWidth:12, font:{family:'Inter', size:11}}} } }
+                    options: { responsive: true, maintainAspectRatio: false, plugins:{ legend:{position:'right', labels:{boxWidth:10, font:{family:'Inter', size:10}}} } }
                 });
             }
 
@@ -1222,9 +1319,9 @@
             history.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="px-4 py-2.5 whitespace-nowrap text-[13px] font-medium text-mi-text1">${formatDateIndo(row.date)}</td>
-                    <td class="px-4 py-2.5 whitespace-nowrap">${getStatusColor(row.status)}</td>
-                    <td class="px-4 py-2.5 whitespace-nowrap text-[13px] text-mi-text2 truncate max-w-[150px]" title="${row.notes}">${row.notes}</td>
+                    <td class="px-3 md:px-4 py-2 md:py-2.5 whitespace-nowrap text-[11px] md:text-[13px] font-medium text-mi-text1">${formatDateIndo(row.date)}</td>
+                    <td class="px-3 md:px-4 py-2 md:py-2.5 whitespace-nowrap">${getStatusColor(row.status)}</td>
+                    <td class="px-3 md:px-4 py-2 md:py-2.5 whitespace-nowrap text-[11px] md:text-[13px] text-mi-text2 truncate max-w-[120px] md:max-w-[150px]" title="${row.notes}">${row.notes}</td>
                 `;
                 tbody.appendChild(tr);
             });
