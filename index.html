@@ -116,7 +116,8 @@
         }
     </style>
 </head>
-<body class="antialiased min-h-screen pb-12">
+<!-- pb-24 for mobile footer spacing, md:pb-12 for normal padding on desktop -->
+<body class="antialiased min-h-screen pb-24 md:pb-12 relative">
 
     <!-- HEADER -->
     <div class="bg-mi-surface border-b border-mi-border sticky top-0 z-30 shadow-sm">
@@ -169,9 +170,9 @@
                 <div class="lg:col-span-1">
                     <label class="block text-xs font-semibold text-mi-text2 mb-1.5 uppercase tracking-wider">Periode</label>
                     <select id="filterPeriode" onchange="handlePeriodChange()" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary sm:text-sm transition-all text-mi-text1">
-                        <option value="today">Hari Ini</option>
+                        <option value="today" selected>Hari Ini</option>
                         <option value="this_week">Minggu Ini</option>
-                        <option value="this_month" selected>Bulan Ini</option>
+                        <option value="this_month">Bulan Ini</option>
                         <option value="custom">Custom Tanggal</option>
                     </select>
                 </div>
@@ -287,11 +288,11 @@
             <!-- TABS -->
             <div class="px-6 pt-6 pb-2 border-b border-mi-border">
                 <div class="flex space-x-2 overflow-x-auto hide-scrollbar">
-                    <button onclick="switchTab('rekap')" id="tab-rekap" class="tab-btn active px-5 py-2.5 text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
-                        <i class="fa-solid fa-table-list"></i> Rekap Presensi
-                    </button>
-                    <button onclick="switchTab('riwayat')" id="tab-riwayat" class="tab-btn px-5 py-2.5 text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
+                    <button onclick="switchTab('riwayat')" id="tab-riwayat" class="tab-btn active px-5 py-2.5 text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
                         <i class="fa-regular fa-clock"></i> Riwayat Detail
+                    </button>
+                    <button onclick="switchTab('rekap')" id="tab-rekap" class="tab-btn px-5 py-2.5 text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
+                        <i class="fa-solid fa-table-list"></i> Rekap Presensi
                     </button>
                     <button onclick="switchTab('analisa')" id="tab-analisa" class="tab-btn px-5 py-2.5 text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
                         <i class="fa-solid fa-chart-simple"></i> Analisa Data
@@ -299,38 +300,8 @@
                 </div>
             </div>
 
-            <!-- TAB 1: REKAP -->
-            <div id="content-rekap" class="p-0 block min-h-[400px]">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-mi-border">
-                        <thead class="bg-mi-bg/50">
-                            <tr>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider w-16">No</th>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Nama Siswa</th>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Kelas</th>
-                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Hadir">H</th>
-                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Sakit">S</th>
-                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Izin">I</th>
-                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Alpa">A</th>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider min-w-[200px]">% Kehadiran</th>
-                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-rekap" class="bg-white divide-y divide-mi-border">
-                            <!-- Data injected via JS -->
-                        </tbody>
-                    </table>
-                </div>
-                <div id="empty-rekap" class="hidden py-16 text-center">
-                    <div class="w-16 h-16 bg-mi-bg rounded-full flex items-center justify-center mx-auto mb-4 text-mi-text2 text-2xl">
-                        <i class="fa-solid fa-folder-open"></i>
-                    </div>
-                    <p class="text-mi-text2 font-medium">Tidak ada data rekap yang sesuai dengan filter.</p>
-                </div>
-            </div>
-
-            <!-- TAB 2: RIWAYAT -->
-            <div id="content-riwayat" class="p-0 hidden min-h-[400px] flex-col">
+            <!-- TAB 1: RIWAYAT -->
+            <div id="content-riwayat" class="p-0 flex flex-col min-h-[400px]">
                 <div class="overflow-x-auto flex-grow">
                     <table class="min-w-full divide-y divide-mi-border">
                         <thead class="bg-mi-bg/50">
@@ -357,6 +328,36 @@
                         <i class="fa-solid fa-search-minus"></i>
                     </div>
                     <p class="text-mi-text2 font-medium">Tidak ada riwayat presensi yang sesuai dengan filter.</p>
+                </div>
+            </div>
+
+            <!-- TAB 2: REKAP -->
+            <div id="content-rekap" class="p-0 hidden min-h-[400px]">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-mi-border">
+                        <thead class="bg-mi-bg/50">
+                            <tr>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider w-16">No</th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Nama Siswa</th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Kelas</th>
+                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Hadir">H</th>
+                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Sakit">S</th>
+                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Izin">I</th>
+                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Alpa">A</th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider min-w-[200px]">% Kehadiran</th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-rekap" class="bg-white divide-y divide-mi-border">
+                            <!-- Data injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="empty-rekap" class="hidden py-16 text-center">
+                    <div class="w-16 h-16 bg-mi-bg rounded-full flex items-center justify-center mx-auto mb-4 text-mi-text2 text-2xl">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </div>
+                    <p class="text-mi-text2 font-medium">Tidak ada data rekap yang sesuai dengan filter.</p>
                 </div>
             </div>
 
@@ -558,6 +559,26 @@
         </div>
     </div>
 
+    <!-- MOBILE FOOTER NAV -->
+    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-mi-border shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-40 px-2 py-1.5 flex justify-between items-center pb-[calc(env(safe-area-inset-bottom)+6px)]">
+        <button onclick="switchTab('riwayat')" id="nav-riwayat" class="flex flex-col items-center justify-center w-1/4 text-mi-primary transition-colors">
+            <i class="fa-regular fa-clock text-xl mb-1"></i>
+            <span class="text-[10px] font-medium">Riwayat</span>
+        </button>
+        <button onclick="switchTab('rekap')" id="nav-rekap" class="flex flex-col items-center justify-center w-1/4 text-gray-400 hover:text-mi-primary transition-colors">
+            <i class="fa-solid fa-table-list text-xl mb-1"></i>
+            <span class="text-[10px] font-medium">Rekap</span>
+        </button>
+        <button onclick="switchTab('analisa')" id="nav-analisa" class="flex flex-col items-center justify-center w-1/4 text-gray-400 hover:text-mi-primary transition-colors">
+            <i class="fa-solid fa-chart-simple text-xl mb-1"></i>
+            <span class="text-[10px] font-medium">Analisa</span>
+        </button>
+        <button onclick="handleRefresh()" class="flex flex-col items-center justify-center w-1/4 text-gray-400 hover:text-mi-primary transition-colors">
+            <i class="fa-solid fa-rotate-right text-xl mb-1"></i>
+            <span class="text-[10px] font-medium">Refresh</span>
+        </button>
+    </nav>
+
 
     <script>
         
@@ -581,9 +602,17 @@
         let currentFilteredAttendance = [];
         let currentSummary = {};
         
-        let currentTab = 'rekap';
+        // DEFAULT TAB IS NOW RIWAYAT
+        let currentTab = 'riwayat';
         let charts = { distribusi: null, kelas: null, studentDetail: null };
-        let currentStudentId = null; // Track ID untuk modal
+        let currentStudentId = null; 
+
+        function formatDateYYYYMMDD(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
 
         // Generator Dummy Data
         function initializeDummyData() {
@@ -603,14 +632,15 @@
                 }
             });
 
-            const today = new Date('2026-09-24T00:00:00'); 
+            // Dynamic Date: today as end date
+            const today = new Date(); 
             const thirtyDaysAgo = new Date(today);
             thirtyDaysAgo.setDate(today.getDate() - 29);
 
             for (let d = new Date(thirtyDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
                 if (d.getDay() === 0) continue; // Skip Sunday
                 
-                const dateStr = d.toISOString().split('T')[0];
+                const dateStr = formatDateYYYYMMDD(d);
                 
                 studentsMaster.forEach(student => {
                     let status = 'Hadir';
@@ -645,14 +675,13 @@
             }
         }
 
-        
         function formatDateIndo(dateString) {
             const options = { day: 'numeric', month: 'long', year: 'numeric' };
             return new Date(dateString).toLocaleDateString('id-ID', options);
         }
 
         function formatNumber(num) {
-            return num.toLocaleString('id-ID');
+            return (num || 0).toLocaleString('id-ID');
         }
 
         function calculatePercentage(part, total) {
@@ -681,7 +710,6 @@
             }
         }
 
-        
         function initFilterUI() {
             const classSelect = document.getElementById('filterKelas');
             CLASS_LIST.forEach(c => {
@@ -691,9 +719,7 @@
                 classSelect.appendChild(opt);
             });
 
-            const defaultDate = '2026-09-24';
-            document.getElementById('filterStartDate').value = '2026-09-01'; 
-            document.getElementById('filterEndDate').value = defaultDate;
+            document.getElementById('filterPeriode').value = 'today';
             handlePeriodChange();
         }
 
@@ -705,15 +731,24 @@
             startInput.disabled = true;
             endInput.disabled = true;
             
+            const now = new Date();
+
             if (period === 'today') {
-                startInput.value = '2026-09-24';
-                endInput.value = '2026-09-24';
+                const todayStr = formatDateYYYYMMDD(now);
+                startInput.value = todayStr;
+                endInput.value = todayStr;
             } else if (period === 'this_week') {
-                startInput.value = '2026-09-21';
-                endInput.value = '2026-09-24';
+                const currentDay = now.getDay() || 7; // Make Monday 1
+                const monday = new Date(now);
+                monday.setDate(now.getDate() - currentDay + 1);
+                startInput.value = formatDateYYYYMMDD(monday);
+                endInput.value = formatDateYYYYMMDD(now);
             } else if (period === 'this_month') {
-                startInput.value = '2026-09-01';
-                endInput.value = '2026-09-30';
+                const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+                startInput.value = formatDateYYYYMMDD(firstDay);
+                // Cap this month to current date to avoid querying future dummy dates
+                const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                endInput.value = formatDateYYYYMMDD(now < lastDay ? now : lastDay);
             } else {
                 startInput.disabled = false;
                 endInput.disabled = false;
@@ -721,7 +756,7 @@
         }
 
         function resetFilter() {
-            document.getElementById('filterPeriode').value = 'this_month';
+            document.getElementById('filterPeriode').value = 'today';
             handlePeriodChange();
             document.getElementById('filterKelas').value = 'all';
             document.getElementById('filterStatus').value = 'all';
@@ -761,7 +796,6 @@
             updateUI();
         }
 
-        
         function calculateSummary(filteredStudents) {
             let total = currentFilteredAttendance.length;
             let h = 0, s = 0, i = 0, a = 0;
@@ -824,7 +858,6 @@
             });
         }
 
-        
         function updateUI() {
             renderSummaryCards();
             if (currentTab === 'rekap') renderRecapTable();
@@ -900,7 +933,6 @@
             });
         }
 
-        
         function renderHistoryTable() {
             const tbody = document.getElementById('tbody-riwayat');
             const emptyState = document.getElementById('empty-riwayat');
@@ -1028,7 +1060,6 @@
             generateAnalysisRecommendations();
         }
 
-
         function generateAnalysisConclusion() {
             const startDate = document.getElementById('filterStartDate').value;
             const endDate = document.getElementById('filterEndDate').value;
@@ -1094,13 +1125,30 @@
             });
         }
 
-        
         function switchTab(tabId) {
             currentTab = tabId;
             
+            // Sync Desktop Tabs
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`tab-${tabId}`).classList.add('active');
+            const activeDesktopBtn = document.getElementById(`tab-${tabId}`);
+            if (activeDesktopBtn) activeDesktopBtn.classList.add('active');
             
+            // Sync Mobile Nav Footer
+            const navIds = ['nav-riwayat', 'nav-rekap', 'nav-analisa'];
+            navIds.forEach(nav => {
+                const el = document.getElementById(nav);
+                if (el) {
+                    el.classList.remove('text-mi-primary');
+                    el.classList.add('text-gray-400');
+                }
+            });
+            const activeMobileNav = document.getElementById(`nav-${tabId}`);
+            if (activeMobileNav) {
+                activeMobileNav.classList.remove('text-gray-400');
+                activeMobileNav.classList.add('text-mi-primary');
+            }
+
+            // Sync Contents
             document.getElementById('content-rekap').classList.add('hidden');
             document.getElementById('content-riwayat').classList.add('hidden');
             document.getElementById('content-analisa').classList.add('hidden');
@@ -1110,6 +1158,7 @@
             if(tabId === 'riwayat') selectedContent.classList.add('flex');
             else selectedContent.classList.add('block');
 
+            // Toggle filter visibility
             document.getElementById('filterStatusContainer').style.display = tabId === 'riwayat' ? 'block' : 'none';
             document.getElementById('filterSearchContainer').style.display = (tabId === 'rekap' || tabId === 'riwayat') ? 'block' : 'none';
 
@@ -1183,7 +1232,6 @@
             document.getElementById('modalStudent').classList.remove('hidden');
         }
 
-        
         let currentWAText = "";
 
         function openWhatsAppModal() {
@@ -1324,10 +1372,6 @@
             const url = `https://wa.me/?text=${encodedText}`;
             window.open(url, '_blank');
         }
-
-        // ==========================================
-        // EXPORT ROUTERS & LOGICS
-        // ==========================================
 
         // Router Export Excel
         function exportExcel() {
@@ -1584,11 +1628,13 @@
             doc.save(`Detail_Presensi_${sanitizedName}_${document.getElementById('filterStartDate').value}.pdf`);
         }
 
-
         window.onload = function() {
             initializeDummyData();
             initFilterUI();
             applyFilters();
+            
+            // Tab switch to initialize active state styling on load
+            switchTab('riwayat');
 
             document.getElementById('filterSearch').addEventListener('keyup', (e) => {
                 if(e.key === 'Enter') applyFilters();
