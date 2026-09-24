@@ -1,46 +1,1602 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SPMB</title>
-  <link rel="icon" href="https://mentariilmu.org/logo.png" />
-  <style>
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #eee;
-      overflow: hidden;
-      /* Mencegah scroll ganda */
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Presensi - Mentari Ilmu</title>
+    
+    <!-- Tailwind CSS & Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        mi: {
+                            primary: '#124F47',
+                            dark: '#0D3F39',
+                            soft: '#E8F3F0',
+                            bg: '#F5F7F6',
+                            surface: '#FFFFFF',
+                            text1: '#19312E',
+                            text2: '#6B7C78',
+                            border: '#E5ECE9'
+                        },
+                        status: {
+                            hadir: '#d1fae5', /* emerald-100 */
+                            hadirTxt: '#065f46', /* emerald-800 */
+                            sakit: '#ffedd5', /* orange-100 */
+                            sakitTxt: '#9a3412', /* orange-800 */
+                            izin: '#cffafe', /* cyan-100 */
+                            izinTxt: '#155e75', /* cyan-800 */
+                            alpa: '#ffe4e6', /* rose-100 */
+                            alpaTxt: '#9f1239' /* rose-800 */
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SheetJS (Excel Export) -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    
+    <!-- jsPDF (PDF Export) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    .iframe-container {
-      width: 100%;
-      height: 100dvh;
-      /* Menggunakan dvh agar pas di mobile browser */
-      overflow: hidden;
-    }
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    iframe {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-  </style>
+    <style>
+        body {
+            background-color: theme('colors.mi.bg');
+            color: theme('colors.mi.text1');
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: theme('colors.mi.border'); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: theme('colors.mi.text2'); }
+
+        /* Modern Pill Tabs */
+        .tab-btn {
+            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+            border-radius: 9999px;
+        }
+        .tab-btn:hover {
+            background-color: #F0F7F5;
+            color: theme('colors.mi.primary');
+        }
+        .tab-btn.active {
+            background-color: theme('colors.mi.soft');
+            color: theme('colors.mi.primary');
+            box-shadow: inset 0 0 0 1px #C8E3DD;
+            font-weight: 600;
+        }
+        
+        /* Modal Transitions & Overlay */
+        .modal-overlay {
+            background-color: rgba(25, 49, 46, 0.6);
+            backdrop-filter: blur(4px);
+        }
+        
+        /* Smooth hover for table rows */
+        .table-row-hover { transition: background-color 0.2s ease; }
+        .table-row-hover:hover { background-color: theme('colors.mi.soft'); cursor: pointer; }
+
+        /* Loader */
+        .loader {
+            border: 3px solid #E5ECE9;
+            border-radius: 50%;
+            border-top: 3px solid #124F47;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Card Shadow Styling */
+        .card-shadow {
+            box-shadow: 0 4px 24px -6px rgba(18, 79, 71, 0.08);
+        }
+    </style>
 </head>
+<body class="antialiased min-h-screen pb-12">
 
-<body>
-  <div class="iframe-container">
-    <iframe id="app" src="https://forms.gle/QkhL4SfovVjRC1cC6" scrolling="yes" allowfullscreen="true"
-      webkitallowfullscreen="true" mozallowfullscreen="true"
-      allow="fullscreen; camera; microphone; display-capture; geolocation;">
-    </iframe>
-  </div>
+    <!-- HEADER -->
+    <div class="bg-mi-surface border-b border-mi-border sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <img src="https://mentariilmu.org/logo.png" alt="Logo Mentari Ilmu" class="h-12 w-auto object-contain">
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-bold text-mi-text1 leading-tight">
+                            Rekap & Riwayat Presensi Siswa
+                        </h1>
+                        <p class="text-xs md:text-sm text-mi-text2 mt-1">Pantau kehadiran siswa, analisa presensi, dan bagikan laporan secara otomatis.</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="handleRefresh()" class="px-4 py-2 bg-mi-soft hover:bg-[#DDEFEA] text-mi-primary rounded-xl text-sm font-medium transition-colors border border-[#C8E3DD] shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> Refresh
+                    </button>
+                    <button onclick="exportExcel()" class="px-4 py-2 bg-[#E8F3F0] hover:bg-[#D9EEE8] text-[#18794E] rounded-xl text-sm font-medium transition-colors border border-[#C8E3DD] shadow-sm flex items-center gap-2" title="Export Excel sesuai Tab yang aktif">
+                        <i class="fa-solid fa-file-excel"></i> Export Excel
+                    </button>
+                    <button onclick="exportPDF()" class="px-4 py-2 bg-[#FFF1F2] hover:bg-[#FFE4E6] text-[#BE123C] rounded-xl text-sm font-medium transition-colors border border-[#FFE4E6] shadow-sm flex items-center gap-2" title="Export PDF sesuai Tab yang aktif">
+                        <i class="fa-solid fa-file-pdf"></i> Export PDF
+                    </button>
+                    <button onclick="openWhatsAppModal()" class="px-5 py-2 bg-mi-primary hover:bg-mi-dark text-white rounded-xl text-sm font-medium transition-colors shadow-md flex items-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Bagikan Laporan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        
+        <!-- FILTER DATA -->
+        <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow p-6 mb-8">
+            <div class="flex items-center justify-between mb-5">
+                <h2 class="text-sm font-bold text-mi-text1 tracking-wide uppercase"><i class="fa-solid fa-sliders text-mi-text2 mr-2"></i>Filter Data</h2>
+                <div class="flex gap-3">
+                    <button onclick="resetFilter()" class="text-sm text-[#6B7C78] hover:text-mi-primary hover:bg-[#E9EEEC] bg-[#F5F7F6] border border-[#E5ECE9] font-medium px-4 py-2 rounded-xl transition-colors flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-rotate-left"></i> Reset
+                    </button>
+                    <button onclick="applyFilters()" class="bg-mi-primary hover:bg-mi-dark text-white text-sm font-medium px-5 py-2 rounded-xl transition-colors shadow-sm">
+                        Terapkan Filter
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
+                <div class="lg:col-span-1">
+                    <label class="block text-xs font-semibold text-mi-text2 mb-1.5 uppercase tracking-wider">Periode</label>
+                    <select id="filterPeriode" onchange="handlePeriodChange()" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary sm:text-sm transition-all text-mi-text1">
+                        <option value="today">Hari Ini</option>
+                        <option value="this_week">Minggu Ini</option>
+                        <option value="this_month" selected>Bulan Ini</option>
+                        <option value="custom">Custom Tanggal</option>
+                    </select>
+                </div>
+
+                <div class="lg:col-span-2 grid grid-cols-2 gap-3" id="customDateContainer">
+                    <div>
+                        <label class="block text-xs font-semibold text-mi-text2 mb-1.5 uppercase tracking-wider">Mulai</label>
+                        <input type="date" id="filterStartDate" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary sm:text-sm disabled:opacity-50 transition-all text-mi-text1">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-mi-text2 mb-1.5 uppercase tracking-wider">Selesai</label>
+                        <input type="date" id="filterEndDate" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary sm:text-sm disabled:opacity-50 transition-all text-mi-text1">
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <label class="block text-xs font-semibold text-mi-text2 mb-1.5 uppercase tracking-wider">Kelas</label>
+                    <select id="filterKelas" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary sm:text-sm transition-all text-mi-text1">
+                        <option value="all">Semua Kelas</option>
+                        <!-- Options generated in JS -->
+                    </select>
+                </div>
+
+                <div class="lg:col-span-1" id="filterStatusContainer" style="display: none;">
+                    <label class="block text-xs font-semibold text-mi-text2 mb-1.5 uppercase tracking-wider">Status</label>
+                    <select id="filterStatus" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary sm:text-sm transition-all text-mi-text1">
+                        <option value="all">Semua Status</option>
+                        <option value="Hadir">Hadir</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <div class="lg:col-span-1" id="filterSearchContainer">
+                    <label class="block text-xs font-semibold text-mi-text2 mb-1.5 uppercase tracking-wider">Cari Nama</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-search text-mi-text2"></i>
+                        </div>
+                        <input type="text" id="filterSearch" placeholder="Ketik nama..." class="block w-full pl-9 border-mi-border border rounded-xl bg-mi-bg focus:bg-white py-2.5 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary sm:text-sm transition-all text-mi-text1">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY CARDS -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-5 mb-8">
+            <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow p-5 flex flex-col justify-between">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-mi-text2 uppercase tracking-wider">Total Siswa</span>
+                </div>
+                <div class="text-3xl font-bold text-mi-text1" id="cardTotalSiswa">-</div>
+            </div>
+            
+            <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow p-5 flex flex-col justify-between">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-mi-text2 uppercase tracking-wider">Hadir</span>
+                </div>
+                <div class="text-3xl font-bold text-mi-text1" id="cardHadir">-</div>
+            </div>
+
+            <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow p-5 flex flex-col justify-between">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-thermometer-half"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-mi-text2 uppercase tracking-wider">Sakit</span>
+                </div>
+                <div class="text-3xl font-bold text-mi-text1" id="cardSakit">-</div>
+            </div>
+
+            <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow p-5 flex flex-col justify-between">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-envelope-open-text"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-mi-text2 uppercase tracking-wider">Izin</span>
+                </div>
+                <div class="text-3xl font-bold text-mi-text1" id="cardIzin">-</div>
+            </div>
+
+            <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow p-5 flex flex-col justify-between">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-xmark"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-mi-text2 uppercase tracking-wider">Alpa</span>
+                </div>
+                <div class="text-3xl font-bold text-mi-text1" id="cardAlpa">-</div>
+            </div>
+
+            <div class="bg-mi-primary rounded-2xl card-shadow p-5 flex flex-col justify-between relative overflow-hidden">
+                <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+                <div class="flex items-center gap-3 mb-4 relative z-10">
+                    <div class="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center text-lg backdrop-blur-sm">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-mi-soft uppercase tracking-wider">Kehadiran</span>
+                </div>
+                <div class="text-3xl font-bold text-white relative z-10" id="cardPersentase">-</div>
+            </div>
+        </div>
+
+        <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow overflow-hidden mb-8">
+            
+            <!-- TABS -->
+            <div class="px-6 pt-6 pb-2 border-b border-mi-border">
+                <div class="flex space-x-2 overflow-x-auto hide-scrollbar">
+                    <button onclick="switchTab('rekap')" id="tab-rekap" class="tab-btn active px-5 py-2.5 text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
+                        <i class="fa-solid fa-table-list"></i> Rekap Presensi
+                    </button>
+                    <button onclick="switchTab('riwayat')" id="tab-riwayat" class="tab-btn px-5 py-2.5 text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
+                        <i class="fa-regular fa-clock"></i> Riwayat Detail
+                    </button>
+                    <button onclick="switchTab('analisa')" id="tab-analisa" class="tab-btn px-5 py-2.5 text-sm font-medium text-mi-text2 whitespace-nowrap flex items-center gap-2">
+                        <i class="fa-solid fa-chart-simple"></i> Analisa Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 1: REKAP -->
+            <div id="content-rekap" class="p-0 block min-h-[400px]">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-mi-border">
+                        <thead class="bg-mi-bg/50">
+                            <tr>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider w-16">No</th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Nama Siswa</th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Kelas</th>
+                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Hadir">H</th>
+                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Sakit">S</th>
+                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Izin">I</th>
+                                <th scope="col" class="px-4 py-4 text-center text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Alpa">A</th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider min-w-[200px]">% Kehadiran</th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-rekap" class="bg-white divide-y divide-mi-border">
+                            <!-- Data injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="empty-rekap" class="hidden py-16 text-center">
+                    <div class="w-16 h-16 bg-mi-bg rounded-full flex items-center justify-center mx-auto mb-4 text-mi-text2 text-2xl">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </div>
+                    <p class="text-mi-text2 font-medium">Tidak ada data rekap yang sesuai dengan filter.</p>
+                </div>
+            </div>
+
+            <!-- TAB 2: RIWAYAT -->
+            <div id="content-riwayat" class="p-0 hidden min-h-[400px] flex-col">
+                <div class="overflow-x-auto flex-grow">
+                    <table class="min-w-full divide-y divide-mi-border">
+                        <thead class="bg-mi-bg/50">
+                            <tr>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider w-16">No</th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider w-40">Tanggal</th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Nama Siswa</th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Kelas</th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-mi-text2 uppercase tracking-wider">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-riwayat" class="bg-white divide-y divide-mi-border">
+                            <!-- Data injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="bg-mi-bg/30 px-6 py-4 border-t border-mi-border flex items-center justify-between mt-auto">
+                    <div class="text-sm text-mi-text2 font-medium" id="riwayat-info">Menampilkan 1-50 data terbaru...</div>
+                    <div class="text-xs text-mi-text2/70">*Dibatasi max 500 baris. Gunakan export untuk data lengkap.</div>
+                </div>
+                <div id="empty-riwayat" class="hidden py-16 text-center w-full">
+                    <div class="w-16 h-16 bg-mi-bg rounded-full flex items-center justify-center mx-auto mb-4 text-mi-text2 text-2xl">
+                        <i class="fa-solid fa-search-minus"></i>
+                    </div>
+                    <p class="text-mi-text2 font-medium">Tidak ada riwayat presensi yang sesuai dengan filter.</p>
+                </div>
+            </div>
+
+            <!-- TAB 3: ANALISA -->
+            <div id="content-analisa" class="p-6 hidden min-h-[400px]">
+                
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Distribusi -->
+                    <div class="bg-mi-surface border border-mi-border rounded-2xl p-6 shadow-sm">
+                        <h3 class="text-sm font-bold text-mi-text1 uppercase tracking-wide mb-6 text-center">Distribusi Status Presensi</h3>
+                        <div class="relative h-64 w-full flex justify-center">
+                            <canvas id="chartDistribusi"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Bar Chart / Tabel Kelas -->
+                    <div class="lg:col-span-2 bg-mi-surface border border-mi-border rounded-2xl p-6 shadow-sm flex flex-col">
+                        <h3 class="text-sm font-bold text-mi-text1 uppercase tracking-wide mb-6" id="titleAnalisaKelas">Perbandingan Kehadiran Antar Kelas</h3>
+                        
+                        <div class="relative h-64 w-full mb-6" id="containerChartKelas">
+                            <canvas id="chartKelas"></canvas>
+                        </div>
+
+                        <div class="overflow-x-auto flex-grow" id="containerTableKelas">
+                            <table class="min-w-full divide-y divide-mi-border text-sm border border-mi-border rounded-lg overflow-hidden">
+                                <thead class="bg-mi-bg">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left font-semibold text-mi-text2">Kelas</th>
+                                        <th class="px-4 py-3 text-center font-semibold text-mi-text2">Siswa</th>
+                                        <th class="px-4 py-3 text-center font-semibold text-emerald-600">Hadir</th>
+                                        <th class="px-4 py-3 text-center font-semibold text-orange-500">Sakit</th>
+                                        <th class="px-4 py-3 text-center font-semibold text-cyan-600">Izin</th>
+                                        <th class="px-4 py-3 text-center font-semibold text-rose-600">Alpa</th>
+                                        <th class="px-4 py-3 text-center font-bold text-mi-primary">%</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-analisa-kelas" class="divide-y divide-mi-border bg-white">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-mi-surface border border-mi-border rounded-2xl p-6 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                        <h3 class="text-sm font-bold text-mi-text1 uppercase tracking-wide mb-4 flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center"><i class="fa-solid fa-list-check"></i></div>
+                            Kesimpulan
+                        </h3>
+                        <p class="text-mi-text2 text-sm leading-relaxed" id="analisaKesimpulan">
+                            <!-- Generated by JS -->
+                        </p>
+                    </div>
+
+                    <div class="bg-mi-surface border border-mi-border rounded-2xl p-6 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>
+                        <h3 class="text-sm font-bold text-mi-text1 uppercase tracking-wide mb-4 flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-500 flex items-center justify-center"><i class="fa-regular fa-lightbulb"></i></div>
+                            Rekomendasi
+                        </h3>
+                        <ul class="text-mi-text2 text-sm leading-relaxed list-none space-y-2" id="analisaRekomendasi">
+                            <!-- Generated by JS -->
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Detail Siswa -->
+    <div id="modalStudent" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity modal-overlay" aria-hidden="true" onclick="closeModal('modalStudent')"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            
+            <div class="inline-block align-bottom bg-mi-surface rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl w-full border border-mi-border">
+                <div class="px-6 pt-6 pb-6">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-mi-soft text-mi-primary rounded-2xl flex items-center justify-center text-2xl font-bold">
+                                <i class="fa-regular fa-user"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-mi-text1" id="detailName">Nama Siswa</h3>
+                                <p class="text-sm text-mi-text2 mt-1 font-medium"><i class="fa-solid fa-graduation-cap mr-1 text-mi-primary"></i> <span id="detailClass">Kelas</span></p>
+                            </div>
+                        </div>
+                        <button onclick="closeModal('modalStudent')" class="w-8 h-8 rounded-full bg-mi-bg hover:bg-gray-200 text-mi-text2 flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+                    </div>
+
+                    <!-- Ringkasan Detail -->
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8 bg-mi-bg p-5 rounded-2xl border border-mi-border">
+                        <div class="text-center">
+                            <div class="text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Hadir</div>
+                            <div class="text-2xl font-bold text-emerald-600" id="detH">-</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Sakit</div>
+                            <div class="text-2xl font-bold text-orange-500" id="detS">-</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Izin</div>
+                            <div class="text-2xl font-bold text-cyan-600" id="detI">-</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Alpa</div>
+                            <div class="text-2xl font-bold text-rose-600" id="detA">-</div>
+                        </div>
+                        <div class="text-center sm:border-l border-mi-border flex flex-col justify-center">
+                            <div class="text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Kehadiran</div>
+                            <div class="text-2xl font-bold text-mi-primary" id="detPct">-</div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Kecil & Tabel History -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="md:col-span-1">
+                            <h4 class="text-xs font-bold text-mi-text1 uppercase tracking-wide mb-4 text-center">Statistik</h4>
+                            <div class="relative h-44 flex justify-center">
+                                <canvas id="chartStudentDetail"></canvas>
+                            </div>
+                            <div class="mt-4 text-center" id="detStatusBadgeContainer">
+                                <span id="detStatusBadge"></span>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <h4 class="text-xs font-bold text-mi-text1 uppercase tracking-wide mb-4">Riwayat pada periode terpilih</h4>
+                            <div class="max-h-56 overflow-y-auto border border-mi-border rounded-xl">
+                                <table class="min-w-full divide-y divide-mi-border text-sm">
+                                    <thead class="bg-mi-bg sticky top-0 z-10">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left font-semibold text-mi-text2">Tanggal</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-mi-text2">Status</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-mi-text2">Keterangan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody-detail-riwayat" class="divide-y divide-mi-border bg-white">
+                                        <!-- Injected via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Detail Footer (Export & Close) -->
+                <div class="bg-mi-bg/50 px-6 py-4 flex flex-col sm:flex-row-reverse gap-3 border-t border-mi-border">
+                    <button type="button" onclick="closeModal('modalStudent')" class="w-full inline-flex justify-center items-center rounded-xl border border-mi-border shadow-sm px-5 py-2.5 bg-white text-sm font-medium text-mi-text1 hover:bg-gray-50 transition-colors sm:w-auto">
+                        Tutup
+                    </button>
+                    <button type="button" onclick="exportStudentDetailExcel()" class="w-full inline-flex justify-center items-center rounded-xl px-5 py-2.5 bg-[#E8F3F0] hover:bg-[#D9EEE8] border border-[#C8E3DD] shadow-sm text-sm font-medium text-[#18794E] transition-colors sm:w-auto">
+                        <i class="fa-solid fa-file-excel mr-2"></i> Excel XLSX
+                    </button>
+                    <button type="button" onclick="exportStudentDetailPDF()" class="w-full inline-flex justify-center items-center rounded-xl px-5 py-2.5 bg-[#FFF1F2] hover:bg-[#FFE4E6] border border-[#FFE4E6] shadow-sm text-sm font-medium text-[#BE123C] transition-colors sm:w-auto">
+                        <i class="fa-solid fa-file-pdf mr-2"></i> PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Laporan WhatsApp -->
+    <div id="modalWhatsApp" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity modal-overlay" aria-hidden="true" onclick="closeModal('modalWhatsApp')"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            
+            <div class="inline-block align-bottom bg-mi-surface rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md w-full border border-mi-border">
+                <div class="px-6 pt-6 pb-4">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="text-lg font-bold text-mi-text1 flex items-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-green-500 text-2xl"></i> Preview WhatsApp
+                        </h3>
+                        <button onclick="closeModal('modalWhatsApp')" class="w-8 h-8 rounded-full bg-mi-bg hover:bg-gray-200 text-mi-text2 flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="bg-[#efeae2] p-4 rounded-xl border border-mi-border shadow-inner h-[26rem] overflow-y-auto">
+                        <div class="bg-white p-4 rounded-xl shadow-sm text-[13px] text-gray-800 whitespace-pre-wrap font-sans" id="waPreviewText" style="line-height: 1.6;">
+                            <!-- WA Text generated by JS -->
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-mi-text2 mt-3 font-medium">*Pesan dihasilkan otomatis berdasarkan filter periode dan kelas.</p>
+                </div>
+                <div class="bg-mi-bg/50 px-6 py-4 flex flex-col sm:flex-row-reverse gap-3 border-t border-mi-border">
+                    <button type="button" onclick="shareToWhatsApp()" class="w-full inline-flex justify-center items-center rounded-xl px-5 py-2.5 bg-green-600 hover:bg-green-700 text-sm font-medium text-white transition-colors sm:w-auto shadow-sm">
+                        <i class="fa-brands fa-whatsapp mr-2"></i> Share WhatsApp
+                    </button>
+                    <button type="button" onclick="copyWhatsAppReport()" class="w-full inline-flex justify-center items-center rounded-xl border border-mi-border shadow-sm px-5 py-2.5 bg-white text-sm font-medium text-mi-text1 hover:bg-gray-50 transition-colors sm:w-auto">
+                        <i class="fa-regular fa-copy mr-2"></i> Salin Pesan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        
+        const CLASS_LIST = [
+            "7 Ar Rumaysha", "7 Atikah Binti Zaid", "7 Jafar Bin Abi Thalib", "7 Zaid Bin Tsabit",
+            "8 Al Biruni", "8 Jabir", "8 Asma", "8 Maryam",
+            "9 Al Batani", "9 Ibnu Khaldun", "9 Ummu Aiman", "9 Ummu Salamah"
+        ];
+
+        // Dummy Names Components
+        const FIRST_NAMES = ["Ahmad", "Budi", "Siti", "Dhiya", "Rivan", "Akbar", "Aisyah", "Fatimah", "Umar", "Ali", "Hasan", "Husain", "Nisa", "Zahra", "Muhammad", "Rizky", "Putri", "Aditya", "Dimas", "Ayu", "Dewi", "Fajar", "Gilang", "Indra", "Joko"];
+        const LAST_NAMES = ["Pratama", "Saputra", "Wijaya", "Kurniawan", "Sari", "Lestari", "Nugroho", "Santoso", "Hidayat", "Wahyudi", "Ramadhan", "Fitriani", "Agustin", "Baskoro", "Syahputra"];
+        const REASONS = {
+            'Sakit': ["Demam", "Flu dan Batuk", "Tipes", "Sakit Perut", "Tidak enak badan"],
+            'Izin': ["Keperluan keluarga", "Menjenguk nenek", "Acara pernikahan", "Bikin KK/KTP", "Lomba di luar sekolah"]
+        };
+
+        let studentsMaster = []; 
+        let attendanceMaster = []; 
+        
+        let currentFilteredAttendance = [];
+        let currentSummary = {};
+        
+        let currentTab = 'rekap';
+        let charts = { distribusi: null, kelas: null, studentDetail: null };
+        let currentStudentId = null; // Track ID untuk modal
+
+        // Generator Dummy Data
+        function initializeDummyData() {
+            let studentIdCounter = 1;
+            CLASS_LIST.forEach(className => {
+                const numStudents = Math.floor(Math.random() * 5) + 22; // 22 - 26 students
+                for(let i=0; i<numStudents; i++) {
+                    const fName = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)];
+                    const lName = LAST_NAMES[Math.floor(Math.random() * LAST_NAMES.length)];
+                    studentsMaster.push({
+                        id: `S${studentIdCounter.toString().padStart(4, '0')}`,
+                        name: `${fName} ${lName}`,
+                        className: className,
+                        trait: Math.random() < 0.05 ? 'often_absent' : (Math.random() < 0.1 ? 'often_sick' : 'normal')
+                    });
+                    studentIdCounter++;
+                }
+            });
+
+            const today = new Date('2026-09-24T00:00:00'); 
+            const thirtyDaysAgo = new Date(today);
+            thirtyDaysAgo.setDate(today.getDate() - 29);
+
+            for (let d = new Date(thirtyDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
+                if (d.getDay() === 0) continue; // Skip Sunday
+                
+                const dateStr = d.toISOString().split('T')[0];
+                
+                studentsMaster.forEach(student => {
+                    let status = 'Hadir';
+                    let notes = '-';
+                    
+                    let rand = Math.random();
+                    if (student.trait === 'often_absent') {
+                        if(rand < 0.15) status = 'Alpa';
+                        else if(rand < 0.25) status = 'Izin';
+                        else if(rand < 0.30) status = 'Sakit';
+                    } else if (student.trait === 'often_sick') {
+                        if(rand < 0.20) status = 'Sakit';
+                        else if(rand < 0.25) status = 'Izin';
+                    } else {
+                        if(rand < 0.02) status = 'Alpa';
+                        else if(rand < 0.05) status = 'Izin';
+                        else if(rand < 0.08) status = 'Sakit';
+                    }
+
+                    if (status === 'Sakit') notes = REASONS['Sakit'][Math.floor(Math.random() * REASONS['Sakit'].length)];
+                    else if (status === 'Izin') notes = REASONS['Izin'][Math.floor(Math.random() * REASONS['Izin'].length)];
+                    else if (status === 'Alpa') notes = 'Tanpa Keterangan';
+
+                    attendanceMaster.push({
+                        id: `A${Math.random().toString(36).substr(2, 9)}`,
+                        studentId: student.id,
+                        date: dateStr,
+                        status: status,
+                        notes: notes
+                    });
+                });
+            }
+        }
+
+        
+        function formatDateIndo(dateString) {
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        function formatNumber(num) {
+            return num.toLocaleString('id-ID');
+        }
+
+        function calculatePercentage(part, total) {
+            if (total === 0) return 0;
+            return ((part / total) * 100);
+        }
+        
+        function formatPercentage(value) {
+            return Number(value || 0).toFixed(2).replace('.', ',') + '%';
+        }
+
+        function getStatusBadgeHtml(percentage) {
+            if (percentage >= 95) return `<span class="px-3 py-1 inline-flex text-[11px] leading-4 font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Sangat Baik</span>`;
+            if (percentage >= 90) return `<span class="px-3 py-1 inline-flex text-[11px] leading-4 font-bold rounded-full bg-blue-50 text-blue-700 border border-blue-200">Baik</span>`;
+            if (percentage >= 80) return `<span class="px-3 py-1 inline-flex text-[11px] leading-4 font-bold rounded-full bg-orange-50 text-orange-700 border border-orange-200">Perlu Perhatian</span>`;
+            return `<span class="px-3 py-1 inline-flex text-[11px] leading-4 font-bold rounded-full bg-rose-50 text-rose-700 border border-rose-200">Perlu Pembinaan</span>`;
+        }
+
+        function getStatusColor(status) {
+            switch(status) {
+                case 'Hadir': return `<span class="px-2.5 py-1 inline-flex text-[11px] font-bold rounded-md bg-[#d1fae5] text-[#065f46]"><i class="fa-solid fa-check mr-1.5 mt-0.5"></i> Hadir</span>`;
+                case 'Sakit': return `<span class="px-2.5 py-1 inline-flex text-[11px] font-bold rounded-md bg-[#ffedd5] text-[#9a3412]"><i class="fa-solid fa-thermometer-half mr-1.5 mt-0.5"></i> Sakit</span>`;
+                case 'Izin':  return `<span class="px-2.5 py-1 inline-flex text-[11px] font-bold rounded-md bg-[#cffafe] text-[#155e75]"><i class="fa-solid fa-envelope-open-text mr-1.5 mt-0.5"></i> Izin</span>`;
+                case 'Alpa':  return `<span class="px-2.5 py-1 inline-flex text-[11px] font-bold rounded-md bg-[#ffe4e6] text-[#9f1239]"><i class="fa-solid fa-xmark mr-1.5 mt-0.5"></i> Alpa</span>`;
+                default: return status;
+            }
+        }
+
+        
+        function initFilterUI() {
+            const classSelect = document.getElementById('filterKelas');
+            CLASS_LIST.forEach(c => {
+                let opt = document.createElement('option');
+                opt.value = c;
+                opt.innerHTML = c;
+                classSelect.appendChild(opt);
+            });
+
+            const defaultDate = '2026-09-24';
+            document.getElementById('filterStartDate').value = '2026-09-01'; 
+            document.getElementById('filterEndDate').value = defaultDate;
+            handlePeriodChange();
+        }
+
+        function handlePeriodChange() {
+            const period = document.getElementById('filterPeriode').value;
+            const startInput = document.getElementById('filterStartDate');
+            const endInput = document.getElementById('filterEndDate');
+            
+            startInput.disabled = true;
+            endInput.disabled = true;
+            
+            if (period === 'today') {
+                startInput.value = '2026-09-24';
+                endInput.value = '2026-09-24';
+            } else if (period === 'this_week') {
+                startInput.value = '2026-09-21';
+                endInput.value = '2026-09-24';
+            } else if (period === 'this_month') {
+                startInput.value = '2026-09-01';
+                endInput.value = '2026-09-30';
+            } else {
+                startInput.disabled = false;
+                endInput.disabled = false;
+            }
+        }
+
+        function resetFilter() {
+            document.getElementById('filterPeriode').value = 'this_month';
+            handlePeriodChange();
+            document.getElementById('filterKelas').value = 'all';
+            document.getElementById('filterStatus').value = 'all';
+            document.getElementById('filterSearch').value = '';
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const startDate = document.getElementById('filterStartDate').value;
+            const endDate = document.getElementById('filterEndDate').value;
+            const selectedClass = document.getElementById('filterKelas').value;
+            const selectedStatus = document.getElementById('filterStatus').value;
+            const searchQuery = document.getElementById('filterSearch').value.toLowerCase();
+
+            let filteredStudents = studentsMaster;
+            if (selectedClass !== 'all') {
+                filteredStudents = filteredStudents.filter(s => s.className === selectedClass);
+            }
+            if (searchQuery) {
+                filteredStudents = filteredStudents.filter(s => s.name.toLowerCase().includes(searchQuery));
+            }
+            const studentIds = new Set(filteredStudents.map(s => s.id));
+
+            currentFilteredAttendance = attendanceMaster.filter(record => {
+                if (record.date < startDate || record.date > endDate) return false;
+                if (!studentIds.has(record.studentId)) return false;
+                if (currentTab === 'riwayat' && selectedStatus !== 'all' && record.status !== selectedStatus) return false;
+                return true;
+            });
+
+            currentFilteredAttendance = currentFilteredAttendance.map(record => {
+                const s = studentsMaster.find(x => x.id === record.studentId);
+                return { ...record, studentName: s.name, className: s.className };
+            });
+
+            calculateSummary(filteredStudents);
+            updateUI();
+        }
+
+        
+        function calculateSummary(filteredStudents) {
+            let total = currentFilteredAttendance.length;
+            let h = 0, s = 0, i = 0, a = 0;
+
+            currentFilteredAttendance.forEach(rec => {
+                if (rec.status === 'Hadir') h++;
+                else if (rec.status === 'Sakit') s++;
+                else if (rec.status === 'Izin') i++;
+                else if (rec.status === 'Alpa') a++;
+            });
+
+            currentSummary = {
+                totalStudents: filteredStudents.length,
+                totalRecords: total,
+                h: h, s: s, i: i, a: a,
+                pct: calculatePercentage(h, total)
+            };
+            
+            currentSummary.recapData = [];
+            filteredStudents.forEach(student => {
+                const records = currentFilteredAttendance.filter(r => r.studentId === student.id);
+                if (records.length > 0) { 
+                    let sh=0, ss=0, si=0, sa=0;
+                    records.forEach(r => {
+                        if (r.status === 'Hadir') sh++;
+                        else if (r.status === 'Sakit') ss++;
+                        else if (r.status === 'Izin') si++;
+                        else if (r.status === 'Alpa') sa++;
+                    });
+                    currentSummary.recapData.push({
+                        id: student.id,
+                        name: student.name,
+                        className: student.className,
+                        h: sh, s: ss, i: si, a: sa,
+                        total: records.length,
+                        pct: calculatePercentage(sh, records.length)
+                    });
+                }
+            });
+            
+            currentSummary.classRecap = {};
+            CLASS_LIST.forEach(c => {
+                const classRecs = currentFilteredAttendance.filter(r => r.className === c);
+                const classStudents = new Set(classRecs.map(r => r.studentId)).size;
+                if(classRecs.length > 0) {
+                    let ch=0, cs=0, ci=0, ca=0;
+                    classRecs.forEach(r => {
+                        if (r.status === 'Hadir') ch++;
+                        else if (r.status === 'Sakit') cs++;
+                        else if (r.status === 'Izin') ci++;
+                        else if (r.status === 'Alpa') ca++;
+                    });
+                    currentSummary.classRecap[c] = {
+                        studentCount: classStudents,
+                        h: ch, s: cs, i: ci, a: ca,
+                        total: classRecs.length,
+                        pct: calculatePercentage(ch, classRecs.length)
+                    };
+                }
+            });
+        }
+
+        
+        function updateUI() {
+            renderSummaryCards();
+            if (currentTab === 'rekap') renderRecapTable();
+            else if (currentTab === 'riwayat') renderHistoryTable();
+            else if (currentTab === 'analisa') renderAnalysis();
+        }
+
+        function renderSummaryCards() {
+            document.getElementById('cardTotalSiswa').innerText = formatNumber(currentSummary.totalStudents);
+            document.getElementById('cardHadir').innerText = formatNumber(currentSummary.h);
+            document.getElementById('cardSakit').innerText = formatNumber(currentSummary.s);
+            document.getElementById('cardIzin').innerText = formatNumber(currentSummary.i);
+            document.getElementById('cardAlpa').innerText = formatNumber(currentSummary.a);
+            document.getElementById('cardPersentase').innerText = formatPercentage(currentSummary.pct);
+        }
+
+        function renderRecapTable() {
+            const tbody = document.getElementById('tbody-rekap');
+            const emptyState = document.getElementById('empty-rekap');
+            tbody.innerHTML = '';
+
+            if (currentSummary.recapData.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            currentSummary.recapData.sort((a,b) => {
+                if(a.className < b.className) return -1;
+                if(a.className > b.className) return 1;
+                return a.name.localeCompare(b.name);
+            });
+
+            currentSummary.recapData.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'table-row-hover';
+                tr.onclick = () => showStudentDetail(row.id);
+                
+                // Progress bar logic modern
+                const barWidth = Math.min(row.pct, 100);
+                const barColor = row.pct >= 95 ? 'bg-mi-primary' : (row.pct >= 90 ? 'bg-emerald-500' : (row.pct >= 80 ? 'bg-amber-500' : 'bg-rose-500'));
+                const pctFormatted = formatPercentage(row.pct);
+                
+                const pctHtml = `
+                    <div class="flex flex-col gap-1.5 w-full max-w-[140px]">
+                        <span class="font-bold text-mi-text1 text-[15px]">${pctFormatted}</span>
+                        <div class="w-full h-1.5 bg-mi-border rounded-full overflow-hidden">
+                            <div class="h-full ${barColor} transition-all duration-500 ease-out" style="width: ${barWidth}%"></div>
+                        </div>
+                    </div>
+                `;
+
+                // Avatar initials
+                const initials = row.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-mi-text2">${index + 1}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-mi-soft text-mi-primary flex items-center justify-center text-xs font-bold">${initials}</div>
+                            <span class="text-sm font-bold text-mi-text1">${row.name}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-mi-text2 font-medium">${row.className}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-center font-semibold text-mi-text1">${row.h}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-center font-semibold text-mi-text1">${row.s}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-center font-semibold text-mi-text1">${row.i}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-center font-semibold text-mi-text1">${row.a}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${pctHtml}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${getStatusBadgeHtml(row.pct)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        
+        function renderHistoryTable() {
+            const tbody = document.getElementById('tbody-riwayat');
+            const emptyState = document.getElementById('empty-riwayat');
+            tbody.innerHTML = '';
+
+            if (currentFilteredAttendance.length === 0) {
+                emptyState.classList.remove('hidden');
+                document.getElementById('riwayat-info').innerText = '0 data';
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            let displayData = [...currentFilteredAttendance].sort((a,b) => new Date(b.date) - new Date(a.date));
+            const limit = 500;
+            const shownData = displayData.slice(0, limit);
+            
+            document.getElementById('riwayat-info').innerText = `Menampilkan ${shownData.length} data terbaru dari total ${formatNumber(displayData.length)} baris.`;
+
+            shownData.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-mi-soft/50 transition-colors';
+                tr.innerHTML = `
+                    <td class="px-6 py-3 whitespace-nowrap text-sm text-mi-text2">${index + 1}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-mi-text1">${formatDateIndo(row.date)}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm font-bold text-mi-text1">${row.studentName}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm text-mi-text2 font-medium">${row.className}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm">${getStatusColor(row.status)}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm text-mi-text2">${row.notes}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderAnalysis() {
+            // Chart Distribusi
+            const ctxPie = document.getElementById('chartDistribusi').getContext('2d');
+            if (charts.distribusi) charts.distribusi.destroy();
+            
+            charts.distribusi = new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Hadir', 'Sakit', 'Izin', 'Alpa'],
+                    datasets: [{
+                        data: [currentSummary.h, currentSummary.s, currentSummary.i, currentSummary.a],
+                        backgroundColor: ['#34D399', '#FB923C', '#38BDF8', '#F87171'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { font: { family: 'Inter' } } } },
+                    cutout: '75%'
+                }
+            });
+
+            // Analisis Kelas
+            const selectedClass = document.getElementById('filterKelas').value;
+            const containerTable = document.getElementById('containerTableKelas');
+            const titleKelas = document.getElementById('titleAnalisaKelas');
+            
+            let labels = [];
+            let dataPct = [];
+
+            if (selectedClass === 'all') {
+                titleKelas.innerText = 'Perbandingan Kehadiran Antar Kelas';
+                containerTable.style.display = 'block';
+                const tbody = document.getElementById('tbody-analisa-kelas');
+                tbody.innerHTML = '';
+                
+                CLASS_LIST.forEach(c => {
+                    if(currentSummary.classRecap[c]) {
+                        const dat = currentSummary.classRecap[c];
+                        labels.push(c);
+                        dataPct.push(dat.pct);
+                        
+                        const tr = document.createElement('tr');
+                        tr.className = 'hover:bg-mi-soft/30 transition-colors';
+                        tr.innerHTML = `
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-bold text-mi-text1">${c}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-center text-mi-text2">${dat.studentCount}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-center font-semibold text-emerald-600">${dat.h}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-center font-semibold text-orange-500">${dat.s}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-center font-semibold text-cyan-600">${dat.i}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-center font-semibold text-rose-600">${dat.a}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-center font-bold text-mi-primary">${formatPercentage(dat.pct)}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    }
+                });
+            } else {
+                titleKelas.innerText = `Tren Kehadiran Kelas ${selectedClass}`;
+                containerTable.style.display = 'none';
+                labels = ['Hadir', 'Sakit', 'Izin', 'Alpa'];
+                dataPct = [currentSummary.h, currentSummary.s, currentSummary.i, currentSummary.a];
+            }
+
+            const ctxBar = document.getElementById('chartKelas').getContext('2d');
+            if (charts.kelas) charts.kelas.destroy();
+            
+            charts.kelas = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: selectedClass === 'all' ? 'Persentase Kehadiran (%)' : 'Jumlah Hari',
+                        data: dataPct,
+                        backgroundColor: selectedClass === 'all' ? '#124F47' : ['#34D399', '#FB923C', '#38BDF8', '#F87171'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { beginAtZero: true, max: selectedClass === 'all' ? 100 : undefined, grid: { color: '#E5ECE9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            generateAnalysisConclusion();
+            generateAnalysisRecommendations();
+        }
+
+
+        function generateAnalysisConclusion() {
+            const startDate = document.getElementById('filterStartDate').value;
+            const endDate = document.getElementById('filterEndDate').value;
+            const selectedClass = document.getElementById('filterKelas').value;
+            const targetEl = document.getElementById('analisaKesimpulan');
+
+            if (currentSummary.totalRecords === 0) {
+                targetEl.innerHTML = "Tidak ada data presensi yang sesuai dengan filter yang dipilih.";
+                return;
+            }
+
+            let periodText = "";
+            if (startDate === endDate) periodText = `tanggal <strong>${formatDateIndo(startDate)}</strong>`;
+            else periodText = `periode <strong>${formatDateIndo(startDate)} s/d ${formatDateIndo(endDate)}</strong>`;
+
+            let classText = selectedClass === 'all' ? "seluruh kelas" : `kelas <strong>${selectedClass}</strong>`;
+
+            const text = `Berdasarkan data presensi ${classText} pada ${periodText}, tercatat sebanyak <strong>${currentSummary.totalStudents} siswa</strong> dengan persentase kehadiran mencapai <strong>${formatPercentage(currentSummary.pct)}</strong>.`;
+            
+            targetEl.innerHTML = text;
+        }
+
+        function generateAnalysisRecommendations() {
+            const targetEl = document.getElementById('analisaRekomendasi');
+            targetEl.innerHTML = '';
+
+            if (currentSummary.totalRecords === 0) {
+                targetEl.innerHTML = "<li>-</li>";
+                return;
+            }
+
+            let recs = [];
+            let alpaRate = (currentSummary.a / currentSummary.totalRecords) * 100;
+            let sakitRate = (currentSummary.s / currentSummary.totalRecords) * 100;
+            let izinRate = (currentSummary.i / currentSummary.totalRecords) * 100;
+            let hadirRate = currentSummary.pct;
+
+            if (alpaRate > 2) {
+                recs.push('<i class="fa-solid fa-circle-exclamation text-rose-500 mr-2"></i> Perlu dilakukan pemantauan terhadap tingkat ketidakhadiran tanpa keterangan (Alpa).');
+            }
+            if (sakitRate > 5) {
+                recs.push('<i class="fa-solid fa-notes-medical text-orange-500 mr-2"></i> Koordinasikan kondisi siswa yang sakit dengan wali kelas dan orang tua terkait.');
+            }
+            if (izinRate > 5) {
+                recs.push('<i class="fa-solid fa-envelope text-cyan-500 mr-2"></i> Lakukan monitoring terhadap pola ketidakhadiran dengan status Izin yang cukup tinggi.');
+            }
+            
+            if (hadirRate >= 95) {
+                recs.push('<i class="fa-solid fa-thumbs-up text-emerald-500 mr-2"></i> Tingkat kehadiran sangat baik. Pertahankan monitoring presensi secara konsisten.');
+            } else if (hadirRate >= 90) {
+                recs.push('<i class="fa-solid fa-check text-emerald-500 mr-2"></i> Tingkat kehadiran tergolong baik, lakukan evaluasi berkala untuk mencegah penurunan.');
+            }
+
+            if (recs.length === 0) {
+                recs.push('<i class="fa-solid fa-clipboard-check text-mi-primary mr-2"></i> Pertahankan monitoring presensi secara konsisten dan lakukan evaluasi berkala.');
+            }
+
+            recs.forEach(r => {
+                const li = document.createElement('li');
+                li.className = "flex items-start";
+                li.innerHTML = r;
+                targetEl.appendChild(li);
+            });
+        }
+
+        
+        function switchTab(tabId) {
+            currentTab = tabId;
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            
+            document.getElementById('content-rekap').classList.add('hidden');
+            document.getElementById('content-riwayat').classList.add('hidden');
+            document.getElementById('content-analisa').classList.add('hidden');
+            
+            const selectedContent = document.getElementById(`content-${tabId}`);
+            selectedContent.classList.remove('hidden');
+            if(tabId === 'riwayat') selectedContent.classList.add('flex');
+            else selectedContent.classList.add('block');
+
+            document.getElementById('filterStatusContainer').style.display = tabId === 'riwayat' ? 'block' : 'none';
+            document.getElementById('filterSearchContainer').style.display = (tabId === 'rekap' || tabId === 'riwayat') ? 'block' : 'none';
+
+            updateUI();
+        }
+
+        function handleRefresh() {
+            Swal.fire({
+                title: '<span class="text-mi-text1 font-bold">Memuat Data</span>',
+                html: '<div class="loader mt-2"></div>',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                background: '#FFFFFF',
+                timer: 500
+            }).then(() => {
+                applyFilters();
+            });
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            if(id === 'modalStudent') currentStudentId = null;
+        }
+
+        function showStudentDetail(studentId) {
+            currentStudentId = studentId;
+            const student = studentsMaster.find(s => s.id === studentId);
+            const recap = currentSummary.recapData.find(r => r.id === studentId);
+            const history = currentFilteredAttendance.filter(r => r.studentId === studentId).sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            document.getElementById('detailName').innerText = student.name;
+            document.getElementById('detailClass').innerText = student.className;
+            
+            if(recap) {
+                document.getElementById('detH').innerText = recap.h;
+                document.getElementById('detS').innerText = recap.s;
+                document.getElementById('detI').innerText = recap.i;
+                document.getElementById('detA').innerText = recap.a;
+                document.getElementById('detPct').innerText = formatPercentage(recap.pct);
+                document.getElementById('detStatusBadge').innerHTML = getStatusBadgeHtml(recap.pct);
+
+                const ctx = document.getElementById('chartStudentDetail').getContext('2d');
+                if (charts.studentDetail) charts.studentDetail.destroy();
+                charts.studentDetail = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['H', 'S', 'I', 'A'],
+                        datasets: [{
+                            data: [recap.h, recap.s, recap.i, recap.a],
+                            backgroundColor: ['#34D399', '#FB923C', '#38BDF8', '#F87171'],
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins:{ legend:{position:'right', labels:{boxWidth:12, font:{family:'Inter', size:11}}} } }
+                });
+            }
+
+            const tbody = document.getElementById('tbody-detail-riwayat');
+            tbody.innerHTML = '';
+            history.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-4 py-2.5 whitespace-nowrap text-[13px] font-medium text-mi-text1">${formatDateIndo(row.date)}</td>
+                    <td class="px-4 py-2.5 whitespace-nowrap">${getStatusColor(row.status)}</td>
+                    <td class="px-4 py-2.5 whitespace-nowrap text-[13px] text-mi-text2 truncate max-w-[150px]" title="${row.notes}">${row.notes}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('modalStudent').classList.remove('hidden');
+        }
+
+        
+        let currentWAText = "";
+
+        function openWhatsAppModal() {
+            generateWhatsAppReport();
+            document.getElementById('waPreviewText').innerText = currentWAText;
+            document.getElementById('modalWhatsApp').classList.remove('hidden');
+        }
+
+        function generateWhatsAppReport() {
+            const startDate = document.getElementById('filterStartDate').value;
+            const endDate = document.getElementById('filterEndDate').value;
+            const selectedClass = document.getElementById('filterKelas').value;
+            
+            let dateStr = "";
+            if (startDate === endDate) {
+                dateStr = `📅 Tanggal: ${formatDateIndo(startDate)}`;
+            } else {
+                dateStr = `📅 Periode: ${formatDateIndo(startDate)} – ${formatDateIndo(endDate)}`;
+            }
+
+            let text = "";
+
+            if (selectedClass !== 'all') {
+                text += `📢 *LAPORAN PRESENSI KELAS ${selectedClass.toUpperCase()}*\n`;
+                text += `${dateStr}\n`;
+                text += `👥 Total Siswa: ${currentSummary.totalStudents}\n\n`;
+                
+                text += `✅ Hadir: ${currentSummary.h} siswa (${formatPercentage(calculatePercentage(currentSummary.h, currentSummary.totalRecords))})\n`;
+                text += `🤒 Sakit: ${currentSummary.s} siswa (${formatPercentage(calculatePercentage(currentSummary.s, currentSummary.totalRecords))})\n`;
+                text += `📝 Izin: ${currentSummary.i} siswa (${formatPercentage(calculatePercentage(currentSummary.i, currentSummary.totalRecords))})\n`;
+                text += `❌ Alpa: ${currentSummary.a} siswa (${formatPercentage(calculatePercentage(currentSummary.a, currentSummary.totalRecords))})\n\n`;
+                
+                text += `📊 *Persentase Kehadiran: ${formatPercentage(currentSummary.pct)}*\n\n`;
+
+                const sakitList = extractNamesByStatus(selectedClass, 'Sakit');
+                if (sakitList.length > 0) text += `🤒 *Siswa Sakit (${sakitList.length} anak):*\n${sakitList.map(n => `- ${n}`).join('\n')}\n\n`;
+                
+                const izinList = extractNamesByStatus(selectedClass, 'Izin');
+                if (izinList.length > 0) text += `📝 *Siswa Izin (${izinList.length} anak):*\n${izinList.map(n => `- ${n}`).join('\n')}\n\n`;
+
+                const alpaList = extractNamesByStatus(selectedClass, 'Alpa');
+                if (alpaList.length > 0) text += `❌ *Siswa Alpa (${alpaList.length} anak):*\n${alpaList.map(n => `- ${n}`).join('\n')}\n\n`;
+
+            } else {
+                text += `📢 *REKAP PRESENSI SISWA*\n`;
+                text += `🏫 *SMP IT MENTARI ILMU*\n`;
+                text += `${dateStr}\n`;
+                text += `━━━━━━━━━━━━━━━━━━\n`;
+                text += `📊 *REKAP KESELURUHAN*\n`;
+                text += `━━━━━━━━━━━━━━━━━━\n`;
+                text += `👥 Total Siswa: ${currentSummary.totalStudents}\n`;
+                text += `✅ Hadir: ${currentSummary.h} (${formatPercentage(calculatePercentage(currentSummary.h, currentSummary.totalRecords))})\n`;
+                text += `🤒 Sakit: ${currentSummary.s} (${formatPercentage(calculatePercentage(currentSummary.s, currentSummary.totalRecords))})\n`;
+                text += `📝 Izin: ${currentSummary.i} (${formatPercentage(calculatePercentage(currentSummary.i, currentSummary.totalRecords))})\n`;
+                text += `❌ Alpa: ${currentSummary.a} (${formatPercentage(calculatePercentage(currentSummary.a, currentSummary.totalRecords))})\n`;
+                text += `📈 *Persentase Kehadiran: ${formatPercentage(currentSummary.pct)}*\n\n`;
+
+                text += `━━━━━━━━━━━━━━━━━━\n`;
+                text += `📚 *REKAP PER KELAS*\n`;
+                text += `━━━━━━━━━━━━━━━━━━\n`;
+                
+                CLASS_LIST.forEach(c => {
+                    if(currentSummary.classRecap[c]) {
+                        const cr = currentSummary.classRecap[c];
+                        text += `🔹 *${c.toUpperCase()}*\n`;
+                        text += `👥 ${cr.studentCount} siswa\n`;
+                        text += `✅ Hadir: ${cr.h} (${formatPercentage(cr.pct)})\n`;
+                        text += `🤒 Sakit: ${cr.s} (${formatPercentage(calculatePercentage(cr.s, cr.total))})\n`;
+                        text += `📝 Izin: ${cr.i} (${formatPercentage(calculatePercentage(cr.i, cr.total))})\n`;
+                        text += `❌ Alpa: ${cr.a} (${formatPercentage(calculatePercentage(cr.a, cr.total))})\n\n`;
+                    }
+                });
+
+                const allSakit = extractAllNamesByStatus('Sakit');
+                if (allSakit.length > 0) {
+                    text += `━━━━━━━━━━━━━━━━━━\n🤒 *DAFTAR SISWA SAKIT*\n━━━━━━━━━━━━━━━━━━\n`;
+                    text += allSakit.map(s => `- ${s.name} (${s.className})`).join('\n') + `\n\n`;
+                }
+
+                const allIzin = extractAllNamesByStatus('Izin');
+                if (allIzin.length > 0) {
+                    text += `━━━━━━━━━━━━━━━━━━\n📝 *DAFTAR SISWA IZIN*\n━━━━━━━━━━━━━━━━━━\n`;
+                    text += allIzin.map(s => `- ${s.name} (${s.className})`).join('\n') + `\n\n`;
+                }
+
+                const allAlpa = extractAllNamesByStatus('Alpa');
+                if (allAlpa.length > 0) {
+                    text += `━━━━━━━━━━━━━━━━━━\n❌ *DAFTAR SISWA ALPA*\n━━━━━━━━━━━━━━━━━━\n`;
+                    text += allAlpa.map(s => `- ${s.name} (${s.className})`).join('\n') + `\n\n`;
+                }
+            }
+
+            text += `Semoga siswa yang berhalangan hadir segera kembali dalam kondisi sehat.\n`;
+            text += `_Pesan otomatis dikirim oleh Sistem Presensi SMP IT Mentari Ilmu_`;
+
+            currentWAText = text;
+        }
+
+        function extractNamesByStatus(className, status) {
+            const records = currentFilteredAttendance.filter(r => r.className === className && r.status === status);
+            const names = [...new Set(records.map(r => r.studentName))];
+            return names.sort();
+        }
+
+        function extractAllNamesByStatus(status) {
+            const records = currentFilteredAttendance.filter(r => r.status === status);
+            const uniqueStudents = [];
+            const map = new Map();
+            for (const item of records) {
+                if(!map.has(item.studentId)){
+                    map.set(item.studentId, true);
+                    uniqueStudents.push({name: item.studentName, className: item.className});
+                }
+            }
+            return uniqueStudents.sort((a,b) => a.className.localeCompare(b.className));
+        }
+
+        function copyWhatsAppReport() {
+            navigator.clipboard.writeText(currentWAText).then(() => {
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Laporan berhasil disalin!', showConfirmButton: false, timer: 3000, background: '#124F47', color: '#fff', iconColor: '#34D399' });
+            }).catch(err => {
+                const textArea = document.createElement("textarea");
+                textArea.value = currentWAText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    Swal.fire({ toast:true, position: 'top-end', icon: 'success', title: 'Tersalin!', showConfirmButton: false, timer: 3000, background: '#124F47', color: '#fff', iconColor: '#34D399' });
+                } catch (err) {
+                    alert('Gagal menyalin text.');
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+
+        function shareToWhatsApp() {
+            const encodedText = encodeURIComponent(currentWAText);
+            const url = `https://wa.me/?text=${encodedText}`;
+            window.open(url, '_blank');
+        }
+
+        // ==========================================
+        // EXPORT ROUTERS & LOGICS
+        // ==========================================
+
+        // Router Export Excel
+        function exportExcel() {
+            if (currentTab === 'rekap') exportRecapExcel();
+            else if (currentTab === 'riwayat') exportHistoryExcel();
+            else if (currentTab === 'analisa') exportAnalysisExcel();
+        }
+
+        // Router Export PDF
+        function exportPDF() {
+            if (currentTab === 'rekap') exportRecapPDF();
+            else if (currentTab === 'riwayat') exportHistoryPDF();
+            else if (currentTab === 'analisa') exportAnalysisPDF();
+        }
+
+        // --- EXPORT REKAP ---
+        function exportRecapExcel() {
+            if(currentSummary.recapData.length === 0) {
+                Swal.fire({ title: 'Data Kosong', text: 'Silakan ubah filter atau periode terlebih dahulu.', icon: 'info', confirmButtonColor: '#124F47' });
+                return;
+            }
+            const exportData = currentSummary.recapData.map((row, index) => ({
+                "No": index + 1, "Nama Siswa": row.name, "Kelas": row.className,
+                "Hadir": row.h, "Sakit": row.s, "Izin": row.i, "Alpa": row.a, 
+                "Total": row.total, "% Kehadiran": formatPercentage(row.pct)
+            }));
+            const worksheet = XLSX.utils.json_to_sheet(exportData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Presensi");
+            worksheet['!cols'] = [ {wch: 5}, {wch: 25}, {wch: 15}, {wch: 8}, {wch: 8}, {wch: 8}, {wch: 8}, {wch: 8}, {wch: 15} ];
+            XLSX.writeFile(workbook, `Rekap_Presensi_${document.getElementById('filterStartDate').value}_sd_${document.getElementById('filterEndDate').value}.xlsx`);
+        }
+
+        function exportRecapPDF() {
+            if(currentSummary.recapData.length === 0) {
+                Swal.fire({ title: 'Data Kosong', text: 'Silakan ubah filter atau periode terlebih dahulu.', icon: 'info', confirmButtonColor: '#124F47' });
+                return;
+            }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const startD = document.getElementById('filterStartDate').value;
+            const endD = document.getElementById('filterEndDate').value;
+            const kelas = document.getElementById('filterKelas').value;
+
+            doc.setFontSize(16); doc.text("LAPORAN REKAP PRESENSI SISWA", 14, 20);
+            doc.setFontSize(10);
+            doc.text(`Periode : ${startD} s/d ${endD}`, 14, 28);
+            doc.text(`Kelas   : ${kelas === 'all' ? 'Semua Kelas' : kelas}`, 14, 34);
+            doc.text(`Total Siswa: ${currentSummary.totalStudents}`, 130, 28);
+            doc.text(`Persentase : ${formatPercentage(currentSummary.pct)}`, 130, 34);
+
+            const tableColumn = ["No", "Nama Siswa", "Kelas", "H", "S", "I", "A", "%"];
+            const tableRows = currentSummary.recapData.map((row, i) => [ i + 1, row.name, row.className, row.h, row.s, row.i, row.a, formatPercentage(row.pct) ]);
+
+            doc.autoTable({ head: [tableColumn], body: tableRows, startY: 40, theme: 'grid', styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [18, 79, 71] } });
+            doc.save(`Rekap_Presensi_${startD}_sd_${endD}.pdf`);
+        }
+
+        // --- EXPORT HISTORY ---
+        function exportHistoryExcel() {
+            if(currentFilteredAttendance.length === 0) {
+                Swal.fire({ title: 'Data Kosong', text: 'Silakan ubah filter atau periode terlebih dahulu.', icon: 'info', confirmButtonColor: '#124F47' });
+                return;
+            }
+            const exportData = currentFilteredAttendance.map((row, index) => ({
+                "No": index + 1, "Tanggal": row.date, "Nama Siswa": row.studentName,
+                "Kelas": row.className, "Status": row.status, "Keterangan": row.notes
+            })).sort((a,b) => new Date(b.Tanggal) - new Date(a.Tanggal)); 
+
+            const worksheet = XLSX.utils.json_to_sheet(exportData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Riwayat Detail");
+            worksheet['!cols'] = [ {wch: 5}, {wch: 12}, {wch: 25}, {wch: 15}, {wch: 10}, {wch: 30} ];
+            XLSX.writeFile(workbook, `Riwayat_Presensi_${document.getElementById('filterStartDate').value}_sd_${document.getElementById('filterEndDate').value}.xlsx`);
+        }
+
+        function exportHistoryPDF() {
+            if(currentFilteredAttendance.length === 0) {
+                Swal.fire({ title: 'Data Kosong', text: 'Silakan ubah filter atau periode terlebih dahulu.', icon: 'info', confirmButtonColor: '#124F47' });
+                return;
+            }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const startD = document.getElementById('filterStartDate').value;
+            const endD = document.getElementById('filterEndDate').value;
+            const kelas = document.getElementById('filterKelas').value;
+            const statusF = document.getElementById('filterStatus').value;
+
+            doc.setFontSize(16); doc.text("LAPORAN RIWAYAT DETAIL PRESENSI SISWA", 14, 20);
+            doc.setFontSize(10);
+            doc.text(`Periode : ${startD} s/d ${endD}`, 14, 28);
+            doc.text(`Kelas   : ${kelas === 'all' ? 'Semua Kelas' : kelas}`, 14, 34);
+            doc.text(`Status  : ${statusF === 'all' ? 'Semua Status' : statusF}`, 130, 28);
+
+            const displayData = [...currentFilteredAttendance].sort((a,b) => new Date(b.date) - new Date(a.date));
+            const tableColumn = ["No", "Tanggal", "Nama Siswa", "Kelas", "Status", "Keterangan"];
+            const tableRows = displayData.map((row, i) => [ i + 1, formatDateIndo(row.date), row.studentName, row.className, row.status, row.notes ]);
+
+            doc.autoTable({ head: [tableColumn], body: tableRows, startY: 40, theme: 'grid', styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [18, 79, 71] } });
+            doc.save(`Riwayat_Detail_${startD}_sd_${endD}.pdf`);
+        }
+
+        // --- EXPORT ANALYSIS ---
+        function exportAnalysisExcel() {
+            if(currentSummary.totalRecords === 0) {
+                Swal.fire({ title: 'Data Kosong', text: 'Silakan ubah filter atau periode terlebih dahulu.', icon: 'info', confirmButtonColor: '#124F47' });
+                return;
+            }
+            const wb = XLSX.utils.book_new();
+
+            // Sheet 1: Summary
+            const summaryData = [
+                { "Indikator": "Total Siswa", "Nilai": currentSummary.totalStudents },
+                { "Indikator": "Total Presensi", "Nilai": currentSummary.totalRecords },
+                { "Indikator": "Hadir", "Nilai": currentSummary.h },
+                { "Indikator": "Sakit", "Nilai": currentSummary.s },
+                { "Indikator": "Izin", "Nilai": currentSummary.i },
+                { "Indikator": "Alpa", "Nilai": currentSummary.a },
+                { "Indikator": "Persentase Kehadiran", "Nilai": formatPercentage(currentSummary.pct) }
+            ];
+            const wsSummary = XLSX.utils.json_to_sheet(summaryData);
+            wsSummary['!cols'] = [{wch: 25}, {wch: 15}];
+            XLSX.utils.book_append_sheet(wb, wsSummary, "Ringkasan");
+
+            // Sheet 2: Analisa Kelas
+            const classData = [];
+            for (let c in currentSummary.classRecap) {
+                let dat = currentSummary.classRecap[c];
+                classData.push({
+                    "Kelas": c, "Siswa": dat.studentCount, "Hadir": dat.h, 
+                    "Sakit": dat.s, "Izin": dat.i, "Alpa": dat.a, "% Kehadiran": formatPercentage(dat.pct)
+                });
+            }
+            if(classData.length > 0) {
+                const wsClass = XLSX.utils.json_to_sheet(classData);
+                wsClass['!cols'] = [{wch: 20}, {wch: 10}, {wch: 10}, {wch: 10}, {wch: 10}, {wch: 10}, {wch: 15}];
+                XLSX.utils.book_append_sheet(wb, wsClass, "Analisa Per Kelas");
+            }
+            XLSX.writeFile(wb, `Analisa_Presensi_${document.getElementById('filterStartDate').value}_sd_${document.getElementById('filterEndDate').value}.xlsx`);
+        }
+
+        function exportAnalysisPDF() {
+            if(currentSummary.totalRecords === 0) {
+                Swal.fire({ title: 'Data Kosong', text: 'Silakan ubah filter atau periode terlebih dahulu.', icon: 'info', confirmButtonColor: '#124F47' });
+                return;
+            }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const startD = document.getElementById('filterStartDate').value;
+            const endD = document.getElementById('filterEndDate').value;
+            const kelas = document.getElementById('filterKelas').value;
+
+            doc.setFontSize(16); doc.text("LAPORAN ANALISA PRESENSI SISWA", 14, 20);
+            doc.setFontSize(10);
+            doc.text(`Periode : ${startD} s/d ${endD}`, 14, 28);
+            doc.text(`Kelas   : ${kelas === 'all' ? 'Semua Kelas' : kelas}`, 14, 34);
+
+            doc.setFontSize(12); doc.text("Ringkasan Presensi", 14, 45);
+            const sumBody = [
+                ["Total Siswa", currentSummary.totalStudents], ["Total Presensi", currentSummary.totalRecords],
+                ["Hadir", currentSummary.h], ["Sakit", currentSummary.s],
+                ["Izin", currentSummary.i], ["Alpa", currentSummary.a],
+                ["Persentase Kehadiran", formatPercentage(currentSummary.pct)]
+            ];
+            doc.autoTable({ body: sumBody, startY: 50, theme: 'grid', styles: { fontSize: 9, cellPadding: 2 }, columnStyles: { 0: { cellWidth: 50, fontStyle: 'bold' } } });
+
+            let finalY = doc.lastAutoTable.finalY + 10;
+
+            if (kelas === 'all') {
+                doc.setFontSize(12); doc.text("Rekap Analisa Per Kelas", 14, finalY);
+                const classCols = ["Kelas", "Siswa", "Hadir", "Sakit", "Izin", "Alpa", "% Kehadiran"];
+                const classRows = [];
+                for (let c in currentSummary.classRecap) {
+                    let dat = currentSummary.classRecap[c];
+                    classRows.push([c, dat.studentCount, dat.h, dat.s, dat.i, dat.a, formatPercentage(dat.pct)]);
+                }
+                doc.autoTable({ head: [classCols], body: classRows, startY: finalY + 5, theme: 'grid', styles: { fontSize: 8 }, headStyles: { fillColor: [18, 79, 71] } });
+                finalY = doc.lastAutoTable.finalY + 10;
+            }
+
+            // Text Conclusions
+            const concText = doc.splitTextToSize(document.getElementById('analisaKesimpulan').innerText, 180);
+            doc.setFontSize(12); doc.text("Kesimpulan", 14, finalY);
+            doc.setFontSize(9); doc.text(concText, 14, finalY + 6);
+            
+            finalY = finalY + (concText.length * 5) + 10;
+            if(finalY > 270) { doc.addPage(); finalY = 20; } // pagination control for text
+
+            doc.setFontSize(12); doc.text("Rekomendasi", 14, finalY);
+            const rawRecs = document.getElementById('analisaRekomendasi').innerText.split('\n').filter(r=>r.trim()!=='');
+            const recsText = doc.splitTextToSize(rawRecs.join('\n'), 180);
+            doc.setFontSize(9); doc.text(recsText, 14, finalY + 6);
+
+            doc.save(`Analisa_Presensi_${startD}_sd_${endD}.pdf`);
+        }
+
+        // --- EXPORT MODAL DETAIL SISWA ---
+        function exportStudentDetailExcel() {
+            if(!currentStudentId) return;
+            const history = currentFilteredAttendance.filter(r => r.studentId === currentStudentId).sort((a,b) => new Date(b.date) - new Date(a.date));
+            if(history.length === 0) {
+                Swal.fire({ title: 'Data Kosong', text: 'Tidak ada data presensi siswa pada periode yang dipilih.', icon: 'info', confirmButtonColor: '#124F47' });
+                return;
+            }
+            const student = studentsMaster.find(s => s.id === currentStudentId);
+            const exportData = history.map((row, index) => ({
+                "No": index + 1, "Tanggal": formatDateIndo(row.date), "Nama Siswa": row.studentName,
+                "Kelas": row.className, "Status": row.status, "Keterangan": row.notes
+            }));
+            const worksheet = XLSX.utils.json_to_sheet(exportData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Detail Siswa");
+            worksheet['!cols'] = [ {wch: 5}, {wch: 20}, {wch: 25}, {wch: 15}, {wch: 10}, {wch: 30} ];
+            
+            const sanitizedName = student.name.replace(/\s+/g, '_');
+            const dateSuffix = document.getElementById('filterStartDate').value;
+            XLSX.writeFile(workbook, `Detail_Presensi_${sanitizedName}_${dateSuffix}.xlsx`);
+        }
+
+        function exportStudentDetailPDF() {
+            if(!currentStudentId) return;
+            const history = currentFilteredAttendance.filter(r => r.studentId === currentStudentId).sort((a,b) => new Date(b.date) - new Date(a.date));
+            if(history.length === 0) {
+                Swal.fire({ title: 'Data Kosong', text: 'Tidak ada data presensi siswa pada periode yang dipilih.', icon: 'info', confirmButtonColor: '#124F47' });
+                return;
+            }
+            const student = studentsMaster.find(s => s.id === currentStudentId);
+            const recap = currentSummary.recapData.find(r => r.id === currentStudentId);
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(16); doc.text("LAPORAN DETAIL PRESENSI SISWA", 14, 20);
+            doc.setFontSize(10);
+            doc.text(`Nama   : ${student.name}`, 14, 28);
+            doc.text(`Kelas  : ${student.className}`, 14, 34);
+            doc.text(`Periode: ${formatDateIndo(document.getElementById('filterStartDate').value)} s/d ${formatDateIndo(document.getElementById('filterEndDate').value)}`, 14, 40);
+
+            // Summary Table
+            doc.autoTable({
+                head: [["Hadir", "Sakit", "Izin", "Alpa", "Persentase Kehadiran"]],
+                body: [[recap.h, recap.s, recap.i, recap.a, formatPercentage(recap.pct)]],
+                startY: 48, theme: 'grid', headStyles: { fillColor: [18, 79, 71] }
+            });
+
+            // History Table
+            const tableCols = ["No", "Tanggal", "Status", "Keterangan"];
+            const tableRows = history.map((r, i) => [i + 1, formatDateIndo(r.date), r.status, r.notes]);
+            doc.autoTable({
+                head: [tableCols], body: tableRows, startY: doc.lastAutoTable.finalY + 10,
+                theme: 'grid', styles: { fontSize: 9 }, headStyles: { fillColor: [107, 124, 120] }
+            });
+
+            const sanitizedName = student.name.replace(/\s+/g, '_');
+            doc.save(`Detail_Presensi_${sanitizedName}_${document.getElementById('filterStartDate').value}.pdf`);
+        }
+
+
+        window.onload = function() {
+            initializeDummyData();
+            initFilterUI();
+            applyFilters();
+
+            document.getElementById('filterSearch').addEventListener('keyup', (e) => {
+                if(e.key === 'Enter') applyFilters();
+            });
+            document.getElementById('filterKelas').addEventListener('change', applyFilters);
+            document.getElementById('filterStatus').addEventListener('change', applyFilters);
+            document.getElementById('filterEndDate').addEventListener('change', applyFilters);
+        };
+    </script>
 </body>
-
 </html>
