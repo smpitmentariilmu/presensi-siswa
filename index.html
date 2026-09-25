@@ -22,7 +22,23 @@
                             border: '#E5ECE9'
                         },
                         status: {
-                            hadir: '#d1fae5', sakit: '#ffedd5', izin: '#cffafe', alpa: '#ffe4e6'
+                            hadir: '#d1fae5', /* emerald-100 */
+                            hadirTxt: '#065f46', /* emerald-800 */
+                            sakit: '#ffedd5', /* orange-100 */
+                            sakitTxt: '#9a3412', /* orange-800 */
+                            izin: '#cffafe', /* cyan-100 */
+                            izinTxt: '#155e75', /* cyan-800 */
+                            alpa: '#ffe4e6', /* rose-100 */
+                            alpaTxt: '#9f1239' /* rose-800 */
+                        },
+                        card: {
+                            blue: '#F0F7FF',
+                            green: '#F0FDF4',
+                            orange: '#FFF7ED',
+                            cyan: '#ECFEFF',
+                            rose: '#FFF1F2',
+                            slate: '#F8FAFC',
+                            purple: '#FAF5FF'
                         }
                     },
                     fontFamily: {
@@ -30,7 +46,6 @@
                     },
                     boxShadow: {
                         'soft': '0 4px 20px -4px rgba(18, 79, 71, 0.05)',
-                        'card-hover': '0 12px 30px rgba(0,0,0,0.08)'
                     }
                 }
             }
@@ -68,9 +83,7 @@
         ::-webkit-scrollbar-thumb { background: theme('colors.mi.border'); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: theme('colors.mi.text2'); }
 
-        /* =========================================
-        TAB NAVIGATION - MODERN PILL
-        ========================================= */
+        /* Modern Pill Tabs */
         .tab-btn {
             transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
             border-radius: 9999px;
@@ -78,11 +91,7 @@
             border: 1px solid transparent;
             background-color: transparent;
         }
-        .tab-btn:hover {
-            background-color: #F0F7F5 !important;
-            color: #124F47 !important;
-            border-color: #D7EAE5;
-        }
+        .tab-btn:hover { background-color: #F0F7F5 !important; color: #124F47 !important; border-color: #D7EAE5; }
         .tab-btn.active {
             background-color: #E8F3F0 !important;
             color: #124F47 !important;
@@ -90,97 +99,74 @@
             box-shadow: 0 2px 6px rgba(18, 79, 71, 0.08), inset 0 0 0 1px rgba(18, 79, 71, 0.04);
             font-weight: 600;
         }
-        .tab-btn.active:hover {
-            background-color: #DCEFEA !important;
-            color: #0D3F39 !important;
-            border-color: #A9D0C8 !important;
-        }
+        .tab-btn.active:hover { background-color: #DCEFEA !important; color: #0D3F39 !important; border-color: #A9D0C8 !important; }
         
         /* Modal Transitions & Overlay */
         .modal-overlay { background-color: rgba(25, 49, 46, 0.6); backdrop-filter: blur(4px); }
+        
+        /* Smooth hover for table rows */
         .table-row-hover { transition: background-color 0.2s ease; }
         .table-row-hover:hover { background-color: theme('colors.mi.soft'); cursor: pointer; }
 
         /* Loader */
         .loader {
-            border: 3px solid #E5ECE9; border-radius: 50%; border-top: 3px solid #124F47;
-            width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block;
+            border: 3px solid #E5ECE9; border-radius: 50%;
+            border-top: 3px solid #124F47; width: 24px; height: 24px;
+            animation: spin 1s linear infinite; display: inline-block;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* Card Shadow Styling */
         .card-shadow { box-shadow: theme('boxShadow.soft'); }
+
+        /* Abstract blobs for summary cards */
+        .blob-bg { position: absolute; top: 0; right: 0; bottom: 0; left: 0; overflow: hidden; border-radius: inherit; pointer-events: none; z-index: 0; }
+        .blob-shape { position: absolute; opacity: 0.4; }
+
+        /* Hide scrollbar for tabs */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
         /* Mobile Submenu Animation */
         .mobile-submenu { display: none; opacity: 0; transform: translateY(10px); transition: all 0.2s ease; }
         .mobile-submenu.active { display: flex; opacity: 1; transform: translateY(0); }
-
-        /* =========================================
-        NEW SUMMARY CARD STYLES
-        ========================================= */
-        .summary-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 24px;
-            padding: 1.25rem;
-            min-height: 160px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 14px rgba(18, 79, 71, 0.06);
-            cursor: default;
-        }
-        @media (hover: hover) {
-            .summary-card:hover {
-                transform: translateY(-4px) scale(1.015);
-                box-shadow: theme('boxShadow.card-hover');
-            }
-        }
-        
-        .summary-mascot {
-            position: absolute;
-            right: -10px;
-            bottom: -15px;
-            width: 90px;
-            height: 90px;
-            object-fit: contain;
-            pointer-events: none;
-            z-index: 0;
-            transition: transform 0.4s ease-out;
-            transform-origin: bottom right;
-        }
-        @media (min-width: 768px) { .summary-mascot { width: 110px; height: 110px; } }
-        @media (min-width: 1024px) { .summary-mascot { width: 115px; height: 115px; } }
-        
-        .summary-card:hover .summary-mascot { transform: scale(1.15); }
-        
-        .summary-icon-box { transition: transform 0.3s ease; }
-        .summary-card:hover .summary-icon-box { transform: scale(1.08); }
-
-        .card-blob {
-            position: absolute; border-radius: 50%; opacity: 0.3; pointer-events: none; transition: transform 0.5s ease;
-        }
-        .summary-card:hover .card-blob { transform: scale(1.2) rotate(10deg); }
     </style>
 </head>
-<body class="antialiased min-h-screen pb-24 md:pb-20 lg:pb-0 relative">
+<body class="antialiased min-h-screen pb-24 md:pb-12 lg:pb-0 relative">
 
-    <!-- HEADER (BERSIH & MINIMAL) -->
+    <!-- HEADER -->
     <div class="bg-mi-surface border-b border-mi-border sticky top-0 z-30 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-4">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4">
+                
+                <!-- Logo & Title -->
                 <div class="flex items-center gap-3 md:gap-4">
                     <img src="https://mentariilmu.org/logo.png" alt="Logo Mentari Ilmu" class="h-10 md:h-12 w-auto object-contain">
                     <div>
                         <h1 class="text-lg md:text-xl lg:text-2xl font-bold text-mi-text1 leading-tight">
                             Rekap & Riwayat Presensi Siswa
                         </h1>
-                        <p class="text-[11px] md:text-xs lg:text-sm text-mi-text2 mt-0.5 md:mt-1 max-w-xs md:max-w-none">
+                        <p class="text-[11px] md:text-xs lg:text-sm text-mi-text2 mt-0.5 md:mt-1 max-w-sm md:max-w-none">
                             Pantau kehadiran siswa, analisa presensi, dan bagikan laporan otomatis.
                         </p>
                     </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap items-center gap-2 mt-1 md:mt-0">
+                    <button onclick="handleRefresh()" class="flex-1 sm:flex-none justify-center px-3 md:px-4 py-1.5 md:py-2 bg-mi-soft hover:bg-[#DDEFEA] text-mi-primary rounded-xl text-xs md:text-sm font-medium transition-colors border border-[#C8E3DD] shadow-sm flex items-center gap-1.5 md:gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> <span class="hidden sm:inline">Refresh</span><span class="sm:hidden">Muat Ulang</span>
+                    </button>
+                    <!-- Tombol ini disembunyikan di Mobile/Tablet, HANYA muncul di Desktop (lg:flex) -->
+                    <button onclick="exportExcel()" class="hidden lg:flex justify-center px-3 md:px-4 py-1.5 md:py-2 bg-[#E8F3F0] hover:bg-[#D9EEE8] text-[#18794E] rounded-xl text-xs md:text-sm font-medium transition-colors border border-[#C8E3DD] shadow-sm items-center gap-1.5 md:gap-2" title="Export Excel sesuai Tab yang aktif">
+                        <i class="fa-solid fa-file-excel"></i> <span>Excel</span>
+                    </button>
+                    <button onclick="exportPDF()" class="hidden lg:flex justify-center px-3 md:px-4 py-1.5 md:py-2 bg-[#FFF1F2] hover:bg-[#FFE4E6] text-[#BE123C] rounded-xl text-xs md:text-sm font-medium transition-colors border border-[#FFE4E6] shadow-sm items-center gap-1.5 md:gap-2" title="Export PDF sesuai Tab yang aktif">
+                        <i class="fa-solid fa-file-pdf"></i> <span>PDF</span>
+                    </button>
+                    <button onclick="openWhatsAppModal()" class="hidden lg:flex w-full sm:w-auto justify-center px-4 md:px-5 py-1.5 md:py-2 bg-mi-primary hover:bg-mi-dark text-white rounded-xl text-xs md:text-sm font-medium transition-colors shadow-md items-center gap-1.5 md:gap-2">
+                        <i class="fa-brands fa-whatsapp text-sm md:text-lg"></i> <span>Bagikan Laporan</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -191,19 +177,13 @@
         <!-- FILTER DATA -->
         <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow p-4 md:p-6 mb-6 md:mb-8">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 md:mb-5 gap-3">
-                <h2 class="text-xs md:text-sm font-bold text-mi-text1 tracking-wide uppercase flex items-center">
-                    <i class="fa-solid fa-sliders text-mi-text2 mr-2"></i>Filter Data
-                </h2>
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <!-- Tombol Refresh dipindah ke sini agar tidak mendominasi header -->
-                    <button onclick="handleRefresh()" class="w-10 h-10 md:w-auto md:h-auto flex items-center justify-center md:px-4 md:py-2 bg-mi-bg hover:bg-[#E9EEEC] text-[#6B7C78] hover:text-mi-primary rounded-xl transition-colors border border-mi-border" title="Refresh Data">
-                        <i class="fa-solid fa-rotate-right"></i> <span class="hidden md:inline ml-2 text-xs md:text-sm font-medium">Refresh</span>
+                <h2 class="text-xs md:text-sm font-bold text-mi-text1 tracking-wide uppercase flex items-center"><i class="fa-solid fa-sliders text-mi-text2 mr-2"></i>Filter Data</h2>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button onclick="resetFilter()" class="flex-1 sm:flex-none justify-center text-xs md:text-sm text-[#6B7C78] hover:text-mi-primary hover:bg-[#E9EEEC] bg-[#F5F7F6] border border-[#E5ECE9] font-medium px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-colors flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-rotate-left"></i> Reset
                     </button>
-                    <button onclick="resetFilter()" class="flex-1 sm:flex-none justify-center text-xs md:text-sm text-[#6B7C78] hover:text-mi-primary hover:bg-[#E9EEEC] bg-mi-bg border border-mi-border font-medium px-3 md:px-4 py-2 rounded-xl transition-colors flex items-center gap-2 shadow-sm">
-                        Reset
-                    </button>
-                    <button onclick="applyFilters()" class="flex-1 sm:flex-none justify-center bg-mi-primary hover:bg-mi-dark text-white text-xs md:text-sm font-medium px-4 py-2 rounded-xl transition-colors shadow-sm">
-                        Terapkan
+                    <button onclick="applyFilters()" class="flex-1 sm:flex-none justify-center bg-mi-primary hover:bg-mi-dark text-white text-xs md:text-sm font-medium px-4 md:px-5 py-1.5 md:py-2 rounded-xl transition-colors shadow-sm">
+                        Terapkan Filter
                     </button>
                 </div>
             </div>
@@ -234,6 +214,7 @@
                     <label class="block text-[10px] md:text-xs font-semibold text-mi-text2 mb-1 md:mb-1.5 uppercase tracking-wider">Kelas</label>
                     <select id="filterKelas" class="w-full border border-mi-border rounded-xl bg-mi-bg focus:bg-white py-2 md:py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary text-xs md:text-sm transition-all text-mi-text1">
                         <option value="all">Semua Kelas</option>
+                        <!-- Options generated in JS -->
                     </select>
                 </div>
 
@@ -260,144 +241,119 @@
             </div>
         </div>
 
-        <!-- SUMMARY CARDS (8 CARDS - STRUKTUR BARU) -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 md:mb-8">
+        <!-- SUMMARY CARDS (LOCKED) -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-3 md:gap-4 lg:gap-3 mb-6 md:mb-8">
             
             <!-- Card 1: Total Siswa -->
-            <div class="summary-card bg-[#EEF3F4]">
-                <div class="card-blob bg-white w-24 h-24 top-[-20px] right-[-20px]"></div>
-                <img src="https://mentariilmu.org/assets/2.png" alt="" class="summary-mascot opacity-20" onerror="this.style.display='none'">
+            <div class="group bg-card-blue rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-blue-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="relative z-10 flex justify-between items-start w-full">
-                    <div class="summary-icon-box w-10 h-10 rounded-[14px] bg-[#1F5A52] text-white flex items-center justify-center text-lg shadow-md">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-blue-600 text-white flex items-center justify-center text-xs md:text-base shadow-sm">
                         <i class="fa-solid fa-users"></i>
                     </div>
-                    <span class="px-2.5 py-1 bg-white/60 backdrop-blur-sm border border-white rounded-full text-[10px] font-semibold text-[#19312E] shadow-sm">Siswa</span>
                 </div>
-                <div class="relative z-10 mt-5">
-                    <div class="text-[11px] md:text-xs font-bold text-[#1F5A52] uppercase tracking-wide mb-1">Total Siswa</div>
-                    <div class="text-3xl md:text-4xl font-extrabold text-[#19312E] leading-none mb-1.5" id="cardTotalSiswa">-</div>
-                    <div class="text-[10px] md:text-xs text-[#6B7C78]">Siswa terdata aktif</div>
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-0.5">Total Siswa</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-mi-text1 leading-none" id="cardTotalSiswa">-</div>
                 </div>
             </div>
             
             <!-- Card 2: Hari Efektif -->
-            <div class="summary-card bg-[#EEF7FB]">
-                <div class="card-blob bg-[#D6EBF6] w-28 h-28 bottom-[-30px] right-[-20px]"></div>
+            <div class="group bg-card-slate rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="relative z-10 flex justify-between items-start w-full">
-                    <div class="summary-icon-box w-10 h-10 rounded-[14px] bg-[#4A9ACB] text-white flex items-center justify-center text-lg shadow-md">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-slate-600 text-white flex items-center justify-center text-xs md:text-base shadow-sm">
                         <i class="fa-regular fa-calendar-check"></i>
                     </div>
-                    <span class="px-2.5 py-1 bg-white/60 backdrop-blur-sm border border-white rounded-full text-[10px] font-semibold text-[#19312E] shadow-sm">Hari</span>
                 </div>
-                <div class="relative z-10 mt-5">
-                    <div class="text-[11px] md:text-xs font-bold text-[#4A9ACB] uppercase tracking-wide mb-1">Hari Efektif</div>
-                    <div class="text-3xl md:text-4xl font-extrabold text-[#19312E] leading-none mb-1.5" id="cardHariEfektif">-</div>
-                    <div class="text-[10px] md:text-xs text-[#6B7C78]">Hari wajib presensi</div>
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-0.5">Hari Efektif</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-mi-text1 leading-none" id="cardHariEfektif">-</div>
                 </div>
             </div>
 
             <!-- Card 3: Hari Libur -->
-            <div class="summary-card bg-[#FFF8E8]">
-                <div class="card-blob bg-[#FDECC8] w-20 h-20 top-[20px] right-[-10px]"></div>
+            <div class="group bg-card-purple rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-purple-200 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="relative z-10 flex justify-between items-start w-full">
-                    <div class="summary-icon-box w-10 h-10 rounded-[14px] bg-[#D99B1E] text-white flex items-center justify-center text-lg shadow-md">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-purple-600 text-white flex items-center justify-center text-xs md:text-base shadow-sm">
                         <i class="fa-solid fa-umbrella-beach"></i>
                     </div>
-                    <span class="px-2.5 py-1 bg-white/60 backdrop-blur-sm border border-white rounded-full text-[10px] font-semibold text-[#19312E] shadow-sm">Kalender</span>
                 </div>
-                <div class="relative z-10 mt-5">
-                    <div class="text-[11px] md:text-xs font-bold text-[#D99B1E] uppercase tracking-wide mb-1">Hari Libur</div>
-                    <div class="text-3xl md:text-4xl font-extrabold text-[#19312E] leading-none mb-1.5" id="cardHariLibur">-</div>
-                    <div class="text-[10px] md:text-xs text-[#6B7C78]">Libur / non-efektif</div>
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-purple-700 uppercase tracking-wider mb-0.5">Hari Libur</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-mi-text1 leading-none" id="cardHariLibur">-</div>
                 </div>
             </div>
 
             <!-- Card 4: Hadir -->
-            <div class="summary-card bg-[#EFFAF4]">
-                <div class="card-blob bg-white w-24 h-24 top-[-20px] right-[-20px]"></div>
-                <img src="https://mentariilmu.org/assets/3.png" alt="" class="summary-mascot opacity-15" onerror="this.style.display='none'">
+            <div class="group bg-card-green rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-green-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="relative z-10 flex justify-between items-start w-full">
-                    <div class="summary-icon-box w-10 h-10 rounded-[14px] bg-[#2E9D68] text-white flex items-center justify-center text-lg shadow-md">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xs md:text-base shadow-sm">
                         <i class="fa-solid fa-check"></i>
                     </div>
-                    <span class="px-2.5 py-1 bg-white/60 backdrop-blur-sm border border-white rounded-full text-[10px] font-semibold text-[#19312E] shadow-sm">Presensi</span>
                 </div>
-                <div class="relative z-10 mt-5">
-                    <div class="text-[11px] md:text-xs font-bold text-[#2E9D68] uppercase tracking-wide mb-1">Hadir</div>
-                    <div class="text-3xl md:text-4xl font-extrabold text-[#19312E] leading-none mb-1.5" id="cardHadir">-</div>
-                    <div class="text-[10px] md:text-xs text-[#6B7C78]">Siswa terdata hadir</div>
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-emerald-700 uppercase tracking-wider mb-0.5">Hadir</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-mi-text1 leading-none" id="cardHadir">-</div>
                 </div>
             </div>
 
             <!-- Card 5: Sakit -->
-            <div class="summary-card bg-[#FFF2EC]">
-                <div class="card-blob bg-[#FDE2D4] w-24 h-24 bottom-[-10px] right-[-20px]"></div>
+            <div class="group bg-card-orange rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-orange-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="relative z-10 flex justify-between items-start w-full">
-                    <div class="summary-icon-box w-10 h-10 rounded-[14px] bg-[#F47B3A] text-white flex items-center justify-center text-lg shadow-md">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-orange-500 text-white flex items-center justify-center text-xs md:text-base shadow-sm">
                         <i class="fa-solid fa-thermometer-half"></i>
                     </div>
-                    <span class="px-2.5 py-1 bg-white/60 backdrop-blur-sm border border-white rounded-full text-[10px] font-semibold text-[#19312E] shadow-sm">Siswa</span>
                 </div>
-                <div class="relative z-10 mt-5">
-                    <div class="text-[11px] md:text-xs font-bold text-[#F47B3A] uppercase tracking-wide mb-1">Sakit</div>
-                    <div class="text-3xl md:text-4xl font-extrabold text-[#19312E] leading-none mb-1.5" id="cardSakit">-</div>
-                    <div class="text-[10px] md:text-xs text-[#6B7C78]">Keterangan sakit</div>
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-orange-700 uppercase tracking-wider mb-0.5">Sakit</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-mi-text1 leading-none" id="cardSakit">-</div>
                 </div>
             </div>
 
             <!-- Card 6: Izin -->
-            <div class="summary-card bg-[#FBF0F7]">
-                <div class="card-blob bg-[#F5DCEE] w-20 h-20 top-[-10px] right-[10px]"></div>
+            <div class="group bg-card-cyan rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-cyan-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="relative z-10 flex justify-between items-start w-full">
-                    <div class="summary-icon-box w-10 h-10 rounded-[14px] bg-[#C986B4] text-white flex items-center justify-center text-lg shadow-md">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-cyan-600 text-white flex items-center justify-center text-xs md:text-base shadow-sm">
                         <i class="fa-solid fa-envelope-open-text"></i>
                     </div>
-                    <span class="px-2.5 py-1 bg-white/60 backdrop-blur-sm border border-white rounded-full text-[10px] font-semibold text-[#19312E] shadow-sm">Siswa</span>
                 </div>
-                <div class="relative z-10 mt-5">
-                    <div class="text-[11px] md:text-xs font-bold text-[#C986B4] uppercase tracking-wide mb-1">Izin</div>
-                    <div class="text-3xl md:text-4xl font-extrabold text-[#19312E] leading-none mb-1.5" id="cardIzin">-</div>
-                    <div class="text-[10px] md:text-xs text-[#6B7C78]">Keterangan izin</div>
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-cyan-700 uppercase tracking-wider mb-0.5">Izin</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-mi-text1 leading-none" id="cardIzin">-</div>
                 </div>
             </div>
 
             <!-- Card 7: Alpa -->
-            <div class="summary-card bg-[#FFF0F2]">
-                <div class="card-blob bg-[#FDE2E6] w-28 h-28 bottom-[-40px] right-[-10px]"></div>
+            <div class="group bg-card-rose rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-rose-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="relative z-10 flex justify-between items-start w-full">
-                    <div class="summary-icon-box w-10 h-10 rounded-[14px] bg-[#D85C70] text-white flex items-center justify-center text-lg shadow-md">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-rose-600 text-white flex items-center justify-center text-xs md:text-base shadow-sm">
                         <i class="fa-solid fa-xmark"></i>
                     </div>
-                    <span class="px-2.5 py-1 bg-white/60 backdrop-blur-sm border border-white rounded-full text-[10px] font-semibold text-[#19312E] shadow-sm">Siswa</span>
                 </div>
-                <div class="relative z-10 mt-5">
-                    <div class="text-[11px] md:text-xs font-bold text-[#D85C70] uppercase tracking-wide mb-1">Alpa</div>
-                    <div class="text-3xl md:text-4xl font-extrabold text-[#19312E] leading-none mb-1.5" id="cardAlpa">-</div>
-                    <div class="text-[10px] md:text-xs text-[#6B7C78]">Tanpa keterangan</div>
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-rose-700 uppercase tracking-wider mb-0.5">Alpa</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-mi-text1 leading-none" id="cardAlpa">-</div>
                 </div>
             </div>
 
             <!-- Card 8: Kehadiran % -->
-            <div class="summary-card bg-[#F3EEFF]">
-                <div class="card-blob bg-[#E5D9FE] w-24 h-24 top-[20px] right-[-20px]"></div>
+            <div class="group bg-mi-primary rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-mi-dark shadow-sm hover:shadow-md transition-shadow duration-300">
+                <div class="absolute -right-8 -top-8 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
                 <div class="relative z-10 flex justify-between items-start w-full">
-                    <div class="summary-icon-box w-10 h-10 rounded-[14px] bg-[#6D28D9] text-white flex items-center justify-center text-lg shadow-md">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-white/20 text-white flex items-center justify-center text-xs md:text-base backdrop-blur-sm shadow-sm">
                         <i class="fa-solid fa-chart-pie"></i>
                     </div>
-                    <span class="px-2.5 py-1 bg-white/60 backdrop-blur-sm border border-white rounded-full text-[10px] font-semibold text-[#19312E] shadow-sm">Global</span>
                 </div>
-                <div class="relative z-10 mt-5">
-                    <div class="text-[11px] md:text-xs font-bold text-[#6D28D9] uppercase tracking-wide mb-1">% Kehadiran</div>
-                    <div class="text-3xl md:text-4xl font-extrabold text-[#19312E] leading-none mb-1.5" id="cardPersentase">-</div>
-                    <div class="text-[10px] md:text-xs text-[#6B7C78]">Rasio hadir aktual</div>
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-mi-soft uppercase tracking-wider mb-0.5">% Kehadiran</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-white leading-none" id="cardPersentase">-</div>
                 </div>
             </div>
         </div>
 
         <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow overflow-hidden mb-8">
             
-            <!-- TABS UTAMA (DESKTOP) -->
-            <div class="px-4 md:px-6 pt-4 md:pt-6 pb-2 border-b border-mi-border flex justify-between items-end">
+            <!-- TABS UTAMA -->
+            <div class="px-4 md:px-6 pt-4 md:pt-6 pb-2 border-b border-mi-border">
                 <div class="flex space-x-2 overflow-x-auto hide-scrollbar">
                     <button onclick="switchTab('riwayat')" id="tab-riwayat" class="tab-btn active px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-medium whitespace-nowrap flex items-center gap-2">
                         <i class="fa-regular fa-clock"></i> Riwayat Detail
@@ -411,13 +367,6 @@
                     <button onclick="switchTab('kalender')" id="tab-kalender" class="tab-btn px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-medium whitespace-nowrap flex items-center gap-2">
                         <i class="fa-regular fa-calendar-alt"></i> Kalender
                     </button>
-                </div>
-                
-                <!-- Action Tabs Desktop -->
-                <div class="hidden lg:flex items-center gap-2 pb-1">
-                    <button onclick="exportExcel()" class="px-3 py-1.5 bg-[#F0FDF4] hover:bg-[#DCFCE7] text-[#166534] border border-[#BBF7D0] rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-file-excel"></i> Excel</button>
-                    <button onclick="exportPDF()" class="px-3 py-1.5 bg-[#FFF1F2] hover:bg-[#FFE4E6] text-[#9F1239] border border-[#FECDD3] rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-                    <button onclick="openWhatsAppModal()" class="px-3 py-1.5 bg-mi-primary hover:bg-mi-dark text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"><i class="fa-brands fa-whatsapp text-sm"></i> Bagikan</button>
                 </div>
             </div>
 
@@ -450,18 +399,18 @@
 
                 <!-- Pagination Riwayat -->
                 <div class="flex flex-col sm:flex-row justify-between items-center px-4 md:px-6 py-3 bg-mi-bg/30 border-t border-mi-border gap-3 mt-auto">
-                    <div class="text-xs md:text-sm text-mi-text2 font-medium" id="pg-info-riwayat">Menampilkan 0-0 dari 0 data</div>
+                    <div class="text-xs md:text-sm text-mi-text2" id="pg-info-riwayat">Menampilkan 0-0 dari 0 data</div>
                     <div class="flex items-center gap-2">
-                        <select id="pg-limit-riwayat" onchange="changePageLimit('riwayat', this.value)" class="border border-mi-border rounded bg-white text-xs py-1 px-2 text-mi-text1 outline-none focus:border-mi-primary font-medium cursor-pointer">
+                        <select id="pg-limit-riwayat" onchange="changePageLimit('riwayat', this.value)" class="border border-mi-border rounded bg-white text-xs py-1 px-2 text-mi-text1 outline-none focus:border-mi-primary">
                             <option value="10">10 / hal</option>
                             <option value="25" selected>25 / hal</option>
                             <option value="50">50 / hal</option>
                             <option value="100">100 / hal</option>
                         </select>
                         <div class="flex border border-mi-border rounded overflow-hidden">
-                            <button onclick="changePage('riwayat', -1)" class="px-3 py-1 bg-white hover:bg-mi-soft text-mi-text2 border-r border-mi-border transition-colors"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
-                            <span id="pg-page-riwayat" class="px-4 py-1 bg-white text-xs font-bold text-mi-text1 flex items-center justify-center min-w-[32px]">1</span>
-                            <button onclick="changePage('riwayat', 1)" class="px-3 py-1 bg-white hover:bg-mi-soft text-mi-text2 border-l border-mi-border transition-colors"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                            <button onclick="changePage('riwayat', -1)" class="px-2 py-1 bg-white hover:bg-mi-soft text-mi-text2 border-r border-mi-border transition-colors"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                            <span id="pg-page-riwayat" class="px-3 py-1 bg-white text-xs font-semibold text-mi-text1 flex items-center justify-center min-w-[32px]">1</span>
+                            <button onclick="changePage('riwayat', 1)" class="px-2 py-1 bg-white hover:bg-mi-soft text-mi-text2 border-l border-mi-border transition-colors"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
                         </div>
                     </div>
                 </div>
@@ -471,12 +420,13 @@
             <div id="content-rekap" class="p-0 hidden flex-col min-h-[400px]">
                 
                 <!-- Toggle Mode Rekap -->
-                <div class="px-4 md:px-6 py-3 border-b border-mi-border flex gap-2 bg-mi-bg/30">
+                <div class="px-4 md:px-6 py-3 border-b border-mi-border flex gap-2">
                     <button onclick="setRekapMode('ringkas')" id="btn-rekap-ringkas" class="px-4 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all bg-mi-primary text-white shadow-sm">Rekap Ringkas</button>
-                    <button onclick="setRekapMode('harian')" id="btn-rekap-harian" class="px-4 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all bg-white border border-mi-border text-mi-text2 hover:text-mi-primary shadow-sm">Rekap Harian</button>
+                    <button onclick="setRekapMode('harian')" id="btn-rekap-harian" class="px-4 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all bg-mi-soft text-mi-text2 hover:text-mi-primary">Rekap Harian</button>
                 </div>
 
                 <div class="overflow-x-auto flex-grow">
+                    <!-- Tabel disuntik via JS tergantung mode -->
                     <table class="min-w-full divide-y divide-mi-border" id="table-rekap-container">
                         <thead class="bg-mi-bg/50" id="thead-rekap">
                             <!-- Headers injected via JS -->
@@ -496,18 +446,18 @@
 
                 <!-- Pagination Rekap -->
                 <div class="flex flex-col sm:flex-row justify-between items-center px-4 md:px-6 py-3 bg-mi-bg/30 border-t border-mi-border gap-3 mt-auto">
-                    <div class="text-xs md:text-sm text-mi-text2 font-medium" id="pg-info-rekap">Menampilkan 0-0 dari 0 data</div>
+                    <div class="text-xs md:text-sm text-mi-text2" id="pg-info-rekap">Menampilkan 0-0 dari 0 data</div>
                     <div class="flex items-center gap-2">
-                        <select id="pg-limit-rekap" onchange="changePageLimit('rekap', this.value)" class="border border-mi-border rounded bg-white text-xs py-1 px-2 text-mi-text1 outline-none focus:border-mi-primary font-medium cursor-pointer">
+                        <select id="pg-limit-rekap" onchange="changePageLimit('rekap', this.value)" class="border border-mi-border rounded bg-white text-xs py-1 px-2 text-mi-text1 outline-none focus:border-mi-primary">
                             <option value="10">10 / hal</option>
                             <option value="25" selected>25 / hal</option>
                             <option value="50">50 / hal</option>
                             <option value="100">100 / hal</option>
                         </select>
                         <div class="flex border border-mi-border rounded overflow-hidden">
-                            <button onclick="changePage('rekap', -1)" class="px-3 py-1 bg-white hover:bg-mi-soft text-mi-text2 border-r border-mi-border transition-colors"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
-                            <span id="pg-page-rekap" class="px-4 py-1 bg-white text-xs font-bold text-mi-text1 flex items-center justify-center min-w-[32px]">1</span>
-                            <button onclick="changePage('rekap', 1)" class="px-3 py-1 bg-white hover:bg-mi-soft text-mi-text2 border-l border-mi-border transition-colors"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                            <button onclick="changePage('rekap', -1)" class="px-2 py-1 bg-white hover:bg-mi-soft text-mi-text2 border-r border-mi-border transition-colors"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                            <span id="pg-page-rekap" class="px-3 py-1 bg-white text-xs font-semibold text-mi-text1 flex items-center justify-center min-w-[32px]">1</span>
+                            <button onclick="changePage('rekap', 1)" class="px-2 py-1 bg-white hover:bg-mi-soft text-mi-text2 border-l border-mi-border transition-colors"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
                         </div>
                     </div>
                 </div>
@@ -572,12 +522,12 @@
             <!-- TAB 4: KALENDER -->
             <div id="content-kalender" class="p-0 hidden flex-col min-h-[400px]">
                 
-                <div class="px-4 md:px-6 py-4 border-b border-mi-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-mi-bg/30">
+                <div class="px-4 md:px-6 py-4 border-b border-mi-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-mi-soft/30">
                     <div>
                         <h3 class="text-sm font-bold text-mi-text1">Manajemen Hari Libur Sekolah</h3>
-                        <p class="text-xs text-mi-text2 mt-1">Data kalender digunakan untuk mengurangi Hari Efektif secara otomatis.</p>
+                        <p class="text-xs text-mi-text2">Data kalender digunakan untuk menghitung Hari Efektif pada periode presensi.</p>
                     </div>
-                    <button onclick="addHolidayPrompt()" class="w-full sm:w-auto px-4 py-2.5 bg-mi-primary hover:bg-mi-dark text-white rounded-xl text-xs md:text-sm font-medium transition-colors shadow-sm flex items-center justify-center gap-2">
+                    <button onclick="addHolidayPrompt()" class="w-full sm:w-auto px-4 py-2 bg-mi-primary hover:bg-mi-dark text-white rounded-xl text-xs md:text-sm font-medium transition-colors shadow-sm flex items-center justify-center gap-2">
                         <i class="fa-solid fa-plus"></i> Tambah Hari Libur
                     </button>
                 </div>
@@ -591,7 +541,7 @@
                                 <th class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Hari</th>
                                 <th class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Jenis Libur</th>
                                 <th class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Keterangan</th>
-                                <th class="px-4 md:px-6 py-3 md:py-4 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider w-20">Aksi</th>
+                                <th class="px-4 md:px-6 py-3 md:py-4 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-kalender" class="bg-white divide-y divide-mi-border">
@@ -633,7 +583,7 @@
                     </div>
 
                     <!-- Ringkasan Detail -->
-                    <div class="grid grid-cols-5 gap-2 md:gap-4 mb-4 bg-mi-bg p-3 md:p-5 rounded-xl md:rounded-2xl border border-mi-border">
+                    <div class="grid grid-cols-5 gap-2 md:gap-4 mb-6 md:mb-8 bg-mi-bg p-3 md:p-5 rounded-xl md:rounded-2xl border border-mi-border">
                         <div class="text-center">
                             <div class="text-[9px] md:text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Hadir</div>
                             <div class="text-lg md:text-2xl font-bold text-emerald-600" id="detH">-</div>
@@ -650,15 +600,15 @@
                             <div class="text-[9px] md:text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">Alpa</div>
                             <div class="text-lg md:text-2xl font-bold text-rose-600" id="detA">-</div>
                         </div>
-                        <div class="text-center border-l border-mi-border flex flex-col justify-center pl-2">
+                        <div class="text-center border-l border-mi-border flex flex-col justify-center">
                             <div class="text-[9px] md:text-xs font-semibold uppercase tracking-wider text-mi-text2 mb-1">%</div>
                             <div class="text-sm md:text-2xl font-bold text-mi-primary" id="detPct">-</div>
                         </div>
                     </div>
 
                     <!-- Info Hari Efektif / Kalender on Detail -->
-                    <div class="text-center mb-6 text-xs md:text-sm text-mi-text2 bg-slate-50 border border-slate-100 py-2 rounded-lg">
-                        Persentase dihitung dari <strong><span id="detHariEfektif">0</span> Hari Efektif</strong>.
+                    <div class="text-center mb-4 text-xs md:text-sm text-mi-text2">
+                        Perhitungan persentase menggunakan <span class="font-bold text-mi-text1" id="detHariEfektif">0</span> Hari Efektif.
                     </div>
 
                     <!-- Chart Kecil & Tabel History -->
@@ -691,11 +641,10 @@
                         </div>
                     </div>
                 </div>
-                <!-- Modal Detail Footer (Export & Close) -->
                 <div class="bg-mi-bg/50 px-4 md:px-6 py-3 md:py-4 flex flex-col sm:flex-row-reverse gap-2 md:gap-3 border-t border-mi-border">
-                    <button type="button" onclick="closeModal('modalStudent')" class="w-full inline-flex justify-center items-center rounded-xl border border-mi-border shadow-sm px-4 md:px-5 py-2 md:py-2.5 bg-white text-sm font-bold text-mi-text1 hover:bg-gray-50 transition-colors sm:w-auto">Tutup</button>
-                    <button type="button" onclick="exportStudentDetailExcel()" class="w-full inline-flex justify-center items-center rounded-xl px-4 md:px-5 py-2 md:py-2.5 bg-[#F0FDF4] hover:bg-[#DCFCE7] border border-[#BBF7D0] shadow-sm text-sm font-semibold text-[#166534] transition-colors sm:w-auto"><i class="fa-solid fa-file-excel mr-2"></i> Excel</button>
-                    <button type="button" onclick="exportStudentDetailPDF()" class="w-full inline-flex justify-center items-center rounded-xl px-4 md:px-5 py-2 md:py-2.5 bg-[#FFF1F2] hover:bg-[#FFE4E6] border border-[#FECDD3] shadow-sm text-sm font-semibold text-[#9F1239] transition-colors sm:w-auto"><i class="fa-solid fa-file-pdf mr-2"></i> PDF</button>
+                    <button type="button" onclick="closeModal('modalStudent')" class="w-full inline-flex justify-center items-center rounded-xl border border-mi-border shadow-sm px-4 md:px-5 py-2 md:py-2.5 bg-white text-sm font-medium text-mi-text1 hover:bg-gray-50 transition-colors sm:w-auto">Tutup</button>
+                    <button type="button" onclick="exportStudentDetailExcel()" class="w-full inline-flex justify-center items-center rounded-xl px-4 md:px-5 py-2 md:py-2.5 bg-[#E8F3F0] hover:bg-[#D9EEE8] border border-[#C8E3DD] shadow-sm text-sm font-medium text-[#18794E] transition-colors sm:w-auto"><i class="fa-solid fa-file-excel mr-2"></i> Excel</button>
+                    <button type="button" onclick="exportStudentDetailPDF()" class="w-full inline-flex justify-center items-center rounded-xl px-4 md:px-5 py-2 md:py-2.5 bg-[#FFF1F2] hover:bg-[#FFE4E6] border border-[#FFE4E6] shadow-sm text-sm font-medium text-[#BE123C] transition-colors sm:w-auto"><i class="fa-solid fa-file-pdf mr-2"></i> PDF</button>
                 </div>
             </div>
         </div>
@@ -722,10 +671,10 @@
                     <p class="text-[10px] md:text-[11px] text-mi-text2 mt-2 md:mt-3 font-medium">*Pesan dihasilkan otomatis berdasarkan filter periode dan kelas.</p>
                 </div>
                 <div class="bg-mi-bg/50 px-4 md:px-6 py-3 md:py-4 flex flex-col sm:flex-row-reverse gap-2 md:gap-3 border-t border-mi-border">
-                    <button type="button" onclick="shareToWhatsApp()" class="w-full inline-flex justify-center items-center rounded-xl px-4 md:px-5 py-2 md:py-2.5 bg-green-600 hover:bg-green-700 text-sm font-bold text-white transition-colors sm:w-auto shadow-sm">
-                        <i class="fa-brands fa-whatsapp mr-2 text-lg"></i> Share WhatsApp
+                    <button type="button" onclick="shareToWhatsApp()" class="w-full inline-flex justify-center items-center rounded-xl px-4 md:px-5 py-2 md:py-2.5 bg-green-600 hover:bg-green-700 text-sm font-medium text-white transition-colors sm:w-auto shadow-sm">
+                        <i class="fa-brands fa-whatsapp mr-2"></i> Share WhatsApp
                     </button>
-                    <button type="button" onclick="copyWhatsAppReport()" class="w-full inline-flex justify-center items-center rounded-xl border border-mi-border shadow-sm px-4 md:px-5 py-2 md:py-2.5 bg-white text-sm font-bold text-mi-text1 hover:bg-gray-50 transition-colors sm:w-auto">
+                    <button type="button" onclick="copyWhatsAppReport()" class="w-full inline-flex justify-center items-center rounded-xl border border-mi-border shadow-sm px-4 md:px-5 py-2 md:py-2.5 bg-white text-sm font-medium text-mi-text1 hover:bg-gray-50 transition-colors sm:w-auto">
                         <i class="fa-regular fa-copy mr-2"></i> Salin Pesan
                     </button>
                 </div>
@@ -733,53 +682,53 @@
         </div>
     </div>
 
-    <!-- UNIVERSAL FOOTER NAV (Tampil di Mobile & Tablet, Desktop Hidden) -->
+    <!-- MOBILE FOOTER NAV -->
     <nav class="lg:hidden fixed bottom-0 left-0 w-full bg-white border-t border-mi-border shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-40 px-1 py-1.5 flex justify-between items-center pb-[calc(env(safe-area-inset-bottom)+6px)] gap-1">
         
         <!-- 1. Riwayat -->
-        <button onclick="switchTab('riwayat')" id="nav-riwayat" class="flex flex-col items-center justify-center w-[20%] py-1.5 rounded-xl text-mi-primary bg-mi-soft font-semibold transition-all">
+        <button onclick="switchTab('riwayat')" id="nav-riwayat" class="flex flex-col items-center justify-center w-[20%] py-1 rounded-xl text-mi-primary bg-mi-soft font-semibold transition-all">
             <i class="fa-regular fa-clock text-lg md:text-xl mb-1"></i>
             <span class="text-[9px] md:text-[10px]">Riwayat</span>
         </button>
         
         <!-- 2. Rekap -->
-        <button onclick="switchTab('rekap')" id="nav-rekap" class="flex flex-col items-center justify-center w-[20%] py-1.5 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
+        <button onclick="switchTab('rekap')" id="nav-rekap" class="flex flex-col items-center justify-center w-[20%] py-1 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
             <i class="fa-solid fa-table-list text-lg md:text-xl mb-1"></i>
             <span class="text-[9px] md:text-[10px]">Rekap</span>
         </button>
         
-        <!-- 3. Lainnya (Submenu: Analisa Data, Kalender) -->
+        <!-- 3. Lainnya -->
         <div class="relative w-[20%] flex justify-center">
-            <button onclick="toggleMobileMenu('menu-lainnya', 'nav-lainnya')" id="nav-lainnya" class="w-full flex flex-col items-center py-1.5 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
+            <button onclick="toggleMobileMenu('menu-lainnya', 'nav-lainnya')" id="nav-lainnya" class="w-full flex flex-col items-center py-1 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
                 <i class="fa-solid fa-ellipsis-h text-lg md:text-xl mb-1"></i>
                 <span class="text-[9px] md:text-[10px]">Lainnya</span>
             </button>
-            <div id="menu-lainnya" class="mobile-submenu absolute bottom-full mb-3 bg-white border border-mi-border rounded-xl shadow-[0_-4px_10px_rgba(0,0,0,0.05)] flex-col w-36 overflow-hidden z-50">
-                <button onclick="switchTab('analisa'); toggleMobileMenu('menu-lainnya', 'nav-lainnya')" class="px-4 py-3 text-left text-xs md:text-sm text-mi-text1 font-medium hover:bg-mi-soft border-b border-mi-border flex items-center"><i class="fa-solid fa-chart-simple mr-2.5 w-4 text-center text-mi-primary"></i>Analisa Data</button>
-                <button onclick="switchTab('kalender'); toggleMobileMenu('menu-lainnya', 'nav-lainnya')" class="px-4 py-3 text-left text-xs md:text-sm text-mi-text1 font-medium hover:bg-mi-soft flex items-center"><i class="fa-regular fa-calendar-alt mr-2.5 w-4 text-center text-mi-primary"></i>Kalender</button>
+            <div id="menu-lainnya" class="mobile-submenu absolute bottom-full mb-3 bg-white border border-mi-border rounded-xl shadow-lg flex-col w-36 overflow-hidden">
+                <button onclick="switchTab('analisa'); toggleMobileMenu('menu-lainnya', 'nav-lainnya')" class="px-4 py-2.5 text-left text-xs md:text-sm text-mi-text1 font-medium hover:bg-mi-soft border-b border-mi-border"><i class="fa-solid fa-chart-simple mr-2 w-4 text-center"></i>Analisa Data</button>
+                <button onclick="switchTab('kalender'); toggleMobileMenu('menu-lainnya', 'nav-lainnya')" class="px-4 py-2.5 text-left text-xs md:text-sm text-mi-text1 font-medium hover:bg-mi-soft"><i class="fa-regular fa-calendar-alt mr-2 w-4 text-center"></i>Kalender</button>
             </div>
         </div>
 
         <!-- 4. Bagikan -->
-        <button onclick="openWhatsAppModal(); closeAllMobileMenus();" class="flex flex-col items-center justify-center w-[20%] py-1.5 rounded-xl text-gray-400 font-medium hover:text-green-600 hover:bg-green-50 transition-all">
+        <button onclick="openWhatsAppModal(); closeAllMobileMenus();" class="flex flex-col items-center justify-center w-[20%] py-1 rounded-xl text-gray-400 font-medium hover:text-green-600 hover:bg-green-50 transition-all">
             <i class="fa-brands fa-whatsapp text-lg md:text-xl mb-1"></i>
             <span class="text-[9px] md:text-[10px]">Bagikan</span>
         </button>
 
-        <!-- 5. Export (Submenu: Excel, PDF) -->
+        <!-- 5. Export -->
         <div class="relative w-[20%] flex justify-center">
-            <button onclick="toggleMobileMenu('menu-export', 'nav-export')" id="nav-export" class="w-full flex flex-col items-center py-1.5 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
+            <button onclick="toggleMobileMenu('menu-export', 'nav-export')" id="nav-export" class="w-full flex flex-col items-center py-1 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
                 <i class="fa-solid fa-file-export text-lg md:text-xl mb-1"></i>
                 <span class="text-[9px] md:text-[10px]">Export</span>
             </button>
-            <div id="menu-export" class="mobile-submenu absolute bottom-full mb-3 right-0 md:right-auto md:-translate-x-1/2 md:left-1/2 bg-white border border-mi-border rounded-xl shadow-[0_-4px_10px_rgba(0,0,0,0.05)] flex-col w-32 overflow-hidden z-50">
-                <button onclick="exportExcel(); toggleMobileMenu('menu-export', 'nav-export')" class="px-4 py-3 text-left text-xs md:text-sm text-[#166534] font-semibold hover:bg-[#F0FDF4] border-b border-mi-border flex items-center"><i class="fa-solid fa-file-excel mr-2.5"></i>Excel</button>
-                <button onclick="exportPDF(); toggleMobileMenu('menu-export', 'nav-export')" class="px-4 py-3 text-left text-xs md:text-sm text-[#9F1239] font-semibold hover:bg-[#FFF1F2] flex items-center"><i class="fa-solid fa-file-pdf mr-2.5"></i>PDF</button>
+            <div id="menu-export" class="mobile-submenu absolute bottom-full mb-3 right-0 bg-white border border-mi-border rounded-xl shadow-lg flex-col w-32 overflow-hidden">
+                <button onclick="exportExcel(); toggleMobileMenu('menu-export', 'nav-export')" class="px-4 py-2.5 text-left text-xs md:text-sm text-[#18794E] font-semibold hover:bg-[#E8F3F0] border-b border-mi-border"><i class="fa-solid fa-file-excel mr-2"></i>Excel</button>
+                <button onclick="exportPDF(); toggleMobileMenu('menu-export', 'nav-export')" class="px-4 py-2.5 text-left text-xs md:text-sm text-[#BE123C] font-semibold hover:bg-[#FFF1F2]"><i class="fa-solid fa-file-pdf mr-2"></i>PDF</button>
             </div>
         </div>
     </nav>
 
-    <!-- Overlay transparent untuk menutup submenu ketika di-klik di luar area -->
+    <!-- Overlay transparent -->
     <div id="mobile-menu-overlay" onclick="closeAllMobileMenus()" class="fixed inset-0 z-30 hidden"></div>
 
     <script>
@@ -800,7 +749,7 @@
         let attendanceMaster = []; 
         
         // --- DATABASE HARI LIBUR (KALENDER) ---
-        // Jika terhubung ke Spreadsheet (GAS), inisialisasi var ini dengan respon JSON dari server.
+        // Diperbarui dengan property type untuk mendukung kategori libur
         let holidaysMaster = [
             { date: '2026-09-02', type: 'Libur Sekolah', desc: 'Rapat Dinas Guru' },
             { date: '2026-09-17', type: 'Libur Nasional', desc: 'Maulid Nabi Muhammad SAW' }
@@ -847,10 +796,10 @@
         }
 
         function getStatusBadgeHtml(percentage) {
-            if (percentage >= 95) return `<span class="px-2 md:px-3 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Sangat Baik</span>`;
-            if (percentage >= 90) return `<span class="px-2 md:px-3 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-blue-50 text-blue-700 border border-blue-200">Baik</span>`;
-            if (percentage >= 80) return `<span class="px-2 md:px-3 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-orange-50 text-orange-700 border border-orange-200">Perlu Perhatian</span>`;
-            return `<span class="px-2 md:px-3 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-rose-50 text-rose-700 border border-rose-200">Perlu Pembinaan</span>`;
+            if (percentage >= 95) return `<span class="px-2 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Sangat Baik</span>`;
+            if (percentage >= 90) return `<span class="px-2 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-blue-50 text-blue-700 border border-blue-200">Baik</span>`;
+            if (percentage >= 80) return `<span class="px-2 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-orange-50 text-orange-700 border border-orange-200">Perlu Perhatian</span>`;
+            return `<span class="px-2 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-rose-50 text-rose-700 border border-rose-200">Perlu Pembinaan</span>`;
         }
 
         function getStatusColor(status) {
@@ -861,13 +810,6 @@
                 case 'Alpa':  return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#ffe4e6] text-[#9f1239]"><i class="fa-solid fa-xmark mr-1 md:mr-1.5 mt-0.5"></i> Alpa</span>`;
                 default: return status;
             }
-        }
-        
-        function getHolidayTypeBadge(type) {
-            if(type === 'Libur Nasional') return `<span class="px-2 py-1 rounded-full bg-red-50 text-red-600 font-bold text-[10px] border border-red-100">Libur Nasional</span>`;
-            if(type === 'Libur Sekolah') return `<span class="px-2 py-1 rounded-full bg-blue-50 text-blue-600 font-bold text-[10px] border border-blue-100">Libur Sekolah</span>`;
-            if(type === 'Cuti Bersama') return `<span class="px-2 py-1 rounded-full bg-purple-50 text-purple-600 font-bold text-[10px] border border-purple-100">Cuti Bersama</span>`;
-            return `<span class="px-2 py-1 rounded-full bg-gray-50 text-gray-600 font-bold text-[10px] border border-gray-100">${type}</span>`;
         }
 
         function initializeDummyData() {
@@ -976,7 +918,7 @@
         }
 
         function resetFilter() {
-            document.getElementById('filterPeriode').value = 'today';
+            document.getElementById('filterPeriode').value = 'this_month';
             handlePeriodChange();
             document.getElementById('filterKelas').value = 'all';
             document.getElementById('filterStatus').value = 'all';
@@ -1004,12 +946,12 @@
             }
             const studentIds = new Set(filteredStudents.map(s => s.id));
 
-            // Setup valid attendance records (ignoring any records mistakenly logged on a weekend or holiday)
+            // Setup valid attendance records
             currentFilteredAttendance = attendanceMaster.filter(record => {
                 if (record.date < startDate || record.date > endDate) return false;
                 if (!studentIds.has(record.studentId)) return false;
                 
-                // Cek Libur & Akhir pekan (Filter keamanan ganda agar tidak jadi false-Alpa)
+                // Cek Libur & Akhir pekan (Filter keamanan ganda)
                 let d = new Date(record.date);
                 if (d.getDay() === 0 || d.getDay() === 6) return false;
                 if (holidaysMaster.some(h => h.date === record.date)) return false;
@@ -1027,7 +969,7 @@
             updateUI();
         }
 
-        // Logic Utama Menghitung Hari Efektif & Hari Libur
+        // Logic Utama Menghitung Hari Efektif
         function getEffectiveDaysInfo(startDateStr, endDateStr) {
             let eff = 0;
             let hols = 0;
@@ -1042,7 +984,7 @@
                     const holiday = holidaysMaster.find(h => h.date === dStr);
                     if (holiday) {
                         hols++;
-                        datesObj.push({ date: dStr, isHoliday: true, desc: holiday.desc });
+                        datesObj.push({ date: dStr, isHoliday: true, desc: holiday.desc, type: holiday.type });
                     } else {
                         eff++;
                         datesObj.push({ date: dStr, isHoliday: false });
@@ -1068,7 +1010,7 @@
             });
 
             currentSummary.totalStudents = filteredStudents.length;
-            currentSummary.totalRecords = currentFilteredAttendance.length; // total real records
+            currentSummary.totalRecords = currentFilteredAttendance.length;
             currentSummary.h = h;
             currentSummary.s = s;
             currentSummary.i = i;
@@ -1089,10 +1031,6 @@
                     else if (r.status === 'Alpa') sa++;
                 });
 
-                // Catatan: Jika sh+ss+si+sa < Hari Efektif, selisihnya dianggap Alpa.
-                let unrecorded = effInfo.effective - (sh+ss+si+sa);
-                if (unrecorded > 0) sa += unrecorded; 
-                
                 currentSummary.recapData.push({
                     id: student.id,
                     name: student.name,
@@ -1116,9 +1054,6 @@
                     });
                     
                     let expectedClassRecs = classStudents.length * effInfo.effective;
-                    let classUnrecorded = expectedClassRecs - (ch+cs+ci+ca);
-                    if(classUnrecorded > 0) ca += classUnrecorded;
-
                     currentSummary.classRecap[c] = {
                         studentCount: classStudents.length,
                         h: ch, s: cs, i: ci, a: ca,
@@ -1211,11 +1146,11 @@
             rekapMode = mode;
             document.getElementById('btn-rekap-ringkas').className = mode === 'ringkas' 
                 ? 'px-4 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all bg-mi-primary text-white shadow-sm' 
-                : 'px-4 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all bg-white border border-mi-border text-mi-text2 hover:text-mi-primary shadow-sm';
+                : 'px-4 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all bg-mi-soft text-mi-text2 hover:text-mi-primary';
             
             document.getElementById('btn-rekap-harian').className = mode === 'harian' 
                 ? 'px-4 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all bg-mi-primary text-white shadow-sm' 
-                : 'px-4 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all bg-white border border-mi-border text-mi-text2 hover:text-mi-primary shadow-sm';
+                : 'px-4 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all bg-mi-soft text-mi-text2 hover:text-mi-primary';
             
             pgState.rekap.page = 1;
             renderRecapTable();
@@ -1270,7 +1205,7 @@
 
                 shownData.forEach((row, index) => {
                     const tr = document.createElement('tr');
-                    tr.className = 'table-row-hover group cursor-pointer';
+                    tr.className = 'table-row-hover';
                     tr.onclick = () => showStudentDetail(row.id);
                     
                     const barWidth = Math.min(row.pct, 100);
@@ -1281,7 +1216,7 @@
                         <td class="px-4 py-3 whitespace-nowrap text-xs md:text-sm text-mi-text2 sticky left-0 bg-white z-10 group-hover:bg-mi-soft">${start + index + 1}</td>
                         <td class="px-4 py-3 whitespace-nowrap sticky left-12 bg-white z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] group-hover:bg-mi-soft">
                             <div class="flex items-center gap-2">
-                                <div class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-mi-soft text-mi-primary flex items-center justify-center text-[10px] md:text-xs font-bold border border-[#D7EAE5]">${initials}</div>
+                                <div class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-mi-soft text-mi-primary flex items-center justify-center text-[10px] md:text-xs font-bold">${initials}</div>
                                 <span class="text-xs md:text-sm font-bold text-mi-text1 truncate max-w-[120px] md:max-w-[200px]">${row.name}</span>
                             </div>
                         </td>
@@ -1290,7 +1225,7 @@
                         <td class="px-2 py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.h}</td>
                         <td class="px-2 py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.s}</td>
                         <td class="px-2 py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.i}</td>
-                        <td class="px-2 py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-rose-600">${row.a}</td>
+                        <td class="px-2 py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.a}</td>
                         <td class="px-4 py-3 whitespace-nowrap">
                             <div class="flex flex-col gap-1 w-full max-w-[120px]">
                                 <span class="font-bold text-mi-text1 text-xs md:text-[13px]">${formatPercentage(row.pct)}</span>
@@ -1305,7 +1240,7 @@
                 });
 
             } else if (rekapMode === 'harian') {
-                // Tampilan Harian (Dengan Hari Libur ditandai Merah Soft)
+                // Tampilan matriks per hari
                 let thHtml = `
                     <tr>
                         <th scope="col" class="px-3 py-3 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider w-10 sticky left-0 bg-mi-bg/95 z-20">No</th>
@@ -1316,30 +1251,30 @@
 
                 currentSummary.datesObj.forEach(dObj => {
                     if (dObj.isHoliday) {
-                        thHtml += `<th scope="col" class="px-2 py-3 text-center text-[9px] md:text-[10px] font-bold text-rose-600 bg-rose-50/50 uppercase border-r border-rose-100 whitespace-nowrap" title="${dObj.desc}">${formatShortDate(dObj.date)}</th>`;
+                        thHtml += `<th scope="col" class="px-2 py-3 text-center text-[9px] md:text-[10px] font-bold text-rose-700 bg-rose-50 uppercase border-r border-rose-200 whitespace-nowrap" title="${dObj.type} - ${dObj.desc}">${formatShortDate(dObj.date)}</th>`;
                     } else {
                         thHtml += `<th scope="col" class="px-2 py-3 text-center text-[9px] md:text-[10px] font-bold text-mi-text2 uppercase border-r border-mi-border whitespace-nowrap">${formatShortDate(dObj.date)}</th>`;
                     }
                 });
 
                 thHtml += `
-                        <th scope="col" class="px-2 py-3 text-center text-[10px] font-bold text-emerald-600 border-l border-mi-border sticky right-[88px] bg-mi-bg/95 z-20 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.05)]">H</th>
-                        <th scope="col" class="px-2 py-3 text-center text-[10px] font-bold text-orange-500 sticky right-[66px] bg-mi-bg/95 z-20">S</th>
-                        <th scope="col" class="px-2 py-3 text-center text-[10px] font-bold text-cyan-600 sticky right-[44px] bg-mi-bg/95 z-20">I</th>
-                        <th scope="col" class="px-2 py-3 text-center text-[10px] font-bold text-rose-600 sticky right-[22px] bg-mi-bg/95 z-20">A</th>
-                        <th scope="col" class="px-3 py-3 text-center text-[10px] font-bold text-mi-primary sticky right-0 bg-mi-soft/95 z-20">%</th>
+                        <th scope="col" class="px-2 py-3 text-center text-[10px] font-bold text-emerald-600 border-l border-mi-border">H</th>
+                        <th scope="col" class="px-2 py-3 text-center text-[10px] font-bold text-orange-500">S</th>
+                        <th scope="col" class="px-2 py-3 text-center text-[10px] font-bold text-cyan-600">I</th>
+                        <th scope="col" class="px-2 py-3 text-center text-[10px] font-bold text-rose-600">A</th>
+                        <th scope="col" class="px-3 py-3 text-center text-[10px] font-bold text-mi-primary">%</th>
                     </tr>
                 `;
                 thead.innerHTML = thHtml;
 
                 shownData.forEach((row, index) => {
                     const tr = document.createElement('tr');
-                    tr.className = 'table-row-hover group cursor-default';
+                    tr.className = 'table-row-hover';
                     
                     let tdHtml = `
                         <td class="px-3 py-2 whitespace-nowrap text-xs text-mi-text2 sticky left-0 bg-white z-10 group-hover:bg-mi-soft border-t border-mi-border">${start + index + 1}</td>
                         <td class="px-4 py-2 whitespace-nowrap sticky left-10 md:left-[2.5rem] bg-white z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] group-hover:bg-mi-soft border-t border-mi-border">
-                            <span class="text-xs md:text-sm font-bold text-mi-text1 truncate max-w-[100px] md:max-w-[150px] inline-block cursor-pointer hover:text-mi-primary" onclick="showStudentDetail('${row.id}')">${row.name}</span>
+                            <span class="text-xs md:text-sm font-bold text-mi-text1 truncate max-w-[100px] md:max-w-[150px] inline-block">${row.name}</span>
                         </td>
                         <td class="px-3 py-2 whitespace-nowrap text-[10px] md:text-xs text-mi-text2 font-medium text-center border-t border-r border-mi-border">${row.className}</td>
                         <td class="px-3 py-2 whitespace-nowrap text-xs md:text-sm font-bold text-slate-600 text-center border-t border-r border-mi-border bg-slate-50/20">${currentSummary.hariEfektif}</td>
@@ -1347,35 +1282,171 @@
 
                     currentSummary.datesObj.forEach(dObj => {
                         if (dObj.isHoliday) {
-                            tdHtml += `<td class="px-1 py-2 text-center border-t border-r border-rose-100 bg-[#FFF1F2]"><span class="text-[8px] font-bold text-[#BE123C] px-1" title="${dObj.desc}">LIBUR</span></td>`;
+                            tdHtml += `<td class="px-1 py-2 text-center border-t border-r border-rose-200 bg-rose-50"><span class="text-[9px] font-bold text-rose-700 px-1.5 py-0.5 rounded-md bg-rose-100" title="${dObj.desc}">LIBUR</span></td>`;
                         } else {
                             const rec = currentFilteredAttendance.find(a => a.studentId === row.id && a.date === dObj.date);
                             let content = '-';
-                            let css = 'text-gray-300';
-                            let tooltip = '';
+                            let css = 'text-gray-400';
                             if(rec) {
                                 if(rec.status==='Hadir') { content = 'H'; css = 'font-bold text-emerald-600'; }
-                                else if(rec.status==='Sakit') { content = 'S'; css = 'font-bold text-orange-500'; tooltip = rec.notes; }
-                                else if(rec.status==='Izin') { content = 'I'; css = 'font-bold text-cyan-600'; tooltip = rec.notes; }
+                                else if(rec.status==='Sakit') { content = 'S'; css = 'font-bold text-orange-500'; }
+                                else if(rec.status==='Izin') { content = 'I'; css = 'font-bold text-cyan-600'; }
                                 else if(rec.status==='Alpa') { content = 'A'; css = 'font-bold text-rose-600'; }
                             } else {
                                 content = 'A'; css = 'font-bold text-rose-600';
                             }
-                            tdHtml += `<td class="px-1 py-2 text-center text-xs md:text-sm ${css} border-t border-r border-mi-border" title="${tooltip}">${content}</td>`;
+                            tdHtml += `<td class="px-1 py-2 text-center text-xs ${css} border-t border-r border-mi-border">${content}</td>`;
                         }
                     });
 
                     tdHtml += `
-                        <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-bold text-emerald-600 border-t border-l border-mi-border sticky right-[88px] bg-white group-hover:bg-mi-soft z-10 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.05)]">${row.h}</td>
-                        <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-bold text-orange-500 border-t border-mi-border sticky right-[66px] bg-white group-hover:bg-mi-soft z-10">${row.s}</td>
-                        <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-bold text-cyan-600 border-t border-mi-border sticky right-[44px] bg-white group-hover:bg-mi-soft z-10">${row.i}</td>
-                        <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-bold text-rose-600 border-t border-mi-border sticky right-[22px] bg-white group-hover:bg-mi-soft z-10">${row.a}</td>
-                        <td class="px-3 py-2 whitespace-nowrap text-[10px] md:text-xs text-center font-bold text-mi-primary border-t border-mi-border sticky right-0 bg-mi-soft/80 group-hover:bg-mi-soft z-10">${formatPercentage(row.pct)}</td>
+                        <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-bold text-emerald-600 border-t border-l border-mi-border bg-gray-50/50">${row.h}</td>
+                        <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-bold text-orange-500 border-t bg-gray-50/50">${row.s}</td>
+                        <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-bold text-cyan-600 border-t bg-gray-50/50">${row.i}</td>
+                        <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-bold text-rose-600 border-t bg-gray-50/50">${row.a}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-[10px] md:text-xs text-center font-bold text-mi-primary border-t bg-mi-soft/30">${formatPercentage(row.pct)}</td>
                     `;
                     tr.innerHTML = tdHtml;
                     tbody.appendChild(tr);
                 });
             }
+        }
+
+        function renderKalenderTable() {
+            const tbody = document.getElementById('tbody-kalender');
+            const emptyState = document.getElementById('empty-kalender');
+            tbody.innerHTML = '';
+
+            let sortedHolidays = [...holidaysMaster].sort((a,b) => new Date(a.date) - new Date(b.date));
+            if (sortedHolidays.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            sortedHolidays.forEach((hol, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-[#FFF1F2] transition-colors border-l-4 border-l-transparent hover:border-l-rose-400';
+                const dayName = new Date(hol.date).toLocaleDateString('id-ID', {weekday: 'long'});
+                
+                let badgeClass = '';
+                if(hol.type === 'Libur Nasional') badgeClass = 'bg-red-100 text-red-700';
+                else if(hol.type === 'Libur Sekolah') badgeClass = 'bg-blue-100 text-blue-700';
+                else if(hol.type === 'Cuti Bersama') badgeClass = 'bg-purple-100 text-purple-700';
+                else badgeClass = 'bg-gray-100 text-gray-700';
+
+                tr.innerHTML = `
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-xs text-mi-text2">${index + 1}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-xs font-bold text-mi-text1">${formatDateIndo(hol.date)}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-xs text-mi-text2">${dayName}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-xs font-medium"><span class="px-2.5 py-1 rounded-md font-bold text-[10px] ${badgeClass}">${hol.type}</span></td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-xs font-medium text-mi-text1">${hol.desc}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-center">
+                        <button onclick="editHolidayPrompt('${hol.date}')" class="text-blue-500 hover:text-blue-700 p-1.5 bg-blue-50 rounded mr-1" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteHoliday('${hol.date}')" class="text-rose-500 hover:text-rose-700 p-1.5 bg-rose-50 rounded" title="Hapus"><i class="fa-solid fa-trash-alt"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addHolidayPrompt() {
+            Swal.fire({
+                title: 'Tambah Hari Libur',
+                html: `
+                    <input type="date" id="swal-hol-date" class="w-full border border-gray-300 rounded-xl p-2 mb-3 text-sm focus:ring-2 focus:ring-mi-primary/20 outline-none">
+                    <select id="swal-hol-type" class="w-full border border-gray-300 rounded-xl p-2 mb-3 text-sm focus:ring-2 focus:ring-mi-primary/20 outline-none">
+                        <option value="Libur Nasional">Libur Nasional</option>
+                        <option value="Libur Sekolah">Libur Sekolah</option>
+                        <option value="Cuti Bersama">Cuti Bersama</option>
+                    </select>
+                    <input type="text" id="swal-hol-desc" class="w-full border border-gray-300 rounded-xl p-2 text-sm focus:ring-2 focus:ring-mi-primary/20 outline-none" placeholder="Keterangan Libur (cth: Idul Fitri)">
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#124F47',
+                preConfirm: () => {
+                    const date = document.getElementById('swal-hol-date').value;
+                    const type = document.getElementById('swal-hol-type').value;
+                    const desc = document.getElementById('swal-hol-desc').value;
+                    if(!date || !desc) {
+                        Swal.showValidationMessage('Tanggal dan Keterangan wajib diisi!');
+                        return false;
+                    }
+                    if(holidaysMaster.find(h => h.date === date)) {
+                        Swal.showValidationMessage('Tanggal tersebut sudah diatur sebagai hari libur!');
+                        return false;
+                    }
+                    return {date, type, desc};
+                }
+            }).then((res) => {
+                if(res.isConfirmed) {
+                    holidaysMaster.push({ date: res.value.date, type: res.value.type, desc: res.value.desc });
+                    Swal.fire({title:'Tersimpan', icon:'success', toast:true, position:'top-end', showConfirmButton:false, timer:1500});
+                    applyFilters(); 
+                }
+            });
+        }
+
+        function editHolidayPrompt(oldDate) {
+            const hol = holidaysMaster.find(h => h.date === oldDate);
+            if (!hol) return;
+
+            Swal.fire({
+                title: 'Edit Hari Libur',
+                html: `
+                    <input type="date" id="swal-hol-date" class="w-full border border-gray-300 rounded-xl p-2 mb-3 text-sm focus:ring-2 focus:ring-mi-primary/20 outline-none" value="${hol.date}">
+                    <select id="swal-hol-type" class="w-full border border-gray-300 rounded-xl p-2 mb-3 text-sm focus:ring-2 focus:ring-mi-primary/20 outline-none">
+                        <option value="Libur Nasional" ${hol.type === 'Libur Nasional' ? 'selected' : ''}>Libur Nasional</option>
+                        <option value="Libur Sekolah" ${hol.type === 'Libur Sekolah' ? 'selected' : ''}>Libur Sekolah</option>
+                        <option value="Cuti Bersama" ${hol.type === 'Cuti Bersama' ? 'selected' : ''}>Cuti Bersama</option>
+                    </select>
+                    <input type="text" id="swal-hol-desc" class="w-full border border-gray-300 rounded-xl p-2 text-sm focus:ring-2 focus:ring-mi-primary/20 outline-none" value="${hol.desc}" placeholder="Keterangan Libur">
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan Perubahan',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#124F47',
+                preConfirm: () => {
+                    const date = document.getElementById('swal-hol-date').value;
+                    const type = document.getElementById('swal-hol-type').value;
+                    const desc = document.getElementById('swal-hol-desc').value;
+                    if(!date || !desc) {
+                        Swal.showValidationMessage('Tanggal dan Keterangan wajib diisi!');
+                        return false;
+                    }
+                    if(date !== oldDate && holidaysMaster.find(h => h.date === date)) {
+                        Swal.showValidationMessage('Tanggal tersebut sudah digunakan libur lain!');
+                        return false;
+                    }
+                    return {date, type, desc};
+                }
+            }).then((res) => {
+                if(res.isConfirmed) {
+                    const index = holidaysMaster.findIndex(h => h.date === oldDate);
+                    holidaysMaster[index] = { date: res.value.date, type: res.value.type, desc: res.value.desc };
+                    Swal.fire({title:'Diperbarui', icon:'success', toast:true, position:'top-end', showConfirmButton:false, timer:1500});
+                    applyFilters(); 
+                }
+            });
+        }
+
+        function deleteHoliday(date) {
+            Swal.fire({
+                title: 'Hapus Hari Libur?',
+                text: "Data akan dihapus dan Hari Efektif akan dikalkulasi ulang.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    holidaysMaster = holidaysMaster.filter(h => h.date !== date);
+                    Swal.fire({title:'Dihapus!', icon:'success', toast:true, position:'top-end', showConfirmButton:false, timer:1500});
+                    applyFilters();
+                }
+            });
         }
 
         function renderAnalysis() {
@@ -1414,13 +1485,13 @@
                         const tr = document.createElement('tr');
                         tr.className = 'hover:bg-mi-soft/30 transition-colors';
                         tr.innerHTML = `
-                            <td class="px-3 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm font-bold text-mi-text1">${c}</td>
-                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center text-mi-text2">${dat.studentCount}</td>
-                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-emerald-600">${dat.h}</td>
-                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-orange-500">${dat.s}</td>
-                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-cyan-600">${dat.i}</td>
-                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-rose-600">${dat.a}</td>
-                            <td class="px-3 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-bold text-mi-primary">${formatPercentage(dat.pct)}</td>
+                            <td class="px-3 py-2 whitespace-nowrap text-xs font-bold text-mi-text1">${c}</td>
+                            <td class="px-2 py-2 whitespace-nowrap text-xs text-center text-mi-text2">${dat.studentCount}</td>
+                            <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-semibold text-emerald-600">${dat.h}</td>
+                            <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-semibold text-orange-500">${dat.s}</td>
+                            <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-semibold text-cyan-600">${dat.i}</td>
+                            <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-semibold text-rose-600">${dat.a}</td>
+                            <td class="px-3 py-2 whitespace-nowrap text-xs text-center font-bold text-mi-primary">${formatPercentage(dat.pct)}</td>
                         `;
                         tbody.appendChild(tr);
                     }
@@ -1476,12 +1547,10 @@
                 targetEl.innerHTML = "<li>-</li>"; return;
             }
             let recs = [];
-            let totalExp = currentSummary.totalStudents * currentSummary.hariEfektif;
-            if(totalExp === 0) { targetEl.innerHTML = "<li>-</li>"; return; }
-
-            let alpaRate = (currentSummary.a / totalExp) * 100;
-            let sakitRate = (currentSummary.s / totalExp) * 100;
-            let izinRate = (currentSummary.i / totalExp) * 100;
+            let total = currentSummary.totalRecords;
+            let alpaRate = (currentSummary.a / total) * 100;
+            let sakitRate = (currentSummary.s / total) * 100;
+            let izinRate = (currentSummary.i / total) * 100;
 
             if (alpaRate > 2) recs.push('<i class="fa-solid fa-circle-exclamation text-rose-500 mr-2 mt-0.5"></i> Perlu dilakukan pemantauan terhadap tingkat ketidakhadiran tanpa keterangan (Alpa).');
             if (sakitRate > 5) recs.push('<i class="fa-solid fa-notes-medical text-orange-500 mr-2 mt-0.5"></i> Koordinasikan kondisi siswa yang sakit dengan wali kelas dan orang tua terkait.');
@@ -1500,103 +1569,7 @@
             });
         }
 
-        function renderKalenderTable() {
-            const tbody = document.getElementById('tbody-kalender');
-            const emptyState = document.getElementById('empty-kalender');
-            tbody.innerHTML = '';
-
-            let sortedHolidays = [...holidaysMaster].sort((a,b) => new Date(a.date) - new Date(b.date));
-            if (sortedHolidays.length === 0) {
-                emptyState.classList.remove('hidden');
-                return;
-            }
-            emptyState.classList.add('hidden');
-
-            sortedHolidays.forEach((hol, index) => {
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-mi-soft/30 transition-colors';
-                const dayName = new Date(hol.date).toLocaleDateString('id-ID', {weekday: 'long'});
-                
-                tr.innerHTML = `
-                    <td class="px-4 md:px-6 py-3 whitespace-nowrap text-xs md:text-sm text-mi-text2">${index + 1}</td>
-                    <td class="px-4 md:px-6 py-3 whitespace-nowrap text-xs md:text-sm font-bold text-mi-text1">${formatDateIndo(hol.date)}</td>
-                    <td class="px-4 md:px-6 py-3 whitespace-nowrap text-xs md:text-sm text-mi-text2">${dayName}</td>
-                    <td class="px-4 md:px-6 py-3 whitespace-nowrap text-xs">${getHolidayTypeBadge(hol.type)}</td>
-                    <td class="px-4 md:px-6 py-3 whitespace-nowrap text-xs md:text-sm font-medium text-mi-text1">${hol.desc}</td>
-                    <td class="px-4 md:px-6 py-3 whitespace-nowrap text-center">
-                        <button onclick="deleteHoliday('${hol.date}')" class="text-rose-500 hover:text-rose-700 p-1.5 bg-rose-50 rounded-lg border border-rose-100 transition-colors" title="Hapus Libur"><i class="fa-solid fa-trash-alt"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function addHolidayPrompt() {
-            Swal.fire({
-                title: '<span class="text-mi-text1 text-lg font-bold">Tambah Hari Libur</span>',
-                html: `
-                    <div class="text-left mt-2">
-                        <label class="block text-xs font-bold text-mi-text2 mb-1">Tanggal</label>
-                        <input type="date" id="swal-hol-date" class="w-full border border-mi-border rounded-xl p-2.5 mb-3 text-sm focus:outline-none focus:border-mi-primary">
-                        
-                        <label class="block text-xs font-bold text-mi-text2 mb-1">Jenis Libur</label>
-                        <select id="swal-hol-type" class="w-full border border-mi-border rounded-xl p-2.5 mb-3 text-sm focus:outline-none focus:border-mi-primary">
-                            <option value="Libur Nasional">Libur Nasional</option>
-                            <option value="Libur Sekolah">Libur Sekolah</option>
-                            <option value="Cuti Bersama">Cuti Bersama</option>
-                        </select>
-
-                        <label class="block text-xs font-bold text-mi-text2 mb-1">Keterangan</label>
-                        <input type="text" id="swal-hol-desc" class="w-full border border-mi-border rounded-xl p-2.5 text-sm focus:outline-none focus:border-mi-primary" placeholder="Cth: Maulid Nabi Muhammad SAW">
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'Simpan',
-                cancelButtonText: 'Batal',
-                confirmButtonColor: '#124F47',
-                cancelButtonColor: '#6B7C78',
-                preConfirm: () => {
-                    const date = document.getElementById('swal-hol-date').value;
-                    const type = document.getElementById('swal-hol-type').value;
-                    const desc = document.getElementById('swal-hol-desc').value;
-                    if(!date || !desc) {
-                        Swal.showValidationMessage('Tanggal dan Keterangan wajib diisi!');
-                        return false;
-                    }
-                    if(holidaysMaster.find(h => h.date === date)) {
-                        Swal.showValidationMessage('Tanggal tersebut sudah diatur sebagai hari libur!');
-                        return false;
-                    }
-                    return {date, type, desc};
-                }
-            }).then((res) => {
-                if(res.isConfirmed) {
-                    holidaysMaster.push({ date: res.value.date, type: res.value.type, desc: res.value.desc });
-                    Swal.fire({title:'Tersimpan', icon:'success', toast:true, position:'top-end', showConfirmButton:false, timer:1500});
-                    applyFilters(); // Rekalkulasi seluruh data efektif
-                }
-            });
-        }
-
-        function deleteHoliday(date) {
-            Swal.fire({
-                title: 'Hapus Hari Libur?',
-                text: "Data akan dihapus dan Hari Efektif akan dikalkulasi ulang.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6B7C78',
-                confirmButtonText: 'Ya, Hapus',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    holidaysMaster = holidaysMaster.filter(h => h.date !== date);
-                    Swal.fire({title:'Dihapus!', icon:'success', toast:true, position:'top-end', showConfirmButton:false, timer:1500});
-                    applyFilters();
-                }
-            });
-        }
-
+        // --- MANAJEMEN TAB & RESPONSIVE MENU ---
         function switchTab(tabId) {
             currentTab = tabId;
             closeAllMobileMenus();
@@ -1671,7 +1644,9 @@
             const navIds = ['nav-lainnya', 'nav-export'];
             navIds.forEach(id => {
                 const btn = document.getElementById(id);
+                // Kembalikan style dasar KECUALI tab tersebut sedang aktif sebagai content
                 if (id === 'nav-lainnya' && (currentTab === 'analisa' || currentTab === 'kalender')) return;
+                
                 btn.classList.remove('text-mi-primary', 'font-bold');
                 btn.classList.add('text-gray-400');
             });
@@ -1690,8 +1665,49 @@
             if(id === 'modalStudent') currentStudentId = null;
         }
 
-        let currentWAText = "";
+        function showStudentDetail(studentId) {
+            currentStudentId = studentId;
+            const student = studentsMaster.find(s => s.id === studentId);
+            const recap = currentSummary.recapData.find(r => r.id === studentId);
+            const history = currentFilteredAttendance.filter(r => r.studentId === studentId).sort((a,b) => new Date(b.date) - new Date(a.date));
 
+            document.getElementById('detailName').innerText = student.name;
+            document.getElementById('detailClass').innerText = student.className;
+            document.getElementById('detHariEfektif').innerText = currentSummary.hariEfektif;
+            
+            if(recap) {
+                document.getElementById('detH').innerText = recap.h;
+                document.getElementById('detS').innerText = recap.s;
+                document.getElementById('detI').innerText = recap.i;
+                document.getElementById('detA').innerText = recap.a;
+                document.getElementById('detPct').innerText = formatPercentage(recap.pct);
+                document.getElementById('detStatusBadge').innerHTML = getStatusBadgeHtml(recap.pct);
+
+                const ctx = document.getElementById('chartStudentDetail').getContext('2d');
+                if (charts.studentDetail) charts.studentDetail.destroy();
+                charts.studentDetail = new Chart(ctx, {
+                    type: 'pie',
+                    data: { labels: ['H', 'S', 'I', 'A'], datasets: [{ data: [recap.h, recap.s, recap.i, recap.a], backgroundColor: ['#34D399', '#FB923C', '#38BDF8', '#F87171'], borderWidth: 2, borderColor: '#ffffff' }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins:{ legend:{position:'right', labels:{boxWidth:10, font:{family:'Inter', size:10}}} } }
+                });
+            }
+
+            const tbody = document.getElementById('tbody-detail-riwayat');
+            tbody.innerHTML = '';
+            history.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-3 py-2 whitespace-nowrap text-[11px] md:text-xs font-medium text-mi-text1">${formatDateIndo(row.date)}</td>
+                    <td class="px-3 py-2 whitespace-nowrap">${getStatusColor(row.status)}</td>
+                    <td class="px-3 py-2 whitespace-nowrap text-[11px] md:text-xs text-mi-text2 truncate max-w-[150px]" title="${row.notes}">${row.notes}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            document.getElementById('modalStudent').classList.remove('hidden');
+        }
+
+        // --- WHATSAPP ---
+        let currentWAText = "";
         function openWhatsAppModal() {
             generateWhatsAppReport();
             document.getElementById('waPreviewText').innerText = currentWAText;
@@ -1754,19 +1770,19 @@
             window.open(`https://wa.me/?text=${encodeURIComponent(currentWAText)}`, '_blank');
         }
 
+        // --- EXPORT MASTER ---
         function exportExcel() {
             if (currentTab === 'rekap') exportRecapExcel();
             else if (currentTab === 'riwayat') exportHistoryExcel();
             else if (currentTab === 'analisa') exportAnalysisExcel();
-            else if (currentTab === 'kalender') Swal.fire('Info', 'Export Kalender belum tersedia.', 'info');
         }
         function exportPDF() {
             if (currentTab === 'rekap') exportRecapPDF();
             else if (currentTab === 'riwayat') exportHistoryPDF();
             else if (currentTab === 'analisa') exportAnalysisPDF();
-            else if (currentTab === 'kalender') Swal.fire('Info', 'Export Kalender belum tersedia.', 'info');
         }
 
+        // EXPORT REKAP (Menyesuaikan Ringkas/Harian)
         function exportRecapExcel() {
             if(currentSummary.recapData.length === 0) return Swal.fire('Data Kosong', '', 'info');
             
@@ -1780,36 +1796,27 @@
                     "Hadir": row.h, "Sakit": row.s, "Izin": row.i, "Alpa": row.a, 
                     "% Kehadiran": formatPercentage(row.pct)
                 }));
-                const ws = XLSX.utils.json_to_sheet(exportData);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Rekap Presensi");
-                ws['!cols'] = [ {wch: 5}, {wch: 25}, {wch: 15}, {wch: 12}, {wch: 8}, {wch: 8}, {wch: 8}, {wch: 8}, {wch: 15} ];
-                XLSX.writeFile(wb, `Rekap_RINGKAS_${document.getElementById('filterStartDate').value}.xlsx`);
             } else {
-                let aoa = [];
-                let headerRow = ["No", "Nama Siswa", "Kelas", "Hr Efektif"];
-                currentSummary.datesObj.forEach(dObj => headerRow.push(dObj.isHoliday ? `${formatShortDate(dObj.date)} (L)` : formatShortDate(dObj.date)));
-                headerRow.push("H", "S", "I", "A", "%");
-                aoa.push(headerRow);
-
-                sortedData.forEach((row, i) => {
-                    let dataRow = [i + 1, row.name, row.className, currentSummary.hariEfektif];
+                exportData = sortedData.map((row, index) => {
+                    let obj = { "No": index + 1, "Nama Siswa": row.name, "Kelas": row.className, "Hr Efektif": currentSummary.hariEfektif };
                     currentSummary.datesObj.forEach(dObj => {
-                        if(dObj.isHoliday) dataRow.push('LIBUR');
+                        let shortDate = formatShortDate(dObj.date);
+                        if(dObj.isHoliday) obj[shortDate] = 'LIBUR';
                         else {
                             let rec = currentFilteredAttendance.find(a => a.studentId === row.id && a.date === dObj.date);
-                            dataRow.push(rec ? rec.status.charAt(0) : 'A');
+                            obj[shortDate] = rec ? rec.status.charAt(0) : 'A';
                         }
                     });
-                    dataRow.push(row.h, row.s, row.i, row.a, formatPercentage(row.pct));
-                    aoa.push(dataRow);
+                    obj["H"] = row.h; obj["S"] = row.s; obj["I"] = row.i; obj["A"] = row.a;
+                    obj["% Kehadiran"] = formatPercentage(row.pct);
+                    return obj;
                 });
-
-                const ws = XLSX.utils.aoa_to_sheet(aoa);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Rekap Harian");
-                XLSX.writeFile(wb, `Rekap_HARIAN_${document.getElementById('filterStartDate').value}.xlsx`);
             }
+
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Rekap Presensi");
+            XLSX.writeFile(wb, `Rekap_${rekapMode.toUpperCase()}_${document.getElementById('filterStartDate').value}.xlsx`);
         }
 
         function exportRecapPDF() {
@@ -1820,24 +1827,32 @@
             doc.setFontSize(14); doc.text(`LAPORAN REKAP PRESENSI - ${rekapMode.toUpperCase()}`, 14, 20);
             doc.setFontSize(10);
             doc.text(`Periode: ${document.getElementById('filterStartDate').value} s/d ${document.getElementById('filterEndDate').value}`, 14, 26);
-            doc.text(`Hari Efektif: ${currentSummary.hariEfektif} | Hari Libur: ${currentSummary.hariLibur} | Total Siswa: ${currentSummary.totalStudents}`, 14, 32);
+            doc.text(`Hari Efektif: ${currentSummary.hariEfektif} | Total Siswa: ${currentSummary.totalStudents}`, 14, 32);
 
             let sortedData = [...currentSummary.recapData].sort((a,b) => a.className.localeCompare(b.className) || a.name.localeCompare(b.name));
             
             let tableCols = []; let tableRows = [];
+            let holidayColIndices = [];
+
             if (rekapMode === 'ringkas') {
                 tableCols = ["No", "Nama Siswa", "Kelas", "Hr Efektif", "H", "S", "I", "A", "%"];
                 tableRows = sortedData.map((r, i) => [i + 1, r.name, r.className, currentSummary.hariEfektif, r.h, r.s, r.i, r.a, formatPercentage(r.pct)]);
-                doc.autoTable({ head: [tableCols], body: tableRows, startY: 38, theme: 'grid', styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [18, 79, 71] } });
             } else {
                 tableCols = ["No", "Nama", "Kelas"];
-                currentSummary.datesObj.forEach(dObj => tableCols.push(dObj.isHoliday ? 'Lbr' : dObj.date.split('-')[2])); 
+                currentSummary.datesObj.forEach((dObj, idx) => {
+                    if (dObj.isHoliday) {
+                        tableCols.push('Lbr');
+                        holidayColIndices.push(idx + 3); // +3 karena ada No, Nama, Kelas di awal
+                    } else {
+                        tableCols.push(dObj.date.split('-')[2]);
+                    }
+                });
                 tableCols.push("H","S","I","A","%");
                 
                 tableRows = sortedData.map((r, i) => {
                     let rowArr = [i + 1, r.name, r.className];
                     currentSummary.datesObj.forEach(dObj => {
-                        if(dObj.isHoliday) rowArr.push('L');
+                        if(dObj.isHoliday) rowArr.push('LIBUR');
                         else {
                             let rec = currentFilteredAttendance.find(a => a.studentId === r.id && a.date === dObj.date);
                             rowArr.push(rec ? rec.status.charAt(0) : 'A');
@@ -1846,23 +1861,35 @@
                     rowArr.push(r.h, r.s, r.i, r.a, formatPercentage(r.pct));
                     return rowArr;
                 });
+            }
 
-                doc.autoTable({ 
-                    head: [tableCols], body: tableRows, startY: 38, theme: 'grid', styles: { fontSize: 7, cellPadding: 1 }, headStyles: { fillColor: [18, 79, 71] },
-                    didParseCell: function(data) {
-                        if (data.section === 'body' && data.cell.raw === 'L') {
-                            data.cell.text = ['LIBUR'];
-                            data.cell.styles.fillColor = [255, 241, 242]; // merah soft
-                            data.cell.styles.textColor = [190, 18, 60];   // dark rose
+            doc.autoTable({ 
+                head: [tableCols], 
+                body: tableRows, 
+                startY: 38, 
+                theme: 'grid', 
+                styles: { fontSize: 7, cellPadding: 1 }, 
+                headStyles: { fillColor: [18, 79, 71] },
+                didParseCell: function(data) {
+                    if (rekapMode === 'harian') {
+                        // Warnai header libur
+                        if (data.section === 'head' && holidayColIndices.includes(data.column.index)) {
+                            data.cell.styles.fillColor = [254, 205, 211]; // rose-200
+                            data.cell.styles.textColor = [190, 18, 60]; // rose-700
+                        }
+                        // Warnai isi cell libur
+                        if (data.section === 'body' && (data.cell.raw === 'LIBUR' || data.cell.raw === 'Lbr')) {
+                            data.cell.styles.fillColor = [255, 241, 242]; // rose-50
+                            data.cell.styles.textColor = [190, 18, 60]; // rose-700
                             data.cell.styles.fontStyle = 'bold';
-                            data.cell.styles.halign = 'center';
                         }
                     }
-                });
-            }
-            doc.save(`Rekap_${rekapMode.toUpperCase()}_${document.getElementById('filterStartDate').value}.pdf`);
+                }
+            });
+            doc.save(`Rekap_${rekapMode.toUpperCase()}.pdf`);
         }
 
+        // Export History
         function exportHistoryExcel() {
             if(currentFilteredAttendance.length === 0) return Swal.fire('Data Kosong', '', 'info');
             const data = [...currentFilteredAttendance].sort((a,b) => new Date(b.date) - new Date(a.date)).map((r, i) => ({
@@ -1885,50 +1912,21 @@
             doc.save(`Riwayat_Presensi.pdf`);
         }
 
-        function exportAnalysisExcel() {
-            if(currentSummary.totalRecords === 0) return Swal.fire('Data Kosong', '', 'info');
-            const wb = XLSX.utils.book_new();
-
-            const summaryData = [
-                { "Indikator": "Total Siswa", "Nilai": currentSummary.totalStudents },
-                { "Indikator": "Hari Efektif", "Nilai": currentSummary.hariEfektif },
-                { "Indikator": "Hari Libur", "Nilai": currentSummary.hariLibur },
-                { "Indikator": "Hadir", "Nilai": currentSummary.h },
-                { "Indikator": "Sakit", "Nilai": currentSummary.s },
-                { "Indikator": "Izin", "Nilai": currentSummary.i },
-                { "Indikator": "Alpa", "Nilai": currentSummary.a },
-                { "Indikator": "Persentase Kehadiran", "Nilai": formatPercentage(currentSummary.pct) }
-            ];
-            const wsSummary = XLSX.utils.json_to_sheet(summaryData);
-            wsSummary['!cols'] = [{wch: 25}, {wch: 15}];
-            XLSX.utils.book_append_sheet(wb, wsSummary, "Ringkasan");
-
-            const classData = [];
-            for (let c in currentSummary.classRecap) {
-                let dat = currentSummary.classRecap[c];
-                classData.push({
-                    "Kelas": c, "Siswa": dat.studentCount, "Hadir": dat.h, 
-                    "Sakit": dat.s, "Izin": dat.i, "Alpa": dat.a, "% Kehadiran": formatPercentage(dat.pct)
-                });
-            }
-            if(classData.length > 0) {
-                const wsClass = XLSX.utils.json_to_sheet(classData);
-                XLSX.utils.book_append_sheet(wb, wsClass, "Analisa Per Kelas");
-            }
-            XLSX.writeFile(wb, `Analisa_Presensi.xlsx`);
+        // Detail Siswa Export
+        function exportStudentDetailExcel() {
+            if(!currentStudentId) return;
+            const history = currentFilteredAttendance.filter(r => r.studentId === currentStudentId).sort((a,b) => new Date(b.date) - new Date(a.date));
+            const ws = XLSX.utils.json_to_sheet(history.map((r,i) => ({"No": i+1, "Tanggal": r.date, "Status": r.status, "Keterangan": r.notes})));
+            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Detail");
+            XLSX.writeFile(wb, `Detail_Siswa_${currentStudentId}.xlsx`);
         }
-
-        function exportAnalysisPDF() {
-            if(currentSummary.totalRecords === 0) return Swal.fire('Data Kosong', '', 'info');
+        function exportStudentDetailPDF() {
+            if(!currentStudentId) return;
+            const history = currentFilteredAttendance.filter(r => r.studentId === currentStudentId).sort((a,b) => new Date(b.date) - new Date(a.date));
             const { jsPDF } = window.jspdf; const doc = new jsPDF();
-            doc.setFontSize(16); doc.text("LAPORAN ANALISA PRESENSI", 14, 20);
-            
-            const sumBody = [
-                ["Total Siswa", currentSummary.totalStudents], ["Hari Efektif", currentSummary.hariEfektif],
-                ["Hari Libur", currentSummary.hariLibur], ["Persentase Kehadiran", formatPercentage(currentSummary.pct)]
-            ];
-            doc.autoTable({ body: sumBody, startY: 30, theme: 'grid', styles: { fontSize: 9, cellPadding: 2 } });
-            doc.save(`Analisa_Presensi.pdf`);
+            doc.text(`Detail Presensi - ${studentsMaster.find(s=>s.id===currentStudentId).name}`, 14, 20);
+            doc.autoTable({ head: [["No","Tanggal","Status","Keterangan"]], body: history.map((r,i)=>[i+1, r.date, r.status, r.notes]), startY: 30, theme:'grid' });
+            doc.save(`Detail_Siswa_${currentStudentId}.pdf`);
         }
 
         window.onload = function() {
