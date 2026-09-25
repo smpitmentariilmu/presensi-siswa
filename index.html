@@ -812,6 +812,39 @@
             }
         }
 
+        // --- HELPER EXPORT FILE NAME ---
+        function getFormattedDateForFile(dateString) {
+            if (!dateString) return '';
+            const parts = dateString.split('-');
+            if (parts.length === 3) {
+                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+            return dateString;
+        }
+
+        function generateExportFileName(reportName, extension) {
+            const startDate = document.getElementById('filterStartDate').value;
+            const endDate = document.getElementById('filterEndDate').value;
+            const selectedClass = document.getElementById('filterKelas').value;
+
+            let periodStr = '';
+            if (startDate === endDate) {
+                periodStr = getFormattedDateForFile(startDate);
+            } else {
+                periodStr = `${getFormattedDateForFile(startDate)}_s.d._${getFormattedDateForFile(endDate)}`;
+            }
+
+            let classStr = '';
+            if (selectedClass !== 'all') {
+                // Bersihkan karakter ilegal dan replace spasi
+                let sanitizedClass = selectedClass.replace(/[\\/:*?"<>|]/g, '_').replace(/\s+/g, '_');
+                sanitizedClass = sanitizedClass.replace(/_+/g, '_');
+                classStr = sanitizedClass + '_';
+            }
+
+            return `${reportName}_${classStr}${periodStr}.${extension}`;
+        }
+
         function initializeDummyData() {
             let studentIdCounter = 1;
             CLASS_LIST.forEach(className => {
@@ -883,7 +916,7 @@
                 classSelect.appendChild(opt);
             });
 
-            document.getElementById('filterPeriode').value = 'this_month';
+            document.getElementById('filterPeriode').value = 'today';
             handlePeriodChange();
         }
 
@@ -918,7 +951,7 @@
         }
 
         function resetFilter() {
-            document.getElementById('filterPeriode').value = 'this_month';
+            document.getElementById('filterPeriode').value = 'today';
             handlePeriodChange();
             document.getElementById('filterKelas').value = 'all';
             document.getElementById('filterStatus').value = 'all';
@@ -1774,12 +1807,16 @@
         function exportExcel() {
             if (currentTab === 'rekap') exportRecapExcel();
             else if (currentTab === 'riwayat') exportHistoryExcel();
-            else if (currentTab === 'analisa') exportAnalysisExcel();
+            else if (currentTab === 'analisa') {
+                if (typeof exportAnalysisExcel === 'function') exportAnalysisExcel();
+            }
         }
         function exportPDF() {
             if (currentTab === 'rekap') exportRecapPDF();
             else if (currentTab === 'riwayat') exportHistoryPDF();
-            else if (currentTab === 'analisa') exportAnalysisPDF();
+            else if (currentTab === 'analisa') {
+                if (typeof exportAnalysisPDF === 'function') exportAnalysisPDF();
+            }
         }
 
         // EXPORT REKAP (Menyesuaikan Ringkas/Harian)
@@ -1816,7 +1853,9 @@
             const ws = XLSX.utils.json_to_sheet(exportData);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Rekap Presensi");
-            XLSX.writeFile(wb, `Rekap_${rekapMode.toUpperCase()}_${document.getElementById('filterStartDate').value}.xlsx`);
+            
+            const fileName = generateExportFileName('Rekap_Presensi', 'xlsx');
+            XLSX.writeFile(wb, fileName);
         }
 
         function exportRecapPDF() {
@@ -1886,7 +1925,9 @@
                     }
                 }
             });
-            doc.save(`Rekap_${rekapMode.toUpperCase()}.pdf`);
+            
+            const fileName = generateExportFileName('Rekap_Presensi', 'pdf');
+            doc.save(fileName);
         }
 
         // Export History
@@ -1899,7 +1940,9 @@
             const ws = XLSX.utils.json_to_sheet(data);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Riwayat");
-            XLSX.writeFile(wb, `Riwayat_Presensi.xlsx`);
+            
+            const fileName = generateExportFileName('Riwayat_Presensi', 'xlsx');
+            XLSX.writeFile(wb, fileName);
         }
         function exportHistoryPDF() {
             if(currentFilteredAttendance.length === 0) return Swal.fire('Data Kosong', '', 'info');
@@ -1909,7 +1952,9 @@
             const cols = ["No", "Tanggal", "Nama Siswa", "Kelas", "Status", "Keterangan"];
             const rows = data.map((r, i) => [i + 1, formatDateIndo(r.date), r.studentName, r.className, r.status, r.notes]);
             doc.autoTable({ head: [cols], body: rows, startY: 30, theme: 'grid', styles: { fontSize: 8 }, headStyles: { fillColor: [18, 79, 71] } });
-            doc.save(`Riwayat_Presensi.pdf`);
+            
+            const fileName = generateExportFileName('Riwayat_Presensi', 'pdf');
+            doc.save(fileName);
         }
 
         // Detail Siswa Export
@@ -1918,15 +1963,24 @@
             const history = currentFilteredAttendance.filter(r => r.studentId === currentStudentId).sort((a,b) => new Date(b.date) - new Date(a.date));
             const ws = XLSX.utils.json_to_sheet(history.map((r,i) => ({"No": i+1, "Tanggal": r.date, "Status": r.status, "Keterangan": r.notes})));
             const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Detail");
-            XLSX.writeFile(wb, `Detail_Siswa_${currentStudentId}.xlsx`);
+            
+            const student = studentsMaster.find(s=>s.id===currentStudentId);
+            const baseName = `Detail_Siswa_${student.name.replace(/[\\/:*?"<>|]/g, '_').replace(/\s+/g, '_')}`;
+            const fileName = generateExportFileName(baseName, 'xlsx');
+            XLSX.writeFile(wb, fileName);
         }
         function exportStudentDetailPDF() {
             if(!currentStudentId) return;
             const history = currentFilteredAttendance.filter(r => r.studentId === currentStudentId).sort((a,b) => new Date(b.date) - new Date(a.date));
             const { jsPDF } = window.jspdf; const doc = new jsPDF();
-            doc.text(`Detail Presensi - ${studentsMaster.find(s=>s.id===currentStudentId).name}`, 14, 20);
+            
+            const student = studentsMaster.find(s=>s.id===currentStudentId);
+            doc.text(`Detail Presensi - ${student.name}`, 14, 20);
             doc.autoTable({ head: [["No","Tanggal","Status","Keterangan"]], body: history.map((r,i)=>[i+1, r.date, r.status, r.notes]), startY: 30, theme:'grid' });
-            doc.save(`Detail_Siswa_${currentStudentId}.pdf`);
+            
+            const baseName = `Detail_Siswa_${student.name.replace(/[\\/:*?"<>|]/g, '_').replace(/\s+/g, '_')}`;
+            const fileName = generateExportFileName(baseName, 'pdf');
+            doc.save(fileName);
         }
 
         window.onload = function() {
