@@ -36,7 +36,9 @@
                             green: '#F0FDF4',
                             orange: '#FFF7ED',
                             cyan: '#ECFEFF',
-                            rose: '#FFF1F2'
+                            rose: '#FFF1F2',
+                            slate: '#F8FAFC',
+                            purple: '#FAF5FF'
                         }
                     },
                     fontFamily: {
@@ -82,52 +84,25 @@
         ::-webkit-scrollbar-thumb:hover { background: theme('colors.mi.text2'); }
 
         /* Modern Pill Tabs */
-        /* =========================================
-        TAB NAVIGATION - MODERN PILL
-        ========================================= */
-
         .tab-btn {
-            transition:
-                background-color 0.2s ease,
-                color 0.2s ease,
-                box-shadow 0.2s ease,
-                border-color 0.2s ease;
+            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
             border-radius: 9999px;
             color: #6B7C78;
             border: 1px solid transparent;
             background-color: transparent;
         }
-
-        /* Hover */
-        .tab-btn:hover {
-            background-color: #F0F7F5 !important;
-            color: #124F47 !important;
-            border-color: #D7EAE5;
-        }
-
-        /* ACTIVE */
+        .tab-btn:hover { background-color: #F0F7F5 !important; color: #124F47 !important; border-color: #D7EAE5; }
         .tab-btn.active {
             background-color: #E8F3F0 !important;
             color: #124F47 !important;
             border: 1px solid #B8D9D2 !important;
-            box-shadow:
-                0 2px 6px rgba(18, 79, 71, 0.08),
-                inset 0 0 0 1px rgba(18, 79, 71, 0.04);
+            box-shadow: 0 2px 6px rgba(18, 79, 71, 0.08), inset 0 0 0 1px rgba(18, 79, 71, 0.04);
             font-weight: 600;
         }
-
-        /* Active + hover */
-        .tab-btn.active:hover {
-            background-color: #DCEFEA !important;
-            color: #0D3F39 !important;
-            border-color: #A9D0C8 !important;
-        }
+        .tab-btn.active:hover { background-color: #DCEFEA !important; color: #0D3F39 !important; border-color: #A9D0C8 !important; }
         
         /* Modal Transitions & Overlay */
-        .modal-overlay {
-            background-color: rgba(25, 49, 46, 0.6);
-            backdrop-filter: blur(4px);
-        }
+        .modal-overlay { background-color: rgba(25, 49, 46, 0.6); backdrop-filter: blur(4px); }
         
         /* Smooth hover for table rows */
         .table-row-hover { transition: background-color 0.2s ease; }
@@ -135,50 +110,29 @@
 
         /* Loader */
         .loader {
-            border: 3px solid #E5ECE9;
-            border-radius: 50%;
-            border-top: 3px solid #124F47;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
+            border: 3px solid #E5ECE9; border-radius: 50%;
+            border-top: 3px solid #124F47; width: 24px; height: 24px;
+            animation: spin 1s linear infinite; display: inline-block;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* Card Shadow Styling */
-        .card-shadow {
-            box-shadow: theme('boxShadow.soft');
-        }
+        .card-shadow { box-shadow: theme('boxShadow.soft'); }
 
         /* Abstract blobs for summary cards */
-        .blob-bg {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            overflow: hidden;
-            border-radius: inherit;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .blob-shape {
-            position: absolute;
-            opacity: 0.4;
-        }
+        .blob-bg { position: absolute; top: 0; right: 0; bottom: 0; left: 0; overflow: hidden; border-radius: inherit; pointer-events: none; z-index: 0; }
+        .blob-shape { position: absolute; opacity: 0.4; }
 
         /* Hide scrollbar for tabs */
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Mobile Submenu Animation */
+        .mobile-submenu { display: none; opacity: 0; transform: translateY(10px); transition: all 0.2s ease; }
+        .mobile-submenu.active { display: flex; opacity: 1; transform: translateY(0); }
     </style>
 </head>
-<body class="antialiased min-h-screen pb-24 md:pb-12 relative">
+<body class="antialiased min-h-screen pb-24 md:pb-12 lg:pb-0 relative">
 
     <!-- HEADER -->
     <div class="bg-mi-surface border-b border-mi-border sticky top-0 z-30 shadow-sm">
@@ -203,13 +157,14 @@
                     <button onclick="handleRefresh()" class="flex-1 sm:flex-none justify-center px-3 md:px-4 py-1.5 md:py-2 bg-mi-soft hover:bg-[#DDEFEA] text-mi-primary rounded-xl text-xs md:text-sm font-medium transition-colors border border-[#C8E3DD] shadow-sm flex items-center gap-1.5 md:gap-2">
                         <i class="fa-solid fa-rotate-right"></i> <span class="hidden sm:inline">Refresh</span><span class="sm:hidden">Muat Ulang</span>
                     </button>
-                    <button onclick="exportExcel()" class="flex-1 sm:flex-none justify-center px-3 md:px-4 py-1.5 md:py-2 bg-[#E8F3F0] hover:bg-[#D9EEE8] text-[#18794E] rounded-xl text-xs md:text-sm font-medium transition-colors border border-[#C8E3DD] shadow-sm flex items-center gap-1.5 md:gap-2" title="Export Excel sesuai Tab yang aktif">
-                        <i class="fa-solid fa-file-excel"></i> <span class="hidden lg:inline">Excel</span><span class="lg:hidden">Excel</span>
+                    <!-- Tombol ini disembunyikan di Mobile/Tablet, HANYA muncul di Desktop (lg:flex) -->
+                    <button onclick="exportExcel()" class="hidden lg:flex justify-center px-3 md:px-4 py-1.5 md:py-2 bg-[#E8F3F0] hover:bg-[#D9EEE8] text-[#18794E] rounded-xl text-xs md:text-sm font-medium transition-colors border border-[#C8E3DD] shadow-sm items-center gap-1.5 md:gap-2" title="Export Excel sesuai Tab yang aktif">
+                        <i class="fa-solid fa-file-excel"></i> <span>Excel</span>
                     </button>
-                    <button onclick="exportPDF()" class="flex-1 sm:flex-none justify-center px-3 md:px-4 py-1.5 md:py-2 bg-[#FFF1F2] hover:bg-[#FFE4E6] text-[#BE123C] rounded-xl text-xs md:text-sm font-medium transition-colors border border-[#FFE4E6] shadow-sm flex items-center gap-1.5 md:gap-2" title="Export PDF sesuai Tab yang aktif">
-                        <i class="fa-solid fa-file-pdf"></i> <span class="hidden lg:inline">PDF</span><span class="lg:hidden">PDF</span>
+                    <button onclick="exportPDF()" class="hidden lg:flex justify-center px-3 md:px-4 py-1.5 md:py-2 bg-[#FFF1F2] hover:bg-[#FFE4E6] text-[#BE123C] rounded-xl text-xs md:text-sm font-medium transition-colors border border-[#FFE4E6] shadow-sm items-center gap-1.5 md:gap-2" title="Export PDF sesuai Tab yang aktif">
+                        <i class="fa-solid fa-file-pdf"></i> <span>PDF</span>
                     </button>
-                    <button onclick="openWhatsAppModal()" class="w-full sm:w-auto justify-center px-4 md:px-5 py-1.5 md:py-2 bg-mi-primary hover:bg-mi-dark text-white rounded-xl text-xs md:text-sm font-medium transition-colors shadow-md flex items-center gap-1.5 md:gap-2">
+                    <button onclick="openWhatsAppModal()" class="hidden lg:flex w-full sm:w-auto justify-center px-4 md:px-5 py-1.5 md:py-2 bg-mi-primary hover:bg-mi-dark text-white rounded-xl text-xs md:text-sm font-medium transition-colors shadow-md items-center gap-1.5 md:gap-2">
                         <i class="fa-brands fa-whatsapp text-sm md:text-lg"></i> <span>Bagikan Laporan</span>
                     </button>
                 </div>
@@ -286,121 +241,110 @@
             </div>
         </div>
 
-        <!-- SUMMARY CARDS -->
-        <!-- 
-             Mobile: grid-cols-2
-             Tablet: grid-cols-3
-             Desktop: grid-cols-6
-        -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 lg:gap-5 mb-6 md:mb-8">
+        <!-- SUMMARY CARDS (Diperbarui jadi 8 cards) -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-3 md:gap-4 lg:gap-3 mb-6 md:mb-8">
             
-            <!-- Card 1: Total Siswa (Ref Style 1) -->
-            <div class="group bg-card-blue rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-blue-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <!-- Decorative BG Image with Zoom on Hover -->
-                <img src="https://mentariilmu.org/assets/2.png" alt="" class="absolute -right-2 -bottom-2 w-[85px] h-[85px] md:w-[100px] md:h-[100px] lg:w-[110px] lg:h-[110px] object-contain opacity-[0.15] group-hover:opacity-[0.25] pointer-events-none origin-bottom-right transition-transform duration-500 ease-out group-hover:scale-[1.15]" onerror="this.style.display='none'">
-                
+            <!-- Card 1: Total Siswa -->
+            <div class="group bg-card-blue rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-blue-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="relative z-10 flex justify-between items-start w-full">
-                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-blue-600 text-white flex items-center justify-center text-sm md:text-lg shadow-sm">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-blue-600 text-white flex items-center justify-center text-xs md:text-base shadow-sm">
                         <i class="fa-solid fa-users"></i>
                     </div>
                 </div>
-                
                 <div class="relative z-10 mt-auto">
-                    <div class="text-[10px] md:text-xs font-bold text-blue-700 uppercase tracking-wider mb-0.5">Total Siswa</div>
-                    <div class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-mi-text1 leading-none" id="cardTotalSiswa">-</div>
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-0.5">Total Siswa</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-mi-text1 leading-none" id="cardTotalSiswa">-</div>
                 </div>
             </div>
             
-            <!-- Card 2: Hadir (Ref Style 2) -->
-            <div class="group bg-card-green rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-green-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <!-- Decorative BG Image with Zoom on Hover -->
-                <img src="https://mentariilmu.org/assets/3.png" alt="" class="absolute -right-2 -bottom-2 w-[85px] h-[85px] md:w-[100px] md:h-[100px] lg:w-[110px] lg:h-[110px] object-contain opacity-[0.15] group-hover:opacity-[0.25] pointer-events-none origin-bottom-right transition-transform duration-500 ease-out group-hover:scale-[1.15]" onerror="this.style.display='none'">
-                
+            <!-- Card 2: Hari Efektif (Baru) -->
+            <div class="group bg-card-slate rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="relative z-10 flex justify-between items-start w-full">
-                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-[#D97706] text-white flex items-center justify-center text-sm md:text-lg shadow-sm">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-slate-600 text-white flex items-center justify-center text-xs md:text-base shadow-sm">
+                        <i class="fa-regular fa-calendar-check"></i>
+                    </div>
+                </div>
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-0.5">Hari Efektif</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-mi-text1 leading-none" id="cardHariEfektif">-</div>
+                </div>
+            </div>
+
+            <!-- Card 3: Hari Libur (Baru) -->
+            <div class="group bg-card-purple rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-purple-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+                <div class="relative z-10 flex justify-between items-start w-full">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-purple-600 text-white flex items-center justify-center text-xs md:text-base shadow-sm">
+                        <i class="fa-solid fa-umbrella-beach"></i>
+                    </div>
+                </div>
+                <div class="relative z-10 mt-auto">
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-purple-700 uppercase tracking-wider mb-0.5">Hari Libur</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-mi-text1 leading-none" id="cardHariLibur">-</div>
+                </div>
+            </div>
+
+            <!-- Card 4: Hadir -->
+            <div class="group bg-card-green rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-green-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                <div class="relative z-10 flex justify-between items-start w-full">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xs md:text-base shadow-sm">
                         <i class="fa-solid fa-check"></i>
                     </div>
                 </div>
-                
                 <div class="relative z-10 mt-auto">
-                    <div class="text-[10px] md:text-xs font-bold text-[#B45309] uppercase tracking-wider mb-0.5">Hadir</div>
-                    <div class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-mi-text1 leading-none" id="cardHadir">-</div>
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-emerald-700 uppercase tracking-wider mb-0.5">Hadir</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-mi-text1 leading-none" id="cardHadir">-</div>
                 </div>
             </div>
 
-            <!-- Card 3: Sakit (Custom Orange) -->
-            <div class="group bg-card-orange rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-orange-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <!-- Decorative Shapes -->
-                <div class="blob-bg">
-                    <div class="blob-shape bg-orange-200 rounded-full w-24 h-24 -right-8 -bottom-8"></div>
-                    <div class="blob-shape bg-orange-100 rounded-full w-16 h-16 right-10 -bottom-4"></div>
-                </div>
-                
+            <!-- Card 5: Sakit -->
+            <div class="group bg-card-orange rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-orange-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="relative z-10 flex justify-between items-start w-full">
-                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-orange-500 text-white flex items-center justify-center text-sm md:text-lg shadow-sm">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-orange-500 text-white flex items-center justify-center text-xs md:text-base shadow-sm">
                         <i class="fa-solid fa-thermometer-half"></i>
                     </div>
                 </div>
-                
                 <div class="relative z-10 mt-auto">
-                    <div class="text-[10px] md:text-xs font-bold text-orange-700 uppercase tracking-wider mb-0.5">Sakit</div>
-                    <div class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-mi-text1 leading-none" id="cardSakit">-</div>
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-orange-700 uppercase tracking-wider mb-0.5">Sakit</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-mi-text1 leading-none" id="cardSakit">-</div>
                 </div>
             </div>
 
-            <!-- Card 4: Izin (Custom Cyan) -->
-            <div class="group bg-card-cyan rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-cyan-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-                 <!-- Decorative Shapes -->
-                 <div class="blob-bg">
-                    <div class="blob-shape bg-cyan-200 rounded-full w-24 h-24 -right-4 -bottom-10"></div>
-                    <div class="blob-shape bg-cyan-100 rounded-full w-20 h-20 -right-8 bottom-4"></div>
-                </div>
-                
+            <!-- Card 6: Izin -->
+            <div class="group bg-card-cyan rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-cyan-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="relative z-10 flex justify-between items-start w-full">
-                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-cyan-600 text-white flex items-center justify-center text-sm md:text-lg shadow-sm">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-cyan-600 text-white flex items-center justify-center text-xs md:text-base shadow-sm">
                         <i class="fa-solid fa-envelope-open-text"></i>
                     </div>
                 </div>
-                
                 <div class="relative z-10 mt-auto">
-                    <div class="text-[10px] md:text-xs font-bold text-cyan-700 uppercase tracking-wider mb-0.5">Izin</div>
-                    <div class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-mi-text1 leading-none" id="cardIzin">-</div>
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-cyan-700 uppercase tracking-wider mb-0.5">Izin</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-mi-text1 leading-none" id="cardIzin">-</div>
                 </div>
             </div>
 
-            <!-- Card 5: Alpa (Custom Rose) -->
-            <div class="group bg-card-rose rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-rose-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <!-- Decorative Shapes -->
-                <div class="blob-bg">
-                    <div class="blob-shape bg-rose-200 rounded-full w-28 h-28 -right-12 -bottom-6"></div>
-                </div>
-
+            <!-- Card 7: Alpa -->
+            <div class="group bg-card-rose rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-rose-100 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="relative z-10 flex justify-between items-start w-full">
-                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-rose-600 text-white flex items-center justify-center text-sm md:text-lg shadow-sm">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-rose-600 text-white flex items-center justify-center text-xs md:text-base shadow-sm">
                         <i class="fa-solid fa-xmark"></i>
                     </div>
                 </div>
-                
                 <div class="relative z-10 mt-auto">
-                    <div class="text-[10px] md:text-xs font-bold text-rose-700 uppercase tracking-wider mb-0.5">Alpa</div>
-                    <div class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-mi-text1 leading-none" id="cardAlpa">-</div>
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-rose-700 uppercase tracking-wider mb-0.5">Alpa</div>
+                    <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-mi-text1 leading-none" id="cardAlpa">-</div>
                 </div>
             </div>
 
-            <!-- Card 6: Kehadiran (Mentari Ilmu Primary) -->
-            <div class="group bg-mi-primary rounded-[20px] p-4 md:p-5 relative overflow-hidden flex flex-col justify-between h-[110px] md:h-[130px] border border-mi-dark shadow-sm hover:shadow-md transition-shadow duration-300">
-                <!-- Decorative Shapes -->
+            <!-- Card 8: Kehadiran % -->
+            <div class="group bg-mi-primary rounded-[20px] p-3 lg:p-4 relative overflow-hidden flex flex-col justify-between h-[100px] md:h-[120px] border border-mi-dark shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div class="absolute -right-8 -top-8 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
-                <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-emerald-400/20 rounded-full blur-xl pointer-events-none"></div>
-
                 <div class="relative z-10 flex justify-between items-start w-full">
-                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-white/20 text-white flex items-center justify-center text-sm md:text-lg backdrop-blur-sm shadow-sm">
+                    <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-white/20 text-white flex items-center justify-center text-xs md:text-base backdrop-blur-sm shadow-sm">
                         <i class="fa-solid fa-chart-pie"></i>
                     </div>
                 </div>
-                
                 <div class="relative z-10 mt-auto">
-                    <div class="text-[10px] md:text-xs font-bold text-mi-soft uppercase tracking-wider mb-0.5">Kehadiran</div>
+                    <div class="text-[9px] md:text-[10px] lg:text-[11px] font-bold text-mi-soft uppercase tracking-wider mb-0.5">% Kehadiran</div>
                     <div class="text-xl md:text-2xl lg:text-3xl font-extrabold text-white leading-none" id="cardPersentase">-</div>
                 </div>
             </div>
@@ -408,7 +352,7 @@
 
         <div class="bg-mi-surface rounded-2xl border border-mi-border card-shadow overflow-hidden mb-8">
             
-            <!-- TABS -->
+            <!-- TABS UTAMA -->
             <div class="px-4 md:px-6 pt-4 md:pt-6 pb-2 border-b border-mi-border">
                 <div class="flex space-x-2 overflow-x-auto hide-scrollbar">
                     <button onclick="switchTab('riwayat')" id="tab-riwayat" class="tab-btn active px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-medium whitespace-nowrap flex items-center gap-2">
@@ -420,10 +364,14 @@
                     <button onclick="switchTab('analisa')" id="tab-analisa" class="tab-btn px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-medium whitespace-nowrap flex items-center gap-2">
                         <i class="fa-solid fa-chart-simple"></i> Analisa Data
                     </button>
+                    <!-- Tambah Tab Kalender -->
+                    <button onclick="switchTab('kalender')" id="tab-kalender" class="tab-btn px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-medium whitespace-nowrap flex items-center gap-2">
+                        <i class="fa-regular fa-calendar-alt"></i> Kalender
+                    </button>
                 </div>
             </div>
 
-            <!-- TAB 1: RIWAYAT -->
+            <!-- TAB 1: RIWAYAT DETAIL -->
             <div id="content-riwayat" class="p-0 flex flex-col min-h-[400px]">
                 <div class="overflow-x-auto flex-grow">
                     <table class="min-w-full divide-y divide-mi-border">
@@ -442,51 +390,82 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="bg-mi-bg/30 px-4 md:px-6 py-3 md:py-4 border-t border-mi-border flex flex-col sm:flex-row items-center justify-between mt-auto gap-2 text-center sm:text-left">
-                    <div class="text-xs md:text-sm text-mi-text2 font-medium" id="riwayat-info">Menampilkan 1-50 data terbaru...</div>
-                    <div class="text-[10px] md:text-xs text-mi-text2/70">*Dibatasi max 500 baris. Gunakan export untuk data lengkap.</div>
-                </div>
+                
                 <div id="empty-riwayat" class="hidden py-16 text-center w-full">
                     <div class="w-12 h-12 md:w-16 md:h-16 bg-mi-bg rounded-full flex items-center justify-center mx-auto mb-4 text-mi-text2 text-xl md:text-2xl">
                         <i class="fa-solid fa-search-minus"></i>
                     </div>
                     <p class="text-sm md:text-base text-mi-text2 font-medium px-4">Tidak ada riwayat presensi yang sesuai dengan filter.</p>
                 </div>
+
+                <!-- Pagination Riwayat -->
+                <div class="flex flex-col sm:flex-row justify-between items-center px-4 md:px-6 py-3 bg-mi-bg/30 border-t border-mi-border gap-3 mt-auto">
+                    <div class="text-xs md:text-sm text-mi-text2" id="pg-info-riwayat">Menampilkan 0-0 dari 0 data</div>
+                    <div class="flex items-center gap-2">
+                        <select id="pg-limit-riwayat" onchange="changePageLimit('riwayat', this.value)" class="border border-mi-border rounded bg-white text-xs py-1 px-2 text-mi-text1 outline-none focus:border-mi-primary">
+                            <option value="10">10 / hal</option>
+                            <option value="25" selected>25 / hal</option>
+                            <option value="50">50 / hal</option>
+                            <option value="100">100 / hal</option>
+                        </select>
+                        <div class="flex border border-mi-border rounded overflow-hidden">
+                            <button onclick="changePage('riwayat', -1)" class="px-2 py-1 bg-white hover:bg-mi-soft text-mi-text2 border-r border-mi-border transition-colors"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                            <span id="pg-page-riwayat" class="px-3 py-1 bg-white text-xs font-semibold text-mi-text1 flex items-center justify-center min-w-[32px]">1</span>
+                            <button onclick="changePage('riwayat', 1)" class="px-2 py-1 bg-white hover:bg-mi-soft text-mi-text2 border-l border-mi-border transition-colors"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- TAB 2: REKAP -->
-            <div id="content-rekap" class="p-0 hidden min-h-[400px]">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-mi-border">
-                        <thead class="bg-mi-bg/50">
-                            <tr>
-                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider w-12 md:w-16">No</th>
-                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Nama Siswa</th>
-                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Kelas</th>
-                                <th scope="col" class="px-2 md:px-4 py-3 md:py-4 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Hadir">H</th>
-                                <th scope="col" class="px-2 md:px-4 py-3 md:py-4 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Sakit">S</th>
-                                <th scope="col" class="px-2 md:px-4 py-3 md:py-4 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Izin">I</th>
-                                <th scope="col" class="px-2 md:px-4 py-3 md:py-4 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Alpa">A</th>
-                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider min-w-[150px] md:min-w-[200px]">% Kehadiran</th>
-                                <th scope="col" class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Status</th>
-                            </tr>
+            <!-- TAB 2: REKAP PRESENSI -->
+            <div id="content-rekap" class="p-0 hidden flex-col min-h-[400px]">
+                
+                <!-- Toggle Mode Rekap -->
+                <div class="px-4 md:px-6 py-3 border-b border-mi-border flex gap-2">
+                    <button onclick="setRekapMode('ringkas')" id="btn-rekap-ringkas" class="px-4 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all bg-mi-primary text-white shadow-sm">Rekap Ringkas</button>
+                    <button onclick="setRekapMode('harian')" id="btn-rekap-harian" class="px-4 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all bg-mi-soft text-mi-text2 hover:text-mi-primary">Rekap Harian</button>
+                </div>
+
+                <div class="overflow-x-auto flex-grow">
+                    <!-- Tabel disuntik via JS tergantung mode -->
+                    <table class="min-w-full divide-y divide-mi-border" id="table-rekap-container">
+                        <thead class="bg-mi-bg/50" id="thead-rekap">
+                            <!-- Headers injected via JS -->
                         </thead>
                         <tbody id="tbody-rekap" class="bg-white divide-y divide-mi-border">
                             <!-- Data injected via JS -->
                         </tbody>
                     </table>
                 </div>
+
                 <div id="empty-rekap" class="hidden py-16 text-center w-full">
                     <div class="w-12 h-12 md:w-16 md:h-16 bg-mi-bg rounded-full flex items-center justify-center mx-auto mb-4 text-mi-text2 text-xl md:text-2xl">
                         <i class="fa-solid fa-folder-open"></i>
                     </div>
                     <p class="text-sm md:text-base text-mi-text2 font-medium px-4">Tidak ada data rekap yang sesuai dengan filter.</p>
                 </div>
+
+                <!-- Pagination Rekap -->
+                <div class="flex flex-col sm:flex-row justify-between items-center px-4 md:px-6 py-3 bg-mi-bg/30 border-t border-mi-border gap-3 mt-auto">
+                    <div class="text-xs md:text-sm text-mi-text2" id="pg-info-rekap">Menampilkan 0-0 dari 0 data</div>
+                    <div class="flex items-center gap-2">
+                        <select id="pg-limit-rekap" onchange="changePageLimit('rekap', this.value)" class="border border-mi-border rounded bg-white text-xs py-1 px-2 text-mi-text1 outline-none focus:border-mi-primary">
+                            <option value="10">10 / hal</option>
+                            <option value="25" selected>25 / hal</option>
+                            <option value="50">50 / hal</option>
+                            <option value="100">100 / hal</option>
+                        </select>
+                        <div class="flex border border-mi-border rounded overflow-hidden">
+                            <button onclick="changePage('rekap', -1)" class="px-2 py-1 bg-white hover:bg-mi-soft text-mi-text2 border-r border-mi-border transition-colors"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                            <span id="pg-page-rekap" class="px-3 py-1 bg-white text-xs font-semibold text-mi-text1 flex items-center justify-center min-w-[32px]">1</span>
+                            <button onclick="changePage('rekap', 1)" class="px-2 py-1 bg-white hover:bg-mi-soft text-mi-text2 border-l border-mi-border transition-colors"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- TAB 3: ANALISA -->
+            <!-- TAB 3: ANALISA DATA -->
             <div id="content-analisa" class="p-4 md:p-6 hidden min-h-[400px]">
-                
                 <!-- Charts Section -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
                     <!-- Distribusi -->
@@ -496,15 +475,12 @@
                             <canvas id="chartDistribusi"></canvas>
                         </div>
                     </div>
-
                     <!-- Bar Chart / Tabel Kelas -->
                     <div class="lg:col-span-2 bg-mi-surface border border-mi-border rounded-2xl p-4 md:p-6 shadow-sm flex flex-col overflow-hidden">
                         <h3 class="text-xs md:text-sm font-bold text-mi-text1 uppercase tracking-wide mb-4 md:mb-6" id="titleAnalisaKelas">Perbandingan Kehadiran Antar Kelas</h3>
-                        
                         <div class="relative h-48 md:h-64 w-full mb-4 md:mb-6" id="containerChartKelas">
                             <canvas id="chartKelas"></canvas>
                         </div>
-
                         <div class="overflow-x-auto flex-grow -mx-4 md:mx-0 px-4 md:px-0" id="containerTableKelas">
                             <table class="min-w-full divide-y divide-mi-border text-xs md:text-sm border border-mi-border rounded-lg overflow-hidden">
                                 <thead class="bg-mi-bg">
@@ -518,8 +494,7 @@
                                         <th class="px-3 md:px-4 py-2 md:py-3 text-center font-bold text-mi-primary">%</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tbody-analisa-kelas" class="divide-y divide-mi-border bg-white">
-                                </tbody>
+                                <tbody id="tbody-analisa-kelas" class="divide-y divide-mi-border bg-white"></tbody>
                             </table>
                         </div>
                     </div>
@@ -532,24 +507,57 @@
                             <div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center text-xs md:text-base"><i class="fa-solid fa-list-check"></i></div>
                             Kesimpulan
                         </h3>
-                        <p class="text-mi-text2 text-xs md:text-sm leading-relaxed" id="analisaKesimpulan">
-                            <!-- Generated by JS -->
-                        </p>
+                        <p class="text-mi-text2 text-xs md:text-sm leading-relaxed" id="analisaKesimpulan"></p>
                     </div>
-
                     <div class="bg-mi-surface border border-mi-border rounded-2xl p-4 md:p-6 shadow-sm relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>
                         <h3 class="text-xs md:text-sm font-bold text-mi-text1 uppercase tracking-wide mb-3 md:mb-4 flex items-center gap-2">
                             <div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-amber-50 text-amber-500 flex items-center justify-center text-xs md:text-base"><i class="fa-regular fa-lightbulb"></i></div>
                             Rekomendasi
                         </h3>
-                        <ul class="text-mi-text2 text-xs md:text-sm leading-relaxed list-none space-y-2" id="analisaRekomendasi">
-                            <!-- Generated by JS -->
-                        </ul>
+                        <ul class="text-mi-text2 text-xs md:text-sm leading-relaxed list-none space-y-2" id="analisaRekomendasi"></ul>
                     </div>
                 </div>
-
             </div>
+
+            <!-- TAB 4: KALENDER (BARU) -->
+            <div id="content-kalender" class="p-0 hidden flex-col min-h-[400px]">
+                
+                <div class="px-4 md:px-6 py-4 border-b border-mi-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-mi-soft/30">
+                    <div>
+                        <h3 class="text-sm font-bold text-mi-text1">Manajemen Hari Libur Sekolah</h3>
+                        <p class="text-xs text-mi-text2">Data kalender digunakan untuk menghitung Hari Efektif pada periode presensi.</p>
+                    </div>
+                    <button onclick="addHolidayPrompt()" class="w-full sm:w-auto px-4 py-2 bg-mi-primary hover:bg-mi-dark text-white rounded-xl text-xs md:text-sm font-medium transition-colors shadow-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Tambah Hari Libur
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto flex-grow">
+                    <table class="min-w-full divide-y divide-mi-border">
+                        <thead class="bg-mi-bg/50">
+                            <tr>
+                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider w-12 md:w-16">No</th>
+                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Tanggal</th>
+                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Hari</th>
+                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Keterangan</th>
+                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Status</th>
+                                <th class="px-4 md:px-6 py-3 md:py-4 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-kalender" class="bg-white divide-y divide-mi-border">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="empty-kalender" class="hidden py-16 text-center w-full">
+                    <div class="w-12 h-12 md:w-16 md:h-16 bg-mi-bg rounded-full flex items-center justify-center mx-auto mb-4 text-mi-text2 text-xl md:text-2xl">
+                        <i class="fa-solid fa-umbrella-beach"></i>
+                    </div>
+                    <p class="text-sm md:text-base text-mi-text2 font-medium px-4">Belum ada data hari libur tersimpan.</p>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -558,7 +566,6 @@
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 transition-opacity modal-overlay" aria-hidden="true" onclick="closeModal('modalStudent')"></div>
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            
             <div class="inline-block align-bottom bg-mi-surface rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl w-full border border-mi-border">
                 <div class="px-4 md:px-6 pt-5 md:pt-6 pb-5 md:pb-6">
                     <div class="flex justify-between items-start mb-5 md:mb-6">
@@ -600,6 +607,11 @@
                         </div>
                     </div>
 
+                    <!-- Info Hari Efektif / Kalender on Detail -->
+                    <div class="text-center mb-4 text-xs md:text-sm text-mi-text2">
+                        Perhitungan persentase menggunakan <span class="font-bold text-mi-text1" id="detHariEfektif">0</span> Hari Efektif.
+                    </div>
+
                     <!-- Chart Kecil & Tabel History -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                         <div class="md:col-span-1">
@@ -630,17 +642,10 @@
                         </div>
                     </div>
                 </div>
-                <!-- Modal Detail Footer (Export & Close) -->
                 <div class="bg-mi-bg/50 px-4 md:px-6 py-3 md:py-4 flex flex-col sm:flex-row-reverse gap-2 md:gap-3 border-t border-mi-border">
-                    <button type="button" onclick="closeModal('modalStudent')" class="w-full inline-flex justify-center items-center rounded-xl border border-mi-border shadow-sm px-4 md:px-5 py-2 md:py-2.5 bg-white text-sm font-medium text-mi-text1 hover:bg-gray-50 transition-colors sm:w-auto">
-                        Tutup
-                    </button>
-                    <button type="button" onclick="exportStudentDetailExcel()" class="w-full inline-flex justify-center items-center rounded-xl px-4 md:px-5 py-2 md:py-2.5 bg-[#E8F3F0] hover:bg-[#D9EEE8] border border-[#C8E3DD] shadow-sm text-sm font-medium text-[#18794E] transition-colors sm:w-auto">
-                        <i class="fa-solid fa-file-excel mr-2"></i> Excel
-                    </button>
-                    <button type="button" onclick="exportStudentDetailPDF()" class="w-full inline-flex justify-center items-center rounded-xl px-4 md:px-5 py-2 md:py-2.5 bg-[#FFF1F2] hover:bg-[#FFE4E6] border border-[#FFE4E6] shadow-sm text-sm font-medium text-[#BE123C] transition-colors sm:w-auto">
-                        <i class="fa-solid fa-file-pdf mr-2"></i> PDF
-                    </button>
+                    <button type="button" onclick="closeModal('modalStudent')" class="w-full inline-flex justify-center items-center rounded-xl border border-mi-border shadow-sm px-4 md:px-5 py-2 md:py-2.5 bg-white text-sm font-medium text-mi-text1 hover:bg-gray-50 transition-colors sm:w-auto">Tutup</button>
+                    <button type="button" onclick="exportStudentDetailExcel()" class="w-full inline-flex justify-center items-center rounded-xl px-4 md:px-5 py-2 md:py-2.5 bg-[#E8F3F0] hover:bg-[#D9EEE8] border border-[#C8E3DD] shadow-sm text-sm font-medium text-[#18794E] transition-colors sm:w-auto"><i class="fa-solid fa-file-excel mr-2"></i> Excel</button>
+                    <button type="button" onclick="exportStudentDetailPDF()" class="w-full inline-flex justify-center items-center rounded-xl px-4 md:px-5 py-2 md:py-2.5 bg-[#FFF1F2] hover:bg-[#FFE4E6] border border-[#FFE4E6] shadow-sm text-sm font-medium text-[#BE123C] transition-colors sm:w-auto"><i class="fa-solid fa-file-pdf mr-2"></i> PDF</button>
                 </div>
             </div>
         </div>
@@ -651,7 +656,6 @@
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 transition-opacity modal-overlay" aria-hidden="true" onclick="closeModal('modalWhatsApp')"></div>
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            
             <div class="inline-block align-bottom bg-mi-surface rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md w-full border border-mi-border">
                 <div class="px-4 md:px-6 pt-5 md:pt-6 pb-4">
                     <div class="flex justify-between items-center mb-4 md:mb-5">
@@ -662,11 +666,8 @@
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
-                    
                     <div class="bg-[#efeae2] p-3 md:p-4 rounded-xl border border-mi-border shadow-inner h-64 md:h-[26rem] overflow-y-auto">
-                        <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm text-xs md:text-[13px] text-gray-800 whitespace-pre-wrap font-sans" id="waPreviewText" style="line-height: 1.5 md:line-height: 1.6;">
-                            <!-- WA Text generated by JS -->
-                        </div>
+                        <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm text-xs md:text-[13px] text-gray-800 whitespace-pre-wrap font-sans" id="waPreviewText" style="line-height: 1.5;"></div>
                     </div>
                     <p class="text-[10px] md:text-[11px] text-mi-text2 mt-2 md:mt-3 font-medium">*Pesan dihasilkan otomatis berdasarkan filter periode dan kelas.</p>
                 </div>
@@ -682,35 +683,62 @@
         </div>
     </div>
 
-    <!-- MOBILE FOOTER NAV -->
-    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-mi-border shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-40 px-2 py-1.5 flex justify-between items-center pb-[calc(env(safe-area-inset-bottom)+6px)] gap-1">
-        <button onclick="switchTab('riwayat')" id="nav-riwayat" class="flex flex-col items-center justify-center w-1/4 py-1 rounded-xl text-mi-primary bg-mi-soft font-semibold transition-all">
-            <i class="fa-regular fa-clock text-xl mb-1"></i>
-            <span class="text-[10px]">Riwayat</span>
+    <!-- MOBILE FOOTER NAV (Hanya tampil di Tablet & Mobile, Desktop Hidden) -->
+    <nav class="lg:hidden fixed bottom-0 left-0 w-full bg-white border-t border-mi-border shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-40 px-1 py-1.5 flex justify-between items-center pb-[calc(env(safe-area-inset-bottom)+6px)] gap-1">
+        
+        <!-- 1. Riwayat -->
+        <button onclick="switchTab('riwayat')" id="nav-riwayat" class="flex flex-col items-center justify-center w-[20%] py-1 rounded-xl text-mi-primary bg-mi-soft font-semibold transition-all">
+            <i class="fa-regular fa-clock text-lg md:text-xl mb-1"></i>
+            <span class="text-[9px] md:text-[10px]">Riwayat</span>
         </button>
-        <button onclick="switchTab('rekap')" id="nav-rekap" class="flex flex-col items-center justify-center w-1/4 py-1 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
-            <i class="fa-solid fa-table-list text-xl mb-1"></i>
-            <span class="text-[10px]">Rekap</span>
+        
+        <!-- 2. Rekap -->
+        <button onclick="switchTab('rekap')" id="nav-rekap" class="flex flex-col items-center justify-center w-[20%] py-1 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
+            <i class="fa-solid fa-table-list text-lg md:text-xl mb-1"></i>
+            <span class="text-[9px] md:text-[10px]">Rekap</span>
         </button>
-        <button onclick="switchTab('analisa')" id="nav-analisa" class="flex flex-col items-center justify-center w-1/4 py-1 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
-            <i class="fa-solid fa-chart-simple text-xl mb-1"></i>
-            <span class="text-[10px]">Analisa</span>
+        
+        <!-- 3. Lainnya (Submenu: Analisa Data, Kalender) -->
+        <div class="relative w-[20%] flex justify-center">
+            <button onclick="toggleMobileMenu('menu-lainnya', 'nav-lainnya')" id="nav-lainnya" class="w-full flex flex-col items-center py-1 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
+                <i class="fa-solid fa-ellipsis-h text-lg md:text-xl mb-1"></i>
+                <span class="text-[9px] md:text-[10px]">Lainnya</span>
+            </button>
+            <div id="menu-lainnya" class="mobile-submenu absolute bottom-full mb-3 bg-white border border-mi-border rounded-xl shadow-lg flex-col w-36 overflow-hidden">
+                <button onclick="switchTab('analisa'); toggleMobileMenu('menu-lainnya', 'nav-lainnya')" class="px-4 py-2.5 text-left text-xs md:text-sm text-mi-text1 font-medium hover:bg-mi-soft border-b border-mi-border"><i class="fa-solid fa-chart-simple mr-2 w-4 text-center"></i>Analisa Data</button>
+                <button onclick="switchTab('kalender'); toggleMobileMenu('menu-lainnya', 'nav-lainnya')" class="px-4 py-2.5 text-left text-xs md:text-sm text-mi-text1 font-medium hover:bg-mi-soft"><i class="fa-regular fa-calendar-alt mr-2 w-4 text-center"></i>Kalender</button>
+            </div>
+        </div>
+
+        <!-- 4. Bagikan -->
+        <button onclick="openWhatsAppModal(); closeAllMobileMenus();" class="flex flex-col items-center justify-center w-[20%] py-1 rounded-xl text-gray-400 font-medium hover:text-green-600 hover:bg-green-50 transition-all">
+            <i class="fa-brands fa-whatsapp text-lg md:text-xl mb-1"></i>
+            <span class="text-[9px] md:text-[10px]">Bagikan</span>
         </button>
-        <button onclick="handleRefresh()" class="flex flex-col items-center justify-center w-1/4 py-1 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
-            <i class="fa-solid fa-rotate-right text-xl mb-1"></i>
-            <span class="text-[10px]">Refresh</span>
-        </button>
+
+        <!-- 5. Export (Submenu: Excel, PDF) -->
+        <div class="relative w-[20%] flex justify-center">
+            <button onclick="toggleMobileMenu('menu-export', 'nav-export')" id="nav-export" class="w-full flex flex-col items-center py-1 rounded-xl text-gray-400 font-medium hover:text-mi-primary hover:bg-[#F0F7F5] transition-all">
+                <i class="fa-solid fa-file-export text-lg md:text-xl mb-1"></i>
+                <span class="text-[9px] md:text-[10px]">Export</span>
+            </button>
+            <div id="menu-export" class="mobile-submenu absolute bottom-full mb-3 right-0 bg-white border border-mi-border rounded-xl shadow-lg flex-col w-32 overflow-hidden">
+                <button onclick="exportExcel(); toggleMobileMenu('menu-export', 'nav-export')" class="px-4 py-2.5 text-left text-xs md:text-sm text-[#18794E] font-semibold hover:bg-[#E8F3F0] border-b border-mi-border"><i class="fa-solid fa-file-excel mr-2"></i>Excel</button>
+                <button onclick="exportPDF(); toggleMobileMenu('menu-export', 'nav-export')" class="px-4 py-2.5 text-left text-xs md:text-sm text-[#BE123C] font-semibold hover:bg-[#FFF1F2]"><i class="fa-solid fa-file-pdf mr-2"></i>PDF</button>
+            </div>
+        </div>
     </nav>
 
+    <!-- Overlay transparent untuk menutup submenu ketika di-klik di luar area -->
+    <div id="mobile-menu-overlay" onclick="closeAllMobileMenus()" class="fixed inset-0 z-30 hidden"></div>
+
     <script>
-        
         const CLASS_LIST = [
             "7 Ar Rumaysha", "7 Atikah Binti Zaid", "7 Jafar Bin Abi Thalib", "7 Zaid Bin Tsabit",
             "8 Al Biruni", "8 Jabir", "8 Asma", "8 Maryam",
             "9 Al Batani", "9 Ibnu Khaldun", "9 Ummu Aiman", "9 Ummu Salamah"
         ];
 
-        // Dummy Names Components
         const FIRST_NAMES = ["Ahmad", "Budi", "Siti", "Dhiya", "Rivan", "Akbar", "Aisyah", "Fatimah", "Umar", "Ali", "Hasan", "Husain", "Nisa", "Zahra", "Muhammad", "Rizky", "Putri", "Aditya", "Dimas", "Ayu", "Dewi", "Fajar", "Gilang", "Indra", "Joko"];
         const LAST_NAMES = ["Pratama", "Saputra", "Wijaya", "Kurniawan", "Sari", "Lestari", "Nugroho", "Santoso", "Hidayat", "Wahyudi", "Ramadhan", "Fitriani", "Agustin", "Baskoro", "Syahputra"];
         const REASONS = {
@@ -721,13 +749,26 @@
         let studentsMaster = []; 
         let attendanceMaster = []; 
         
+        // --- DATABASE HARI LIBUR (KALENDER) ---
+        // Jika terhubung ke Spreadsheet (GAS), inisialisasi var ini dengan respon JSON dari server.
+        let holidaysMaster = [
+            { date: '2026-09-02', desc: 'Rapat Dinas Guru', status: 'Libur' },
+            { date: '2026-09-17', desc: 'Maulid Nabi Muhammad SAW', status: 'Libur' }
+        ];
+        
         let currentFilteredAttendance = [];
         let currentSummary = {};
         
-        // DEFAULT TAB IS NOW RIWAYAT
         let currentTab = 'riwayat';
+        let rekapMode = 'ringkas'; // ringkas | harian
         let charts = { distribusi: null, kelas: null, studentDetail: null };
         let currentStudentId = null; 
+
+        // State Pagination
+        let pgState = {
+            riwayat: { page: 1, limit: 25 },
+            rekap: { page: 1, limit: 25 }
+        };
 
         function formatDateYYYYMMDD(date) {
             const y = date.getFullYear();
@@ -735,8 +776,43 @@
             const d = String(date.getDate()).padStart(2, '0');
             return `${y}-${m}-${d}`;
         }
+        function formatShortDate(dateStr) {
+            const d = new Date(dateStr);
+            const days = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+            return `${d.getDate()} ${days[d.getDay()]}`;
+        }
+        function formatDateIndo(dateString) {
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+        function formatNumber(num) {
+            return (num || 0).toLocaleString('id-ID');
+        }
+        function calculatePercentage(part, total) {
+            if (total === 0) return 0;
+            return ((part / total) * 100);
+        }
+        function formatPercentage(value) {
+            return Number(value || 0).toFixed(2).replace('.', ',') + '%';
+        }
 
-        // Generator Dummy Data
+        function getStatusBadgeHtml(percentage) {
+            if (percentage >= 95) return `<span class="px-2 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Sangat Baik</span>`;
+            if (percentage >= 90) return `<span class="px-2 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-blue-50 text-blue-700 border border-blue-200">Baik</span>`;
+            if (percentage >= 80) return `<span class="px-2 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-orange-50 text-orange-700 border border-orange-200">Perlu Perhatian</span>`;
+            return `<span class="px-2 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-rose-50 text-rose-700 border border-rose-200">Perlu Pembinaan</span>`;
+        }
+
+        function getStatusColor(status) {
+            switch(status) {
+                case 'Hadir': return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#d1fae5] text-[#065f46]"><i class="fa-solid fa-check mr-1 md:mr-1.5 mt-0.5"></i> Hadir</span>`;
+                case 'Sakit': return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#ffedd5] text-[#9a3412]"><i class="fa-solid fa-thermometer-half mr-1 md:mr-1.5 mt-0.5"></i> Sakit</span>`;
+                case 'Izin':  return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#cffafe] text-[#155e75]"><i class="fa-solid fa-envelope-open-text mr-1 md:mr-1.5 mt-0.5"></i> Izin</span>`;
+                case 'Alpa':  return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#ffe4e6] text-[#9f1239]"><i class="fa-solid fa-xmark mr-1 md:mr-1.5 mt-0.5"></i> Alpa</span>`;
+                default: return status;
+            }
+        }
+
         function initializeDummyData() {
             let studentIdCounter = 1;
             CLASS_LIST.forEach(className => {
@@ -754,15 +830,17 @@
                 }
             });
 
-            // Dynamic Date: today as end date
             const today = new Date(); 
             const thirtyDaysAgo = new Date(today);
             thirtyDaysAgo.setDate(today.getDate() - 29);
 
             for (let d = new Date(thirtyDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
-                if (d.getDay() === 0) continue; // Skip Sunday
+                // Jangan buat data dummy untuk Sabtu (6) dan Minggu (0)
+                if (d.getDay() === 0 || d.getDay() === 6) continue;
                 
                 const dateStr = formatDateYYYYMMDD(d);
+                // Jangan buat data dummy untuk Hari Libur
+                if (holidaysMaster.some(h => h.date === dateStr)) continue;
                 
                 studentsMaster.forEach(student => {
                     let status = 'Hadir';
@@ -797,41 +875,6 @@
             }
         }
 
-        function formatDateIndo(dateString) {
-            const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            return new Date(dateString).toLocaleDateString('id-ID', options);
-        }
-
-        function formatNumber(num) {
-            return (num || 0).toLocaleString('id-ID');
-        }
-
-        function calculatePercentage(part, total) {
-            if (total === 0) return 0;
-            return ((part / total) * 100);
-        }
-        
-        function formatPercentage(value) {
-            return Number(value || 0).toFixed(2).replace('.', ',') + '%';
-        }
-
-        function getStatusBadgeHtml(percentage) {
-            if (percentage >= 95) return `<span class="px-2 md:px-3 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Sangat Baik</span>`;
-            if (percentage >= 90) return `<span class="px-2 md:px-3 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-blue-50 text-blue-700 border border-blue-200">Baik</span>`;
-            if (percentage >= 80) return `<span class="px-2 md:px-3 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-orange-50 text-orange-700 border border-orange-200">Perlu Perhatian</span>`;
-            return `<span class="px-2 md:px-3 py-1 inline-flex text-[10px] md:text-[11px] leading-4 font-bold rounded-full bg-rose-50 text-rose-700 border border-rose-200">Perlu Pembinaan</span>`;
-        }
-
-        function getStatusColor(status) {
-            switch(status) {
-                case 'Hadir': return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#d1fae5] text-[#065f46]"><i class="fa-solid fa-check mr-1 md:mr-1.5 mt-0.5"></i> Hadir</span>`;
-                case 'Sakit': return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#ffedd5] text-[#9a3412]"><i class="fa-solid fa-thermometer-half mr-1 md:mr-1.5 mt-0.5"></i> Sakit</span>`;
-                case 'Izin':  return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#cffafe] text-[#155e75]"><i class="fa-solid fa-envelope-open-text mr-1 md:mr-1.5 mt-0.5"></i> Izin</span>`;
-                case 'Alpa':  return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#ffe4e6] text-[#9f1239]"><i class="fa-solid fa-xmark mr-1 md:mr-1.5 mt-0.5"></i> Alpa</span>`;
-                default: return status;
-            }
-        }
-
         function initFilterUI() {
             const classSelect = document.getElementById('filterKelas');
             CLASS_LIST.forEach(c => {
@@ -841,7 +884,7 @@
                 classSelect.appendChild(opt);
             });
 
-            document.getElementById('filterPeriode').value = 'today';
+            document.getElementById('filterPeriode').value = 'this_month';
             handlePeriodChange();
         }
 
@@ -852,7 +895,6 @@
             
             startInput.disabled = true;
             endInput.disabled = true;
-            
             const now = new Date();
 
             if (period === 'today') {
@@ -860,7 +902,7 @@
                 startInput.value = todayStr;
                 endInput.value = todayStr;
             } else if (period === 'this_week') {
-                const currentDay = now.getDay() || 7; // Make Monday 1
+                const currentDay = now.getDay() || 7; 
                 const monday = new Date(now);
                 monday.setDate(now.getDate() - currentDay + 1);
                 startInput.value = formatDateYYYYMMDD(monday);
@@ -868,7 +910,6 @@
             } else if (period === 'this_month') {
                 const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
                 startInput.value = formatDateYYYYMMDD(firstDay);
-                // Cap this month to current date to avoid querying future dummy dates
                 const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
                 endInput.value = formatDateYYYYMMDD(now < lastDay ? now : lastDay);
             } else {
@@ -878,7 +919,7 @@
         }
 
         function resetFilter() {
-            document.getElementById('filterPeriode').value = 'today';
+            document.getElementById('filterPeriode').value = 'this_month';
             handlePeriodChange();
             document.getElementById('filterKelas').value = 'all';
             document.getElementById('filterStatus').value = 'all';
@@ -887,6 +928,10 @@
         }
 
         function applyFilters() {
+            // Reset page on filter apply
+            pgState.riwayat.page = 1;
+            pgState.rekap.page = 1;
+
             const startDate = document.getElementById('filterStartDate').value;
             const endDate = document.getElementById('filterEndDate').value;
             const selectedClass = document.getElementById('filterKelas').value;
@@ -902,9 +947,16 @@
             }
             const studentIds = new Set(filteredStudents.map(s => s.id));
 
+            // Setup valid attendance records (ignoring any records mistakenly logged on a weekend or holiday)
             currentFilteredAttendance = attendanceMaster.filter(record => {
                 if (record.date < startDate || record.date > endDate) return false;
                 if (!studentIds.has(record.studentId)) return false;
+                
+                // Cek Libur & Akhir pekan (Filter keamanan ganda)
+                let d = new Date(record.date);
+                if (d.getDay() === 0 || d.getDay() === 6) return false;
+                if (holidaysMaster.some(h => h.date === record.date)) return false;
+
                 if (currentTab === 'riwayat' && selectedStatus !== 'all' && record.status !== selectedStatus) return false;
                 return true;
             });
@@ -914,14 +966,43 @@
                 return { ...record, studentName: s.name, className: s.className };
             });
 
-            calculateSummary(filteredStudents);
+            calculateSummary(filteredStudents, startDate, endDate);
             updateUI();
         }
 
-        function calculateSummary(filteredStudents) {
-            let total = currentFilteredAttendance.length;
-            let h = 0, s = 0, i = 0, a = 0;
+        // Logic Utama Menghitung Hari Efektif
+        function getEffectiveDaysInfo(startDateStr, endDateStr) {
+            let eff = 0;
+            let hols = 0;
+            let datesObj = [];
+            
+            let start = new Date(startDateStr);
+            let end = new Date(endDateStr);
 
+            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                if (d.getDay() !== 0 && d.getDay() !== 6) { // Senin-Jumat saja
+                    const dStr = formatDateYYYYMMDD(d);
+                    const holiday = holidaysMaster.find(h => h.date === dStr);
+                    if (holiday) {
+                        hols++;
+                        datesObj.push({ date: dStr, isHoliday: true, desc: holiday.desc });
+                    } else {
+                        eff++;
+                        datesObj.push({ date: dStr, isHoliday: false });
+                    }
+                }
+            }
+            return { effective: eff, holidays: hols, dates: datesObj };
+        }
+
+        function calculateSummary(filteredStudents, startDate, endDate) {
+            let effInfo = getEffectiveDaysInfo(startDate, endDate);
+            
+            currentSummary.hariEfektif = effInfo.effective;
+            currentSummary.hariLibur = effInfo.holidays;
+            currentSummary.datesObj = effInfo.dates;
+
+            let h = 0, s = 0, i = 0, a = 0;
             currentFilteredAttendance.forEach(rec => {
                 if (rec.status === 'Hadir') h++;
                 else if (rec.status === 'Sakit') s++;
@@ -929,40 +1010,47 @@
                 else if (rec.status === 'Alpa') a++;
             });
 
-            currentSummary = {
-                totalStudents: filteredStudents.length,
-                totalRecords: total,
-                h: h, s: s, i: i, a: a,
-                pct: calculatePercentage(h, total)
-            };
+            currentSummary.totalStudents = filteredStudents.length;
+            currentSummary.totalRecords = currentFilteredAttendance.length;
+            currentSummary.h = h;
+            currentSummary.s = s;
+            currentSummary.i = i;
+            currentSummary.a = a;
+            
+            // Persentase Kehadiran = Total Hadir / (Total Siswa * Hari Efektif)
+            let maxExpectedRecords = currentSummary.totalStudents * effInfo.effective;
+            currentSummary.pct = calculatePercentage(h, maxExpectedRecords);
             
             currentSummary.recapData = [];
             filteredStudents.forEach(student => {
                 const records = currentFilteredAttendance.filter(r => r.studentId === student.id);
-                if (records.length > 0) { 
-                    let sh=0, ss=0, si=0, sa=0;
-                    records.forEach(r => {
-                        if (r.status === 'Hadir') sh++;
-                        else if (r.status === 'Sakit') ss++;
-                        else if (r.status === 'Izin') si++;
-                        else if (r.status === 'Alpa') sa++;
-                    });
-                    currentSummary.recapData.push({
-                        id: student.id,
-                        name: student.name,
-                        className: student.className,
-                        h: sh, s: ss, i: si, a: sa,
-                        total: records.length,
-                        pct: calculatePercentage(sh, records.length)
-                    });
-                }
+                // Biarpun length = 0, kita proses (anggap dia Alpa selama hari efektif jika belum ada data, tapi dalam konteks dummy ini semua ada data, kita fallback amankan logic)
+                let sh=0, ss=0, si=0, sa=0;
+                records.forEach(r => {
+                    if (r.status === 'Hadir') sh++;
+                    else if (r.status === 'Sakit') ss++;
+                    else if (r.status === 'Izin') si++;
+                    else if (r.status === 'Alpa') sa++;
+                });
+
+                // Jika ada kekurangan data untuk hari efektif (misal data bolong), tambahkan ke Alpa. (opsional sesuai regulasi sekolah, di sini opsional diterapkan)
+                // sa = sa + (effInfo.effective - (sh+ss+si+sa)); 
+                // Untuk simulasi ini kita gunakan data record yang ada
+                
+                currentSummary.recapData.push({
+                    id: student.id,
+                    name: student.name,
+                    className: student.className,
+                    h: sh, s: ss, i: si, a: sa,
+                    pct: calculatePercentage(sh, effInfo.effective) // % personal = hadir / hari efektif
+                });
             });
             
             currentSummary.classRecap = {};
             CLASS_LIST.forEach(c => {
-                const classRecs = currentFilteredAttendance.filter(r => r.className === c);
-                const classStudents = new Set(classRecs.map(r => r.studentId)).size;
-                if(classRecs.length > 0) {
+                const classStudents = filteredStudents.filter(s => s.className === c);
+                if(classStudents.length > 0) {
+                    const classRecs = currentFilteredAttendance.filter(r => r.className === c);
                     let ch=0, cs=0, ci=0, ca=0;
                     classRecs.forEach(r => {
                         if (r.status === 'Hadir') ch++;
@@ -970,14 +1058,35 @@
                         else if (r.status === 'Izin') ci++;
                         else if (r.status === 'Alpa') ca++;
                     });
+                    
+                    let expectedClassRecs = classStudents.length * effInfo.effective;
                     currentSummary.classRecap[c] = {
-                        studentCount: classStudents,
+                        studentCount: classStudents.length,
                         h: ch, s: cs, i: ci, a: ca,
-                        total: classRecs.length,
-                        pct: calculatePercentage(ch, classRecs.length)
+                        pct: calculatePercentage(ch, expectedClassRecs)
                     };
                 }
             });
+        }
+
+        // --- PENGENDALIAN PAGINATION ---
+        function changePageLimit(tab, val) {
+            pgState[tab].limit = parseInt(val);
+            pgState[tab].page = 1;
+            updateUI();
+        }
+        function changePage(tab, direction) {
+            let limit = pgState[tab].limit;
+            let total = 0;
+            if(tab === 'riwayat') total = currentFilteredAttendance.length;
+            if(tab === 'rekap') total = currentSummary.recapData.length;
+            
+            let maxPage = Math.ceil(total / limit);
+            pgState[tab].page += direction;
+            
+            if(pgState[tab].page < 1) pgState[tab].page = 1;
+            if(pgState[tab].page > maxPage) pgState[tab].page = maxPage || 1;
+            updateUI();
         }
 
         function updateUI() {
@@ -985,10 +1094,13 @@
             if (currentTab === 'rekap') renderRecapTable();
             else if (currentTab === 'riwayat') renderHistoryTable();
             else if (currentTab === 'analisa') renderAnalysis();
+            else if (currentTab === 'kalender') renderKalenderTable();
         }
 
         function renderSummaryCards() {
             document.getElementById('cardTotalSiswa').innerText = formatNumber(currentSummary.totalStudents);
+            document.getElementById('cardHariEfektif').innerText = formatNumber(currentSummary.hariEfektif);
+            document.getElementById('cardHariLibur').innerText = formatNumber(currentSummary.hariLibur);
             document.getElementById('cardHadir').innerText = formatNumber(currentSummary.h);
             document.getElementById('cardSakit').innerText = formatNumber(currentSummary.s);
             document.getElementById('cardIzin').innerText = formatNumber(currentSummary.i);
@@ -996,88 +1108,36 @@
             document.getElementById('cardPersentase').innerText = formatPercentage(currentSummary.pct);
         }
 
-        function renderRecapTable() {
-            const tbody = document.getElementById('tbody-rekap');
-            const emptyState = document.getElementById('empty-rekap');
-            tbody.innerHTML = '';
-
-            if (currentSummary.recapData.length === 0) {
-                emptyState.classList.remove('hidden');
-                return;
-            }
-            emptyState.classList.add('hidden');
-
-            currentSummary.recapData.sort((a,b) => {
-                if(a.className < b.className) return -1;
-                if(a.className > b.className) return 1;
-                return a.name.localeCompare(b.name);
-            });
-
-            currentSummary.recapData.forEach((row, index) => {
-                const tr = document.createElement('tr');
-                tr.className = 'table-row-hover';
-                tr.onclick = () => showStudentDetail(row.id);
-                
-                // Progress bar logic modern
-                const barWidth = Math.min(row.pct, 100);
-                const barColor = row.pct >= 95 ? 'bg-mi-primary' : (row.pct >= 90 ? 'bg-emerald-500' : (row.pct >= 80 ? 'bg-amber-500' : 'bg-rose-500'));
-                const pctFormatted = formatPercentage(row.pct);
-                
-                const pctHtml = `
-                    <div class="flex flex-col gap-1 md:gap-1.5 w-full max-w-[100px] md:max-w-[140px]">
-                        <span class="font-bold text-mi-text1 text-xs md:text-[15px]">${pctFormatted}</span>
-                        <div class="w-full h-1 md:h-1.5 bg-mi-border rounded-full overflow-hidden">
-                            <div class="h-full ${barColor} transition-all duration-500 ease-out" style="width: ${barWidth}%"></div>
-                        </div>
-                    </div>
-                `;
-
-                // Avatar initials
-                const initials = row.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
-
-                tr.innerHTML = `
-                    <td class="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-mi-text2">${index + 1}</td>
-                    <td class="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap">
-                        <div class="flex items-center gap-2 md:gap-3">
-                            <div class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-mi-soft text-mi-primary flex items-center justify-center text-[10px] md:text-xs font-bold">${initials}</div>
-                            <span class="text-xs md:text-sm font-bold text-mi-text1">${row.name}</span>
-                        </div>
-                    </td>
-                    <td class="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-mi-text2 font-medium">${row.className}</td>
-                    <td class="px-2 md:px-4 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.h}</td>
-                    <td class="px-2 md:px-4 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.s}</td>
-                    <td class="px-2 md:px-4 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.i}</td>
-                    <td class="px-2 md:px-4 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.a}</td>
-                    <td class="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap">${pctHtml}</td>
-                    <td class="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap">${getStatusBadgeHtml(row.pct)}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
         function renderHistoryTable() {
             const tbody = document.getElementById('tbody-riwayat');
             const emptyState = document.getElementById('empty-riwayat');
             tbody.innerHTML = '';
 
-            if (currentFilteredAttendance.length === 0) {
+            let dataLength = currentFilteredAttendance.length;
+            if (dataLength === 0) {
                 emptyState.classList.remove('hidden');
-                document.getElementById('riwayat-info').innerText = '0 data';
+                document.getElementById('pg-info-riwayat').innerText = `Menampilkan 0-0 dari 0 data`;
+                document.getElementById('pg-page-riwayat').innerText = 1;
                 return;
             }
             emptyState.classList.add('hidden');
 
             let displayData = [...currentFilteredAttendance].sort((a,b) => new Date(b.date) - new Date(a.date));
-            const limit = 500;
-            const shownData = displayData.slice(0, limit);
             
-            document.getElementById('riwayat-info').innerText = `Menampilkan ${shownData.length} data terbaru dari total ${formatNumber(displayData.length)} baris.`;
+            let limit = pgState.riwayat.limit;
+            let page = pgState.riwayat.page;
+            let start = (page - 1) * limit;
+            let end = start + limit;
+            const shownData = displayData.slice(start, end);
+            
+            document.getElementById('pg-info-riwayat').innerText = `Menampilkan ${start + 1}-${Math.min(end, dataLength)} dari ${formatNumber(dataLength)} data`;
+            document.getElementById('pg-page-riwayat').innerText = page;
 
             shownData.forEach((row, index) => {
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-mi-soft/50 transition-colors';
                 tr.innerHTML = `
-                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-[11px] md:text-sm text-mi-text2">${index + 1}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-[11px] md:text-sm text-mi-text2">${start + index + 1}</td>
                     <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-[11px] md:text-sm font-medium text-mi-text1">${formatDateIndo(row.date)}</td>
                     <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-[11px] md:text-sm font-bold text-mi-text1">${row.studentName}</td>
                     <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-[11px] md:text-sm text-mi-text2 font-medium">${row.className}</td>
@@ -1088,11 +1148,259 @@
             });
         }
 
+        function setRekapMode(mode) {
+            rekapMode = mode;
+            document.getElementById('btn-rekap-ringkas').className = mode === 'ringkas' 
+                ? 'px-4 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all bg-mi-primary text-white shadow-sm' 
+                : 'px-4 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all bg-mi-soft text-mi-text2 hover:text-mi-primary';
+            
+            document.getElementById('btn-rekap-harian').className = mode === 'harian' 
+                ? 'px-4 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all bg-mi-primary text-white shadow-sm' 
+                : 'px-4 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all bg-mi-soft text-mi-text2 hover:text-mi-primary';
+            
+            pgState.rekap.page = 1;
+            renderRecapTable();
+        }
+
+        function renderRecapTable() {
+            const thead = document.getElementById('thead-rekap');
+            const tbody = document.getElementById('tbody-rekap');
+            const emptyState = document.getElementById('empty-rekap');
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            let dataLength = currentSummary.recapData.length;
+            if (dataLength === 0) {
+                emptyState.classList.remove('hidden');
+                document.getElementById('pg-info-rekap').innerText = `Menampilkan 0-0 dari 0 data`;
+                document.getElementById('pg-page-rekap').innerText = 1;
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            let limit = pgState.rekap.limit;
+            let page = pgState.rekap.page;
+            let start = (page - 1) * limit;
+            let end = start + limit;
+
+            let displayData = [...currentSummary.recapData].sort((a,b) => {
+                if(a.className < b.className) return -1;
+                if(a.className > b.className) return 1;
+                return a.name.localeCompare(b.name);
+            });
+            const shownData = displayData.slice(start, end);
+
+            document.getElementById('pg-info-rekap').innerText = `Menampilkan ${start + 1}-${Math.min(end, dataLength)} dari ${formatNumber(dataLength)} data`;
+            document.getElementById('pg-page-rekap').innerText = page;
+
+            if (rekapMode === 'ringkas') {
+                // HARI EFEKTIF diletakkan tepat setelah Kelas
+                thead.innerHTML = `
+                    <tr>
+                        <th scope="col" class="px-4 py-3 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider w-12 sticky left-0 bg-mi-bg/95 z-10">No</th>
+                        <th scope="col" class="px-4 py-3 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider sticky left-12 bg-mi-bg/95 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">Nama Siswa</th>
+                        <th scope="col" class="px-4 py-3 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Kelas</th>
+                        <th scope="col" class="px-4 py-3 text-center text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-x border-mi-border/50 bg-slate-50/50">Hr Efektif</th>
+                        <th scope="col" class="px-2 py-3 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Hadir">H</th>
+                        <th scope="col" class="px-2 py-3 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Sakit">S</th>
+                        <th scope="col" class="px-2 py-3 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Izin">I</th>
+                        <th scope="col" class="px-2 py-3 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider" title="Alpa">A</th>
+                        <th scope="col" class="px-4 py-3 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider min-w-[150px] md:min-w-[180px]">% Kehadiran</th>
+                        <th scope="col" class="px-4 py-3 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider">Status</th>
+                    </tr>
+                `;
+
+                shownData.forEach((row, index) => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'table-row-hover';
+                    tr.onclick = () => showStudentDetail(row.id);
+                    
+                    const barWidth = Math.min(row.pct, 100);
+                    const barColor = row.pct >= 95 ? 'bg-mi-primary' : (row.pct >= 90 ? 'bg-emerald-500' : (row.pct >= 80 ? 'bg-amber-500' : 'bg-rose-500'));
+                    const initials = row.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+
+                    tr.innerHTML = `
+                        <td class="px-4 py-3 whitespace-nowrap text-xs md:text-sm text-mi-text2 sticky left-0 bg-white z-10 group-hover:bg-mi-soft">${start + index + 1}</td>
+                        <td class="px-4 py-3 whitespace-nowrap sticky left-12 bg-white z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] group-hover:bg-mi-soft">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-mi-soft text-mi-primary flex items-center justify-center text-[10px] md:text-xs font-bold">${initials}</div>
+                                <span class="text-xs md:text-sm font-bold text-mi-text1 truncate max-w-[120px] md:max-w-[200px]">${row.name}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-xs md:text-sm text-mi-text2 font-medium">${row.className}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-xs md:text-sm text-center font-bold text-slate-600 border-x border-mi-border/50 bg-slate-50/20">${currentSummary.hariEfektif}</td>
+                        <td class="px-2 py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.h}</td>
+                        <td class="px-2 py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.s}</td>
+                        <td class="px-2 py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.i}</td>
+                        <td class="px-2 py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-mi-text1">${row.a}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="flex flex-col gap-1 w-full max-w-[120px]">
+                                <span class="font-bold text-mi-text1 text-xs md:text-[13px]">${formatPercentage(row.pct)}</span>
+                                <div class="w-full h-1 md:h-1.5 bg-mi-border rounded-full overflow-hidden">
+                                    <div class="h-full ${barColor} transition-all duration-500" style="width: ${barWidth}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">${getStatusBadgeHtml(row.pct)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } else if (rekapMode === 'harian') {
+                // Tampilan matriks per hari
+                let thHtml = `
+                    <tr>
+                        <th scope="col" class="px-3 py-3 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider w-10 sticky left-0 bg-mi-bg/95 z-20">No</th>
+                        <th scope="col" class="px-4 py-3 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider sticky left-10 md:left-[2.5rem] bg-mi-bg/95 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">Nama</th>
+                        <th scope="col" class="px-3 py-3 text-center text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider border-r border-mi-border">Kelas</th>
+                        <th scope="col" class="px-3 py-3 text-center text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-r border-mi-border bg-slate-50/50">Hr Efektif</th>
+                `;
+
+                currentSummary.datesObj.forEach(dObj => {
+                    thHtml += `<th scope="col" class="px-2 py-3 text-center text-[9px] md:text-[10px] font-bold ${dObj.isHoliday ? 'text-red-500 bg-red-50/50' : 'text-mi-text2'} uppercase border-r border-mi-border whitespace-nowrap">${formatShortDate(dObj.date)}</th>`;
+                });
+
+                thHtml += `
+                        <th scope="col" class="px-2 py-3 text-center text-[10px] font-bold text-emerald-600 border-l border-mi-border">H</th>
+                        <th scope="col" class="px-2 py-3 text-center text-[10px] font-bold text-orange-500">S</th>
+                        <th scope="col" class="px-2 py-3 text-center text-[10px] font-bold text-cyan-600">I</th>
+                        <th scope="col" class="px-2 py-3 text-center text-[10px] font-bold text-rose-600">A</th>
+                        <th scope="col" class="px-3 py-3 text-center text-[10px] font-bold text-mi-primary">%</th>
+                    </tr>
+                `;
+                thead.innerHTML = thHtml;
+
+                shownData.forEach((row, index) => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'table-row-hover';
+                    
+                    let tdHtml = `
+                        <td class="px-3 py-2 whitespace-nowrap text-xs text-mi-text2 sticky left-0 bg-white z-10 group-hover:bg-mi-soft border-t border-mi-border">${start + index + 1}</td>
+                        <td class="px-4 py-2 whitespace-nowrap sticky left-10 md:left-[2.5rem] bg-white z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] group-hover:bg-mi-soft border-t border-mi-border">
+                            <span class="text-xs md:text-sm font-bold text-mi-text1 truncate max-w-[100px] md:max-w-[150px] inline-block">${row.name}</span>
+                        </td>
+                        <td class="px-3 py-2 whitespace-nowrap text-[10px] md:text-xs text-mi-text2 font-medium text-center border-t border-r border-mi-border">${row.className}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-xs md:text-sm font-bold text-slate-600 text-center border-t border-r border-mi-border bg-slate-50/20">${currentSummary.hariEfektif}</td>
+                    `;
+
+                    currentSummary.datesObj.forEach(dObj => {
+                        if (dObj.isHoliday) {
+                            tdHtml += `<td class="px-1 py-2 text-center border-t border-r border-mi-border bg-gray-100"><span class="text-[8px] font-semibold text-gray-500 px-1 py-0.5 rounded bg-gray-200" title="${dObj.desc}">LIBUR</span></td>`;
+                        } else {
+                            // Find student attendance on this date
+                            const rec = currentFilteredAttendance.find(a => a.studentId === row.id && a.date === dObj.date);
+                            let content = '-';
+                            let css = 'text-gray-400';
+                            if(rec) {
+                                if(rec.status==='Hadir') { content = 'H'; css = 'font-bold text-emerald-600'; }
+                                else if(rec.status==='Sakit') { content = 'S'; css = 'font-bold text-orange-500'; }
+                                else if(rec.status==='Izin') { content = 'I'; css = 'font-bold text-cyan-600'; }
+                                else if(rec.status==='Alpa') { content = 'A'; css = 'font-bold text-rose-600'; }
+                            } else {
+                                // Default fallback (assuming no data means Alpa if it's an effective day, but in this dummy logic all are recorded)
+                                content = 'A'; css = 'font-bold text-rose-600';
+                            }
+                            tdHtml += `<td class="px-1 py-2 text-center text-xs ${css} border-t border-r border-mi-border">${content}</td>`;
+                        }
+                    });
+
+                    tdHtml += `
+                        <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-bold text-emerald-600 border-t border-l border-mi-border bg-gray-50/50">${row.h}</td>
+                        <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-bold text-orange-500 border-t bg-gray-50/50">${row.s}</td>
+                        <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-bold text-cyan-600 border-t bg-gray-50/50">${row.i}</td>
+                        <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-bold text-rose-600 border-t bg-gray-50/50">${row.a}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-[10px] md:text-xs text-center font-bold text-mi-primary border-t bg-mi-soft/30">${formatPercentage(row.pct)}</td>
+                    `;
+                    tr.innerHTML = tdHtml;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        function renderKalenderTable() {
+            const tbody = document.getElementById('tbody-kalender');
+            const emptyState = document.getElementById('empty-kalender');
+            tbody.innerHTML = '';
+
+            let sortedHolidays = [...holidaysMaster].sort((a,b) => new Date(a.date) - new Date(b.date));
+            if (sortedHolidays.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            sortedHolidays.forEach((hol, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-mi-soft/30 transition-colors';
+                const dayName = new Date(hol.date).toLocaleDateString('id-ID', {weekday: 'long'});
+                
+                tr.innerHTML = `
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-xs text-mi-text2">${index + 1}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-xs font-bold text-mi-text1">${formatDateIndo(hol.date)}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-xs text-mi-text2">${dayName}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-xs font-medium text-mi-text1">${hol.desc}</td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-xs"><span class="px-2 py-1 rounded bg-red-100 text-red-700 font-bold text-[10px]">${hol.status}</span></td>
+                    <td class="px-4 md:px-6 py-2 md:py-3 whitespace-nowrap text-center">
+                        <button onclick="deleteHoliday('${hol.date}')" class="text-rose-500 hover:text-rose-700 p-1 bg-rose-50 rounded" title="Hapus"><i class="fa-solid fa-trash-alt"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addHolidayPrompt() {
+            Swal.fire({
+                title: 'Tambah Hari Libur',
+                html: `
+                    <input type="date" id="swal-hol-date" class="w-full border border-gray-300 rounded-xl p-2 mb-3 text-sm" value="">
+                    <input type="text" id="swal-hol-desc" class="w-full border border-gray-300 rounded-xl p-2 text-sm" placeholder="Keterangan Libur (cth: Libur Nasional)">
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#124F47',
+                preConfirm: () => {
+                    const date = document.getElementById('swal-hol-date').value;
+                    const desc = document.getElementById('swal-hol-desc').value;
+                    if(!date || !desc) {
+                        Swal.showValidationMessage('Tanggal dan Keterangan wajib diisi!');
+                        return false;
+                    }
+                    if(holidaysMaster.find(h => h.date === date)) {
+                        Swal.showValidationMessage('Tanggal tersebut sudah diatur sebagai hari libur!');
+                        return false;
+                    }
+                    return {date, desc};
+                }
+            }).then((res) => {
+                if(res.isConfirmed) {
+                    holidaysMaster.push({ date: res.value.date, desc: res.value.desc, status: 'Libur' });
+                    Swal.fire({title:'Tersimpan', icon:'success', toast:true, position:'top-end', showConfirmButton:false, timer:1500});
+                    applyFilters(); // Rekalkulasi seluruh data efektif
+                }
+            });
+        }
+
+        function deleteHoliday(date) {
+            Swal.fire({
+                title: 'Hapus Hari Libur?',
+                text: "Data akan dihapus dan Hari Efektif akan dikalkulasi ulang.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    holidaysMaster = holidaysMaster.filter(h => h.date !== date);
+                    Swal.fire({title:'Dihapus!', icon:'success', toast:true, position:'top-end', showConfirmButton:false, timer:1500});
+                    applyFilters();
+                }
+            });
+        }
+
         function renderAnalysis() {
-            // Chart Distribusi
             const ctxPie = document.getElementById('chartDistribusi').getContext('2d');
             if (charts.distribusi) charts.distribusi.destroy();
-            
             charts.distribusi = new Chart(ctxPie, {
                 type: 'doughnut',
                 data: {
@@ -1100,25 +1408,16 @@
                     datasets: [{
                         data: [currentSummary.h, currentSummary.s, currentSummary.i, currentSummary.a],
                         backgroundColor: ['#34D399', '#FB923C', '#38BDF8', '#F87171'],
-                        borderWidth: 2,
-                        borderColor: '#ffffff'
+                        borderWidth: 2, borderColor: '#ffffff'
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { font: { family: 'Inter', size: window.innerWidth < 768 ? 10 : 12 } } } },
-                    cutout: '70%'
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Inter', size: window.innerWidth < 768 ? 10 : 12 } } } }, cutout: '70%' }
             });
 
-            // Analisis Kelas
             const selectedClass = document.getElementById('filterKelas').value;
             const containerTable = document.getElementById('containerTableKelas');
             const titleKelas = document.getElementById('titleAnalisaKelas');
-            
-            let labels = [];
-            let dataPct = [];
+            let labels = []; let dataPct = [];
 
             if (selectedClass === 'all') {
                 titleKelas.innerText = 'Perbandingan Kehadiran Antar Kelas';
@@ -1135,13 +1434,13 @@
                         const tr = document.createElement('tr');
                         tr.className = 'hover:bg-mi-soft/30 transition-colors';
                         tr.innerHTML = `
-                            <td class="px-3 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm font-bold text-mi-text1">${c}</td>
-                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center text-mi-text2">${dat.studentCount}</td>
-                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-emerald-600">${dat.h}</td>
-                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-orange-500">${dat.s}</td>
-                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-cyan-600">${dat.i}</td>
-                            <td class="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-semibold text-rose-600">${dat.a}</td>
-                            <td class="px-3 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-center font-bold text-mi-primary">${formatPercentage(dat.pct)}</td>
+                            <td class="px-3 py-2 whitespace-nowrap text-xs font-bold text-mi-text1">${c}</td>
+                            <td class="px-2 py-2 whitespace-nowrap text-xs text-center text-mi-text2">${dat.studentCount}</td>
+                            <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-semibold text-emerald-600">${dat.h}</td>
+                            <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-semibold text-orange-500">${dat.s}</td>
+                            <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-semibold text-cyan-600">${dat.i}</td>
+                            <td class="px-2 py-2 whitespace-nowrap text-xs text-center font-semibold text-rose-600">${dat.a}</td>
+                            <td class="px-3 py-2 whitespace-nowrap text-xs text-center font-bold text-mi-primary">${formatPercentage(dat.pct)}</td>
                         `;
                         tbody.appendChild(tr);
                     }
@@ -1155,7 +1454,6 @@
 
             const ctxBar = document.getElementById('chartKelas').getContext('2d');
             if (charts.kelas) charts.kelas.destroy();
-            
             charts.kelas = new Chart(ctxBar, {
                 type: 'bar',
                 data: {
@@ -1167,15 +1465,7 @@
                         borderRadius: 4
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { 
-                        y: { beginAtZero: true, max: selectedClass === 'all' ? 100 : undefined, grid: { color: '#E5ECE9' }, ticks: {font: {size: window.innerWidth < 768 ? 9 : 12}} },
-                        x: { grid: { display: false }, ticks: {font: {size: window.innerWidth < 768 ? 9 : 12}} }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: selectedClass === 'all' ? 100 : undefined } } }
             });
 
             generateAnalysisConclusion();
@@ -1183,8 +1473,8 @@
         }
 
         function generateAnalysisConclusion() {
-            const startDate = document.getElementById('filterStartDate').value;
-            const endDate = document.getElementById('filterEndDate').value;
+            const startD = document.getElementById('filterStartDate').value;
+            const endD = document.getElementById('filterEndDate').value;
             const selectedClass = document.getElementById('filterKelas').value;
             const targetEl = document.getElementById('analisaKesimpulan');
 
@@ -1193,51 +1483,32 @@
                 return;
             }
 
-            let periodText = "";
-            if (startDate === endDate) periodText = `tanggal <strong>${formatDateIndo(startDate)}</strong>`;
-            else periodText = `periode <strong>${formatDateIndo(startDate)} s/d ${formatDateIndo(endDate)}</strong>`;
-
+            let periodText = startD === endD ? `tanggal <strong>${formatDateIndo(startD)}</strong>` : `periode <strong>${formatDateIndo(startD)} s/d ${formatDateIndo(endD)}</strong>`;
             let classText = selectedClass === 'all' ? "seluruh kelas" : `kelas <strong>${selectedClass}</strong>`;
 
-            const text = `Berdasarkan data presensi ${classText} pada ${periodText}, tercatat sebanyak <strong>${currentSummary.totalStudents} siswa</strong> dengan persentase kehadiran mencapai <strong>${formatPercentage(currentSummary.pct)}</strong>.`;
-            
-            targetEl.innerHTML = text;
+            targetEl.innerHTML = `Berdasarkan data presensi ${classText} pada ${periodText}, tercatat sebanyak <strong>${currentSummary.totalStudents} siswa</strong>. Dalam rentang waktu tersebut terdapat <strong>${currentSummary.hariEfektif} Hari Efektif</strong>. Persentase kehadiran mencapai <strong>${formatPercentage(currentSummary.pct)}</strong>.`;
         }
 
         function generateAnalysisRecommendations() {
             const targetEl = document.getElementById('analisaRekomendasi');
             targetEl.innerHTML = '';
-
             if (currentSummary.totalRecords === 0) {
-                targetEl.innerHTML = "<li>-</li>";
-                return;
+                targetEl.innerHTML = "<li>-</li>"; return;
             }
-
             let recs = [];
-            let alpaRate = (currentSummary.a / currentSummary.totalRecords) * 100;
-            let sakitRate = (currentSummary.s / currentSummary.totalRecords) * 100;
-            let izinRate = (currentSummary.i / currentSummary.totalRecords) * 100;
-            let hadirRate = currentSummary.pct;
+            let total = currentSummary.totalRecords;
+            let alpaRate = (currentSummary.a / total) * 100;
+            let sakitRate = (currentSummary.s / total) * 100;
+            let izinRate = (currentSummary.i / total) * 100;
 
-            if (alpaRate > 2) {
-                recs.push('<i class="fa-solid fa-circle-exclamation text-rose-500 mr-2"></i> Perlu dilakukan pemantauan terhadap tingkat ketidakhadiran tanpa keterangan (Alpa).');
-            }
-            if (sakitRate > 5) {
-                recs.push('<i class="fa-solid fa-notes-medical text-orange-500 mr-2"></i> Koordinasikan kondisi siswa yang sakit dengan wali kelas dan orang tua terkait.');
-            }
-            if (izinRate > 5) {
-                recs.push('<i class="fa-solid fa-envelope text-cyan-500 mr-2"></i> Lakukan monitoring terhadap pola ketidakhadiran dengan status Izin yang cukup tinggi.');
-            }
+            if (alpaRate > 2) recs.push('<i class="fa-solid fa-circle-exclamation text-rose-500 mr-2 mt-0.5"></i> Perlu dilakukan pemantauan terhadap tingkat ketidakhadiran tanpa keterangan (Alpa).');
+            if (sakitRate > 5) recs.push('<i class="fa-solid fa-notes-medical text-orange-500 mr-2 mt-0.5"></i> Koordinasikan kondisi siswa yang sakit dengan wali kelas dan orang tua terkait.');
+            if (izinRate > 5) recs.push('<i class="fa-solid fa-envelope text-cyan-500 mr-2 mt-0.5"></i> Lakukan monitoring terhadap pola ketidakhadiran dengan status Izin yang cukup tinggi.');
             
-            if (hadirRate >= 95) {
-                recs.push('<i class="fa-solid fa-thumbs-up text-emerald-500 mr-2"></i> Tingkat kehadiran sangat baik. Pertahankan monitoring presensi secara konsisten.');
-            } else if (hadirRate >= 90) {
-                recs.push('<i class="fa-solid fa-check text-emerald-500 mr-2"></i> Tingkat kehadiran tergolong baik, lakukan evaluasi berkala untuk mencegah penurunan.');
-            }
-
-            if (recs.length === 0) {
-                recs.push('<i class="fa-solid fa-clipboard-check text-mi-primary mr-2"></i> Pertahankan monitoring presensi secara konsisten dan lakukan evaluasi berkala.');
-            }
+            if (currentSummary.pct >= 95) recs.push('<i class="fa-solid fa-thumbs-up text-emerald-500 mr-2 mt-0.5"></i> Tingkat kehadiran sangat baik. Pertahankan monitoring presensi secara konsisten.');
+            else if (currentSummary.pct >= 90) recs.push('<i class="fa-solid fa-check text-emerald-500 mr-2 mt-0.5"></i> Tingkat kehadiran tergolong baik, lakukan evaluasi berkala untuk mencegah penurunan.');
+            
+            if (recs.length === 0) recs.push('<i class="fa-solid fa-clipboard-check text-mi-primary mr-2 mt-0.5"></i> Pertahankan monitoring presensi secara konsisten.');
 
             recs.forEach(r => {
                 const li = document.createElement('li');
@@ -1247,16 +1518,18 @@
             });
         }
 
+        // --- MANAJEMEN TAB & RESPONSIVE MENU ---
         function switchTab(tabId) {
             currentTab = tabId;
+            closeAllMobileMenus();
             
             // Sync Desktop Tabs
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             const activeDesktopBtn = document.getElementById(`tab-${tabId}`);
             if (activeDesktopBtn) activeDesktopBtn.classList.add('active');
             
-            // Sync Mobile Nav Footer
-            const navIds = ['nav-riwayat', 'nav-rekap', 'nav-analisa'];
+            // Sync Mobile Nav (Reset all first)
+            const navIds = ['nav-riwayat', 'nav-rekap', 'nav-lainnya', 'nav-export'];
             navIds.forEach(nav => {
                 const el = document.getElementById(nav);
                 if (el) {
@@ -1264,40 +1537,76 @@
                     el.classList.add('text-gray-400', 'font-medium');
                 }
             });
-            const activeMobileNav = document.getElementById(`nav-${tabId}`);
-            if (activeMobileNav) {
-                activeMobileNav.classList.remove('text-gray-400', 'font-medium');
-                activeMobileNav.classList.add('text-mi-primary', 'bg-mi-soft', 'font-semibold');
+            
+            // Set active state on mobile
+            if(tabId === 'riwayat' || tabId === 'rekap') {
+                const activeMobileNav = document.getElementById(`nav-${tabId}`);
+                if (activeMobileNav) {
+                    activeMobileNav.classList.remove('text-gray-400', 'font-medium');
+                    activeMobileNav.classList.add('text-mi-primary', 'bg-mi-soft', 'font-semibold');
+                }
+            } else if (tabId === 'analisa' || tabId === 'kalender') {
+                const navLainnya = document.getElementById('nav-lainnya');
+                navLainnya.classList.remove('text-gray-400', 'font-medium');
+                navLainnya.classList.add('text-mi-primary', 'bg-mi-soft', 'font-semibold');
             }
 
             // Sync Contents
-            document.getElementById('content-rekap').classList.add('hidden');
-            document.getElementById('content-riwayat').classList.add('hidden');
-            document.getElementById('content-analisa').classList.add('hidden');
+            ['rekap', 'riwayat', 'analisa', 'kalender'].forEach(id => {
+                document.getElementById(`content-${id}`).classList.add('hidden');
+                document.getElementById(`content-${id}`).classList.remove('flex');
+            });
             
             const selectedContent = document.getElementById(`content-${tabId}`);
             selectedContent.classList.remove('hidden');
-            if(tabId === 'riwayat') selectedContent.classList.add('flex');
+            if(tabId === 'riwayat' || tabId === 'rekap' || tabId === 'kalender') selectedContent.classList.add('flex');
             else selectedContent.classList.add('block');
 
-            // Toggle filter visibility
             document.getElementById('filterStatusContainer').style.display = tabId === 'riwayat' ? 'block' : 'none';
             document.getElementById('filterSearchContainer').style.display = (tabId === 'rekap' || tabId === 'riwayat') ? 'block' : 'none';
 
             updateUI();
         }
 
+        function toggleMobileMenu(menuId, buttonId) {
+            const menu = document.getElementById(menuId);
+            const overlay = document.getElementById('mobile-menu-overlay');
+            const isActive = menu.classList.contains('active');
+            
+            closeAllMobileMenus(); // tutup yg lain dulu
+
+            if(!isActive) {
+                menu.classList.add('active');
+                overlay.classList.remove('hidden');
+                
+                // Add temp active state to trigger button
+                const btn = document.getElementById(buttonId);
+                btn.classList.remove('text-gray-400');
+                btn.classList.add('text-mi-primary', 'font-bold');
+            }
+        }
+
+        function closeAllMobileMenus() {
+            document.querySelectorAll('.mobile-submenu').forEach(m => m.classList.remove('active'));
+            document.getElementById('mobile-menu-overlay').classList.add('hidden');
+            // reset trigger styles
+            const navIds = ['nav-lainnya', 'nav-export'];
+            navIds.forEach(id => {
+                const btn = document.getElementById(id);
+                // Kembalikan style dasar KECUALI tab tersebut sedang aktif sebagai content (contoh Analisa aktif, nav-lainnya harus tetap active look)
+                if (id === 'nav-lainnya' && (currentTab === 'analisa' || currentTab === 'kalender')) return;
+                
+                btn.classList.remove('text-mi-primary', 'font-bold');
+                btn.classList.add('text-gray-400');
+            });
+        }
+
         function handleRefresh() {
             Swal.fire({
                 title: '<span class="text-mi-text1 font-bold text-sm md:text-base">Memuat Data</span>',
                 html: '<div class="loader mt-2"></div>',
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                background: '#FFFFFF',
-                timer: 500
-            }).then(() => {
-                applyFilters();
-            });
+                showConfirmButton: false, allowOutsideClick: false, background: '#FFFFFF', timer: 500
+            }).then(() => { applyFilters(); });
         }
 
         function closeModal(id) {
@@ -1313,6 +1622,7 @@
 
             document.getElementById('detailName').innerText = student.name;
             document.getElementById('detailClass').innerText = student.className;
+            document.getElementById('detHariEfektif').innerText = currentSummary.hariEfektif;
             
             if(recap) {
                 document.getElementById('detH').innerText = recap.h;
@@ -1326,15 +1636,7 @@
                 if (charts.studentDetail) charts.studentDetail.destroy();
                 charts.studentDetail = new Chart(ctx, {
                     type: 'pie',
-                    data: {
-                        labels: ['H', 'S', 'I', 'A'],
-                        datasets: [{
-                            data: [recap.h, recap.s, recap.i, recap.a],
-                            backgroundColor: ['#34D399', '#FB923C', '#38BDF8', '#F87171'],
-                            borderWidth: 2,
-                            borderColor: '#ffffff'
-                        }]
-                    },
+                    data: { labels: ['H', 'S', 'I', 'A'], datasets: [{ data: [recap.h, recap.s, recap.i, recap.a], backgroundColor: ['#34D399', '#FB923C', '#38BDF8', '#F87171'], borderWidth: 2, borderColor: '#ffffff' }] },
                     options: { responsive: true, maintainAspectRatio: false, plugins:{ legend:{position:'right', labels:{boxWidth:10, font:{family:'Inter', size:10}}} } }
                 });
             }
@@ -1344,18 +1646,17 @@
             history.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="px-3 md:px-4 py-2 md:py-2.5 whitespace-nowrap text-[11px] md:text-[13px] font-medium text-mi-text1">${formatDateIndo(row.date)}</td>
-                    <td class="px-3 md:px-4 py-2 md:py-2.5 whitespace-nowrap">${getStatusColor(row.status)}</td>
-                    <td class="px-3 md:px-4 py-2 md:py-2.5 whitespace-nowrap text-[11px] md:text-[13px] text-mi-text2 truncate max-w-[120px] md:max-w-[150px]" title="${row.notes}">${row.notes}</td>
+                    <td class="px-3 py-2 whitespace-nowrap text-[11px] md:text-xs font-medium text-mi-text1">${formatDateIndo(row.date)}</td>
+                    <td class="px-3 py-2 whitespace-nowrap">${getStatusColor(row.status)}</td>
+                    <td class="px-3 py-2 whitespace-nowrap text-[11px] md:text-xs text-mi-text2 truncate max-w-[150px]" title="${row.notes}">${row.notes}</td>
                 `;
                 tbody.appendChild(tr);
             });
-
             document.getElementById('modalStudent').classList.remove('hidden');
         }
 
+        // --- WHATSAPP ---
         let currentWAText = "";
-
         function openWhatsAppModal() {
             generateWhatsAppReport();
             document.getElementById('waPreviewText').innerText = currentWAText;
@@ -1363,404 +1664,197 @@
         }
 
         function generateWhatsAppReport() {
-            const startDate = document.getElementById('filterStartDate').value;
-            const endDate = document.getElementById('filterEndDate').value;
+            const startD = document.getElementById('filterStartDate').value;
+            const endD = document.getElementById('filterEndDate').value;
             const selectedClass = document.getElementById('filterKelas').value;
             
-            let dateStr = "";
-            if (startDate === endDate) {
-                dateStr = `📅 Tanggal: ${formatDateIndo(startDate)}`;
-            } else {
-                dateStr = `📅 Periode: ${formatDateIndo(startDate)} – ${formatDateIndo(endDate)}`;
-            }
-
+            let dateStr = startD === endD ? `📅 Tanggal: ${formatDateIndo(startD)}` : `📅 Periode: ${formatDateIndo(startD)} – ${formatDateIndo(endD)}`;
             let text = "";
 
             if (selectedClass !== 'all') {
-                text += `📢 *LAPORAN PRESENSI KELAS ${selectedClass.toUpperCase()}*\n`;
-                text += `${dateStr}\n`;
-                text += `👥 Total Siswa: ${currentSummary.totalStudents}\n\n`;
+                text += `📢 *LAPORAN PRESENSI KELAS ${selectedClass.toUpperCase()}*\n${dateStr}\n`;
+                text += `👥 Total Siswa: ${currentSummary.totalStudents}\n`;
+                text += `🗓️ Hari Efektif: ${currentSummary.hariEfektif}\n\n`;
                 
-                text += `✅ Hadir: ${currentSummary.h} siswa (${formatPercentage(calculatePercentage(currentSummary.h, currentSummary.totalRecords))})\n`;
-                text += `🤒 Sakit: ${currentSummary.s} siswa (${formatPercentage(calculatePercentage(currentSummary.s, currentSummary.totalRecords))})\n`;
-                text += `📝 Izin: ${currentSummary.i} siswa (${formatPercentage(calculatePercentage(currentSummary.i, currentSummary.totalRecords))})\n`;
-                text += `❌ Alpa: ${currentSummary.a} siswa (${formatPercentage(calculatePercentage(currentSummary.a, currentSummary.totalRecords))})\n\n`;
-                
+                text += `✅ Hadir: ${currentSummary.h}\n🤒 Sakit: ${currentSummary.s}\n📝 Izin: ${currentSummary.i}\n❌ Alpa: ${currentSummary.a}\n\n`;
                 text += `📊 *Persentase Kehadiran: ${formatPercentage(currentSummary.pct)}*\n\n`;
 
                 const sakitList = extractNamesByStatus(selectedClass, 'Sakit');
-                if (sakitList.length > 0) text += `🤒 *Siswa Sakit (${sakitList.length} anak):*\n${sakitList.map(n => `- ${n}`).join('\n')}\n\n`;
+                if (sakitList.length > 0) text += `🤒 *Sakit (${sakitList.length} anak):*\n${sakitList.map(n => `- ${n}`).join('\n')}\n\n`;
                 
                 const izinList = extractNamesByStatus(selectedClass, 'Izin');
-                if (izinList.length > 0) text += `📝 *Siswa Izin (${izinList.length} anak):*\n${izinList.map(n => `- ${n}`).join('\n')}\n\n`;
+                if (izinList.length > 0) text += `📝 *Izin (${izinList.length} anak):*\n${izinList.map(n => `- ${n}`).join('\n')}\n\n`;
 
                 const alpaList = extractNamesByStatus(selectedClass, 'Alpa');
-                if (alpaList.length > 0) text += `❌ *Siswa Alpa (${alpaList.length} anak):*\n${alpaList.map(n => `- ${n}`).join('\n')}\n\n`;
-
+                if (alpaList.length > 0) text += `❌ *Alpa (${alpaList.length} anak):*\n${alpaList.map(n => `- ${n}`).join('\n')}\n\n`;
             } else {
-                text += `📢 *REKAP PRESENSI SISWA*\n`;
-                text += `🏫 *SMP IT MENTARI ILMU*\n`;
-                text += `${dateStr}\n`;
-                text += `━━━━━━━━━━━━━━━━━━\n`;
-                text += `📊 *REKAP KESELURUHAN*\n`;
-                text += `━━━━━━━━━━━━━━━━━━\n`;
-                text += `👥 Total Siswa: ${currentSummary.totalStudents}\n`;
-                text += `✅ Hadir: ${currentSummary.h} (${formatPercentage(calculatePercentage(currentSummary.h, currentSummary.totalRecords))})\n`;
-                text += `🤒 Sakit: ${currentSummary.s} (${formatPercentage(calculatePercentage(currentSummary.s, currentSummary.totalRecords))})\n`;
-                text += `📝 Izin: ${currentSummary.i} (${formatPercentage(calculatePercentage(currentSummary.i, currentSummary.totalRecords))})\n`;
-                text += `❌ Alpa: ${currentSummary.a} (${formatPercentage(calculatePercentage(currentSummary.a, currentSummary.totalRecords))})\n`;
-                text += `📈 *Persentase Kehadiran: ${formatPercentage(currentSummary.pct)}*\n\n`;
-
-                text += `━━━━━━━━━━━━━━━━━━\n`;
-                text += `📚 *REKAP PER KELAS*\n`;
-                text += `━━━━━━━━━━━━━━━━━━\n`;
+                text += `📢 *REKAP PRESENSI KESELURUHAN*\n🏫 *SMP IT MENTARI ILMU*\n${dateStr}\n━━━━━━━━━━━━━━━━━━\n`;
+                text += `👥 Total Siswa: ${currentSummary.totalStudents}\n🗓️ Hari Efektif: ${currentSummary.hariEfektif}\n`;
+                text += `✅ H: ${currentSummary.h} | 🤒 S: ${currentSummary.s} | 📝 I: ${currentSummary.i} | ❌ A: ${currentSummary.a}\n`;
+                text += `📈 *Persentase: ${formatPercentage(currentSummary.pct)}*\n━━━━━━━━━━━━━━━━━━\n`;
                 
                 CLASS_LIST.forEach(c => {
                     if(currentSummary.classRecap[c]) {
                         const cr = currentSummary.classRecap[c];
                         text += `🔹 *${c.toUpperCase()}*\n`;
-                        text += `👥 ${cr.studentCount} siswa\n`;
-                        text += `✅ Hadir: ${cr.h} (${formatPercentage(cr.pct)})\n`;
-                        text += `🤒 Sakit: ${cr.s} (${formatPercentage(calculatePercentage(cr.s, cr.total))})\n`;
-                        text += `📝 Izin: ${cr.i} (${formatPercentage(calculatePercentage(cr.i, cr.total))})\n`;
-                        text += `❌ Alpa: ${cr.a} (${formatPercentage(calculatePercentage(cr.a, cr.total))})\n\n`;
+                        text += `H: ${cr.h} | S: ${cr.s} | I: ${cr.i} | A: ${cr.a} (${formatPercentage(cr.pct)})\n\n`;
                     }
                 });
-
-                const allSakit = extractAllNamesByStatus('Sakit');
-                if (allSakit.length > 0) {
-                    text += `━━━━━━━━━━━━━━━━━━\n🤒 *DAFTAR SISWA SAKIT*\n━━━━━━━━━━━━━━━━━━\n`;
-                    text += allSakit.map(s => `- ${s.name} (${s.className})`).join('\n') + `\n\n`;
-                }
-
-                const allIzin = extractAllNamesByStatus('Izin');
-                if (allIzin.length > 0) {
-                    text += `━━━━━━━━━━━━━━━━━━\n📝 *DAFTAR SISWA IZIN*\n━━━━━━━━━━━━━━━━━━\n`;
-                    text += allIzin.map(s => `- ${s.name} (${s.className})`).join('\n') + `\n\n`;
-                }
-
-                const allAlpa = extractAllNamesByStatus('Alpa');
-                if (allAlpa.length > 0) {
-                    text += `━━━━━━━━━━━━━━━━━━\n❌ *DAFTAR SISWA ALPA*\n━━━━━━━━━━━━━━━━━━\n`;
-                    text += allAlpa.map(s => `- ${s.name} (${s.className})`).join('\n') + `\n\n`;
-                }
             }
-
-            text += `Semoga siswa yang berhalangan hadir segera kembali dalam kondisi sehat.\n`;
-            text += `_Pesan otomatis dikirim oleh Sistem Presensi SMP IT Mentari Ilmu_`;
-
+            text += `_Sistem Presensi SMP IT Mentari Ilmu_`;
             currentWAText = text;
         }
 
         function extractNamesByStatus(className, status) {
             const records = currentFilteredAttendance.filter(r => r.className === className && r.status === status);
-            const names = [...new Set(records.map(r => r.studentName))];
-            return names.sort();
-        }
-
-        function extractAllNamesByStatus(status) {
-            const records = currentFilteredAttendance.filter(r => r.status === status);
-            const uniqueStudents = [];
-            const map = new Map();
-            for (const item of records) {
-                if(!map.has(item.studentId)){
-                    map.set(item.studentId, true);
-                    uniqueStudents.push({name: item.studentName, className: item.className});
-                }
-            }
-            return uniqueStudents.sort((a,b) => a.className.localeCompare(b.className));
+            return [...new Set(records.map(r => r.studentName))].sort();
         }
 
         function copyWhatsAppReport() {
             navigator.clipboard.writeText(currentWAText).then(() => {
-                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Laporan berhasil disalin!', showConfirmButton: false, timer: 3000, background: '#124F47', color: '#fff', iconColor: '#34D399' });
-            }).catch(err => {
-                const textArea = document.createElement("textarea");
-                textArea.value = currentWAText;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    Swal.fire({ toast:true, position: 'top-end', icon: 'success', title: 'Tersalin!', showConfirmButton: false, timer: 3000, background: '#124F47', color: '#fff', iconColor: '#34D399' });
-                } catch (err) {
-                    alert('Gagal menyalin text.');
-                }
-                document.body.removeChild(textArea);
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Tersalin!', showConfirmButton: false, timer: 3000, background: '#124F47', color: '#fff', iconColor: '#34D399' });
             });
         }
-
         function shareToWhatsApp() {
-            const encodedText = encodeURIComponent(currentWAText);
-            const url = `https://wa.me/?text=${encodedText}`;
-            window.open(url, '_blank');
+            window.open(`https://wa.me/?text=${encodeURIComponent(currentWAText)}`, '_blank');
         }
 
-        // Router Export Excel
+        // --- EXPORT MASTER (Bypass Pagination) ---
         function exportExcel() {
             if (currentTab === 'rekap') exportRecapExcel();
             else if (currentTab === 'riwayat') exportHistoryExcel();
             else if (currentTab === 'analisa') exportAnalysisExcel();
         }
-
-        // Router Export PDF
         function exportPDF() {
             if (currentTab === 'rekap') exportRecapPDF();
             else if (currentTab === 'riwayat') exportHistoryPDF();
             else if (currentTab === 'analisa') exportAnalysisPDF();
         }
 
-        // --- EXPORT REKAP ---
+        // EXPORT REKAP (Menyesuaikan Ringkas/Harian)
         function exportRecapExcel() {
-            if(currentSummary.recapData.length === 0) {
-                Swal.fire({ title: 'Data Kosong', text: 'Silakan ubah filter atau periode terlebih dahulu.', icon: 'info', confirmButtonColor: '#124F47' });
-                return;
+            if(currentSummary.recapData.length === 0) return Swal.fire('Data Kosong', '', 'info');
+            
+            let exportData = [];
+            let sortedData = [...currentSummary.recapData].sort((a,b) => a.className.localeCompare(b.className) || a.name.localeCompare(b.name));
+            
+            if (rekapMode === 'ringkas') {
+                exportData = sortedData.map((row, index) => ({
+                    "No": index + 1, "Nama Siswa": row.name, "Kelas": row.className,
+                    "Hari Efektif": currentSummary.hariEfektif,
+                    "Hadir": row.h, "Sakit": row.s, "Izin": row.i, "Alpa": row.a, 
+                    "% Kehadiran": formatPercentage(row.pct)
+                }));
+            } else {
+                // Dinamis harian
+                exportData = sortedData.map((row, index) => {
+                    let obj = { "No": index + 1, "Nama Siswa": row.name, "Kelas": row.className, "Hr Efektif": currentSummary.hariEfektif };
+                    currentSummary.datesObj.forEach(dObj => {
+                        let shortDate = formatShortDate(dObj.date);
+                        if(dObj.isHoliday) obj[shortDate] = 'LIBUR';
+                        else {
+                            let rec = currentFilteredAttendance.find(a => a.studentId === row.id && a.date === dObj.date);
+                            obj[shortDate] = rec ? rec.status.charAt(0) : 'A';
+                        }
+                    });
+                    obj["H"] = row.h; obj["S"] = row.s; obj["I"] = row.i; obj["A"] = row.a;
+                    obj["% Kehadiran"] = formatPercentage(row.pct);
+                    return obj;
+                });
             }
-            const exportData = currentSummary.recapData.map((row, index) => ({
-                "No": index + 1, "Nama Siswa": row.name, "Kelas": row.className,
-                "Hadir": row.h, "Sakit": row.s, "Izin": row.i, "Alpa": row.a, 
-                "Total": row.total, "% Kehadiran": formatPercentage(row.pct)
-            }));
-            const worksheet = XLSX.utils.json_to_sheet(exportData);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Presensi");
-            worksheet['!cols'] = [ {wch: 5}, {wch: 25}, {wch: 15}, {wch: 8}, {wch: 8}, {wch: 8}, {wch: 8}, {wch: 8}, {wch: 15} ];
-            XLSX.writeFile(workbook, `Rekap_Presensi_${document.getElementById('filterStartDate').value}_sd_${document.getElementById('filterEndDate').value}.xlsx`);
+
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Rekap Presensi");
+            XLSX.writeFile(wb, `Rekap_${rekapMode.toUpperCase()}_${document.getElementById('filterStartDate').value}.xlsx`);
         }
 
         function exportRecapPDF() {
-            if(currentSummary.recapData.length === 0) {
-                Swal.fire({ title: 'Data Kosong', text: 'Silakan ubah filter atau periode terlebih dahulu.', icon: 'info', confirmButtonColor: '#124F47' });
-                return;
-            }
+            if(currentSummary.recapData.length === 0) return Swal.fire('Data Kosong', '', 'info');
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const startD = document.getElementById('filterStartDate').value;
-            const endD = document.getElementById('filterEndDate').value;
-            const kelas = document.getElementById('filterKelas').value;
-
-            doc.setFontSize(16); doc.text("LAPORAN REKAP PRESENSI SISWA", 14, 20);
+            const doc = new jsPDF(rekapMode === 'harian' ? 'landscape' : 'portrait');
+            
+            doc.setFontSize(14); doc.text(`LAPORAN REKAP PRESENSI - ${rekapMode.toUpperCase()}`, 14, 20);
             doc.setFontSize(10);
-            doc.text(`Periode : ${startD} s/d ${endD}`, 14, 28);
-            doc.text(`Kelas   : ${kelas === 'all' ? 'Semua Kelas' : kelas}`, 14, 34);
-            doc.text(`Total Siswa: ${currentSummary.totalStudents}`, 130, 28);
-            doc.text(`Persentase : ${formatPercentage(currentSummary.pct)}`, 130, 34);
+            doc.text(`Periode: ${document.getElementById('filterStartDate').value} s/d ${document.getElementById('filterEndDate').value}`, 14, 26);
+            doc.text(`Hari Efektif: ${currentSummary.hariEfektif} | Total Siswa: ${currentSummary.totalStudents}`, 14, 32);
 
-            const tableColumn = ["No", "Nama Siswa", "Kelas", "H", "S", "I", "A", "%"];
-            const tableRows = currentSummary.recapData.map((row, i) => [ i + 1, row.name, row.className, row.h, row.s, row.i, row.a, formatPercentage(row.pct) ]);
-
-            doc.autoTable({ head: [tableColumn], body: tableRows, startY: 40, theme: 'grid', styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [18, 79, 71] } });
-            doc.save(`Rekap_Presensi_${startD}_sd_${endD}.pdf`);
-        }
-
-        // --- EXPORT HISTORY ---
-        function exportHistoryExcel() {
-            if(currentFilteredAttendance.length === 0) {
-                Swal.fire({ title: 'Data Kosong', text: 'Silakan ubah filter atau periode terlebih dahulu.', icon: 'info', confirmButtonColor: '#124F47' });
-                return;
-            }
-            const exportData = currentFilteredAttendance.map((row, index) => ({
-                "No": index + 1, "Tanggal": row.date, "Nama Siswa": row.studentName,
-                "Kelas": row.className, "Status": row.status, "Keterangan": row.notes
-            })).sort((a,b) => new Date(b.Tanggal) - new Date(a.Tanggal)); 
-
-            const worksheet = XLSX.utils.json_to_sheet(exportData);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Riwayat Detail");
-            worksheet['!cols'] = [ {wch: 5}, {wch: 12}, {wch: 25}, {wch: 15}, {wch: 10}, {wch: 30} ];
-            XLSX.writeFile(workbook, `Riwayat_Presensi_${document.getElementById('filterStartDate').value}_sd_${document.getElementById('filterEndDate').value}.xlsx`);
-        }
-
-        function exportHistoryPDF() {
-            if(currentFilteredAttendance.length === 0) {
-                Swal.fire({ title: 'Data Kosong', text: 'Silakan ubah filter atau periode terlebih dahulu.', icon: 'info', confirmButtonColor: '#124F47' });
-                return;
-            }
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const startD = document.getElementById('filterStartDate').value;
-            const endD = document.getElementById('filterEndDate').value;
-            const kelas = document.getElementById('filterKelas').value;
-            const statusF = document.getElementById('filterStatus').value;
-
-            doc.setFontSize(16); doc.text("LAPORAN RIWAYAT DETAIL PRESENSI SISWA", 14, 20);
-            doc.setFontSize(10);
-            doc.text(`Periode : ${startD} s/d ${endD}`, 14, 28);
-            doc.text(`Kelas   : ${kelas === 'all' ? 'Semua Kelas' : kelas}`, 14, 34);
-            doc.text(`Status  : ${statusF === 'all' ? 'Semua Status' : statusF}`, 130, 28);
-
-            const displayData = [...currentFilteredAttendance].sort((a,b) => new Date(b.date) - new Date(a.date));
-            const tableColumn = ["No", "Tanggal", "Nama Siswa", "Kelas", "Status", "Keterangan"];
-            const tableRows = displayData.map((row, i) => [ i + 1, formatDateIndo(row.date), row.studentName, row.className, row.status, row.notes ]);
-
-            doc.autoTable({ head: [tableColumn], body: tableRows, startY: 40, theme: 'grid', styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [18, 79, 71] } });
-            doc.save(`Riwayat_Detail_${startD}_sd_${endD}.pdf`);
-        }
-
-        // --- EXPORT ANALYSIS ---
-        function exportAnalysisExcel() {
-            if(currentSummary.totalRecords === 0) {
-                Swal.fire({ title: 'Data Kosong', text: 'Silakan ubah filter atau periode terlebih dahulu.', icon: 'info', confirmButtonColor: '#124F47' });
-                return;
-            }
-            const wb = XLSX.utils.book_new();
-
-            // Sheet 1: Summary
-            const summaryData = [
-                { "Indikator": "Total Siswa", "Nilai": currentSummary.totalStudents },
-                { "Indikator": "Total Presensi", "Nilai": currentSummary.totalRecords },
-                { "Indikator": "Hadir", "Nilai": currentSummary.h },
-                { "Indikator": "Sakit", "Nilai": currentSummary.s },
-                { "Indikator": "Izin", "Nilai": currentSummary.i },
-                { "Indikator": "Alpa", "Nilai": currentSummary.a },
-                { "Indikator": "Persentase Kehadiran", "Nilai": formatPercentage(currentSummary.pct) }
-            ];
-            const wsSummary = XLSX.utils.json_to_sheet(summaryData);
-            wsSummary['!cols'] = [{wch: 25}, {wch: 15}];
-            XLSX.utils.book_append_sheet(wb, wsSummary, "Ringkasan");
-
-            // Sheet 2: Analisa Kelas
-            const classData = [];
-            for (let c in currentSummary.classRecap) {
-                let dat = currentSummary.classRecap[c];
-                classData.push({
-                    "Kelas": c, "Siswa": dat.studentCount, "Hadir": dat.h, 
-                    "Sakit": dat.s, "Izin": dat.i, "Alpa": dat.a, "% Kehadiran": formatPercentage(dat.pct)
+            let sortedData = [...currentSummary.recapData].sort((a,b) => a.className.localeCompare(b.className) || a.name.localeCompare(b.name));
+            
+            let tableCols = []; let tableRows = [];
+            if (rekapMode === 'ringkas') {
+                tableCols = ["No", "Nama Siswa", "Kelas", "Hr Efektif", "H", "S", "I", "A", "%"];
+                tableRows = sortedData.map((r, i) => [i + 1, r.name, r.className, currentSummary.hariEfektif, r.h, r.s, r.i, r.a, formatPercentage(r.pct)]);
+            } else {
+                tableCols = ["No", "Nama", "Kelas"];
+                currentSummary.datesObj.forEach(dObj => tableCols.push(dObj.isHoliday ? 'Lbr' : dObj.date.split('-')[2])); // Ambil tanggal saja
+                tableCols.push("H","S","I","A","%");
+                
+                tableRows = sortedData.map((r, i) => {
+                    let rowArr = [i + 1, r.name, r.className];
+                    currentSummary.datesObj.forEach(dObj => {
+                        if(dObj.isHoliday) rowArr.push('L');
+                        else {
+                            let rec = currentFilteredAttendance.find(a => a.studentId === r.id && a.date === dObj.date);
+                            rowArr.push(rec ? rec.status.charAt(0) : 'A');
+                        }
+                    });
+                    rowArr.push(r.h, r.s, r.i, r.a, formatPercentage(r.pct));
+                    return rowArr;
                 });
             }
-            if(classData.length > 0) {
-                const wsClass = XLSX.utils.json_to_sheet(classData);
-                wsClass['!cols'] = [{wch: 20}, {wch: 10}, {wch: 10}, {wch: 10}, {wch: 10}, {wch: 10}, {wch: 15}];
-                XLSX.utils.book_append_sheet(wb, wsClass, "Analisa Per Kelas");
-            }
-            XLSX.writeFile(wb, `Analisa_Presensi_${document.getElementById('filterStartDate').value}_sd_${document.getElementById('filterEndDate').value}.xlsx`);
+
+            doc.autoTable({ head: [tableCols], body: tableRows, startY: 38, theme: 'grid', styles: { fontSize: 7, cellPadding: 1 }, headStyles: { fillColor: [18, 79, 71] } });
+            doc.save(`Rekap_${rekapMode.toUpperCase()}.pdf`);
         }
 
-        function exportAnalysisPDF() {
-            if(currentSummary.totalRecords === 0) {
-                Swal.fire({ title: 'Data Kosong', text: 'Silakan ubah filter atau periode terlebih dahulu.', icon: 'info', confirmButtonColor: '#124F47' });
-                return;
-            }
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const startD = document.getElementById('filterStartDate').value;
-            const endD = document.getElementById('filterEndDate').value;
-            const kelas = document.getElementById('filterKelas').value;
-
-            doc.setFontSize(16); doc.text("LAPORAN ANALISA PRESENSI SISWA", 14, 20);
-            doc.setFontSize(10);
-            doc.text(`Periode : ${startD} s/d ${endD}`, 14, 28);
-            doc.text(`Kelas   : ${kelas === 'all' ? 'Semua Kelas' : kelas}`, 14, 34);
-
-            doc.setFontSize(12); doc.text("Ringkasan Presensi", 14, 45);
-            const sumBody = [
-                ["Total Siswa", currentSummary.totalStudents], ["Total Presensi", currentSummary.totalRecords],
-                ["Hadir", currentSummary.h], ["Sakit", currentSummary.s],
-                ["Izin", currentSummary.i], ["Alpa", currentSummary.a],
-                ["Persentase Kehadiran", formatPercentage(currentSummary.pct)]
-            ];
-            doc.autoTable({ body: sumBody, startY: 50, theme: 'grid', styles: { fontSize: 9, cellPadding: 2 }, columnStyles: { 0: { cellWidth: 50, fontStyle: 'bold' } } });
-
-            let finalY = doc.lastAutoTable.finalY + 10;
-
-            if (kelas === 'all') {
-                doc.setFontSize(12); doc.text("Rekap Analisa Per Kelas", 14, finalY);
-                const classCols = ["Kelas", "Siswa", "Hadir", "Sakit", "Izin", "Alpa", "% Kehadiran"];
-                const classRows = [];
-                for (let c in currentSummary.classRecap) {
-                    let dat = currentSummary.classRecap[c];
-                    classRows.push([c, dat.studentCount, dat.h, dat.s, dat.i, dat.a, formatPercentage(dat.pct)]);
-                }
-                doc.autoTable({ head: [classCols], body: classRows, startY: finalY + 5, theme: 'grid', styles: { fontSize: 8 }, headStyles: { fillColor: [18, 79, 71] } });
-                finalY = doc.lastAutoTable.finalY + 10;
-            }
-
-            // Text Conclusions
-            const concText = doc.splitTextToSize(document.getElementById('analisaKesimpulan').innerText, 180);
-            doc.setFontSize(12); doc.text("Kesimpulan", 14, finalY);
-            doc.setFontSize(9); doc.text(concText, 14, finalY + 6);
-            
-            finalY = finalY + (concText.length * 5) + 10;
-            if(finalY > 270) { doc.addPage(); finalY = 20; } // pagination control for text
-
-            doc.setFontSize(12); doc.text("Rekomendasi", 14, finalY);
-            const rawRecs = document.getElementById('analisaRekomendasi').innerText.split('\n').filter(r=>r.trim()!=='');
-            const recsText = doc.splitTextToSize(rawRecs.join('\n'), 180);
-            doc.setFontSize(9); doc.text(recsText, 14, finalY + 6);
-
-            doc.save(`Analisa_Presensi_${startD}_sd_${endD}.pdf`);
+        // Export History
+        function exportHistoryExcel() {
+            if(currentFilteredAttendance.length === 0) return Swal.fire('Data Kosong', '', 'info');
+            const data = [...currentFilteredAttendance].sort((a,b) => new Date(b.date) - new Date(a.date)).map((r, i) => ({
+                "No": i + 1, "Tanggal": r.date, "Nama Siswa": r.studentName,
+                "Kelas": r.className, "Status": r.status, "Keterangan": r.notes
+            }));
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Riwayat");
+            XLSX.writeFile(wb, `Riwayat_Presensi.xlsx`);
+        }
+        function exportHistoryPDF() {
+            if(currentFilteredAttendance.length === 0) return Swal.fire('Data Kosong', '', 'info');
+            const { jsPDF } = window.jspdf; const doc = new jsPDF();
+            doc.setFontSize(14); doc.text("LAPORAN RIWAYAT DETAIL PRESENSI", 14, 20);
+            const data = [...currentFilteredAttendance].sort((a,b) => new Date(b.date) - new Date(a.date));
+            const cols = ["No", "Tanggal", "Nama Siswa", "Kelas", "Status", "Keterangan"];
+            const rows = data.map((r, i) => [i + 1, formatDateIndo(r.date), r.studentName, r.className, r.status, r.notes]);
+            doc.autoTable({ head: [cols], body: rows, startY: 30, theme: 'grid', styles: { fontSize: 8 }, headStyles: { fillColor: [18, 79, 71] } });
+            doc.save(`Riwayat_Presensi.pdf`);
         }
 
-        // --- EXPORT MODAL DETAIL SISWA ---
+        // Detail Siswa Export
         function exportStudentDetailExcel() {
             if(!currentStudentId) return;
             const history = currentFilteredAttendance.filter(r => r.studentId === currentStudentId).sort((a,b) => new Date(b.date) - new Date(a.date));
-            if(history.length === 0) {
-                Swal.fire({ title: 'Data Kosong', text: 'Tidak ada data presensi siswa pada periode yang dipilih.', icon: 'info', confirmButtonColor: '#124F47' });
-                return;
-            }
-            const student = studentsMaster.find(s => s.id === currentStudentId);
-            const exportData = history.map((row, index) => ({
-                "No": index + 1, "Tanggal": formatDateIndo(row.date), "Nama Siswa": row.studentName,
-                "Kelas": row.className, "Status": row.status, "Keterangan": row.notes
-            }));
-            const worksheet = XLSX.utils.json_to_sheet(exportData);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Detail Siswa");
-            worksheet['!cols'] = [ {wch: 5}, {wch: 20}, {wch: 25}, {wch: 15}, {wch: 10}, {wch: 30} ];
-            
-            const sanitizedName = student.name.replace(/\s+/g, '_');
-            const dateSuffix = document.getElementById('filterStartDate').value;
-            XLSX.writeFile(workbook, `Detail_Presensi_${sanitizedName}_${dateSuffix}.xlsx`);
+            const ws = XLSX.utils.json_to_sheet(history.map((r,i) => ({"No": i+1, "Tanggal": r.date, "Status": r.status, "Keterangan": r.notes})));
+            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Detail");
+            XLSX.writeFile(wb, `Detail_Siswa_${currentStudentId}.xlsx`);
         }
-
         function exportStudentDetailPDF() {
             if(!currentStudentId) return;
             const history = currentFilteredAttendance.filter(r => r.studentId === currentStudentId).sort((a,b) => new Date(b.date) - new Date(a.date));
-            if(history.length === 0) {
-                Swal.fire({ title: 'Data Kosong', text: 'Tidak ada data presensi siswa pada periode yang dipilih.', icon: 'info', confirmButtonColor: '#124F47' });
-                return;
-            }
-            const student = studentsMaster.find(s => s.id === currentStudentId);
-            const recap = currentSummary.recapData.find(r => r.id === currentStudentId);
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            doc.setFontSize(16); doc.text("LAPORAN DETAIL PRESENSI SISWA", 14, 20);
-            doc.setFontSize(10);
-            doc.text(`Nama   : ${student.name}`, 14, 28);
-            doc.text(`Kelas  : ${student.className}`, 14, 34);
-            doc.text(`Periode: ${formatDateIndo(document.getElementById('filterStartDate').value)} s/d ${formatDateIndo(document.getElementById('filterEndDate').value)}`, 14, 40);
-
-            // Summary Table
-            doc.autoTable({
-                head: [["Hadir", "Sakit", "Izin", "Alpa", "Persentase Kehadiran"]],
-                body: [[recap.h, recap.s, recap.i, recap.a, formatPercentage(recap.pct)]],
-                startY: 48, theme: 'grid', headStyles: { fillColor: [18, 79, 71] }
-            });
-
-            // History Table
-            const tableCols = ["No", "Tanggal", "Status", "Keterangan"];
-            const tableRows = history.map((r, i) => [i + 1, formatDateIndo(r.date), r.status, r.notes]);
-            doc.autoTable({
-                head: [tableCols], body: tableRows, startY: doc.lastAutoTable.finalY + 10,
-                theme: 'grid', styles: { fontSize: 9 }, headStyles: { fillColor: [107, 124, 120] }
-            });
-
-            const sanitizedName = student.name.replace(/\s+/g, '_');
-            doc.save(`Detail_Presensi_${sanitizedName}_${document.getElementById('filterStartDate').value}.pdf`);
+            const { jsPDF } = window.jspdf; const doc = new jsPDF();
+            doc.text(`Detail Presensi - ${studentsMaster.find(s=>s.id===currentStudentId).name}`, 14, 20);
+            doc.autoTable({ head: [["No","Tanggal","Status","Keterangan"]], body: history.map((r,i)=>[i+1, r.date, r.status, r.notes]), startY: 30, theme:'grid' });
+            doc.save(`Detail_Siswa_${currentStudentId}.pdf`);
         }
 
         window.onload = function() {
             initializeDummyData();
             initFilterUI();
             applyFilters();
-            
-            // Tab switch to initialize active state styling on load
             switchTab('riwayat');
 
-            document.getElementById('filterSearch').addEventListener('keyup', (e) => {
-                if(e.key === 'Enter') applyFilters();
-            });
+            document.getElementById('filterSearch').addEventListener('keyup', (e) => { if(e.key === 'Enter') applyFilters(); });
             document.getElementById('filterKelas').addEventListener('change', applyFilters);
             document.getElementById('filterStatus').addEventListener('change', applyFilters);
             document.getElementById('filterEndDate').addEventListener('change', applyFilters);
