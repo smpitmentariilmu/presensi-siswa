@@ -101,9 +101,6 @@
         }
         .tab-btn.active:hover { background-color: #DCEFEA !important; color: #0D3F39 !important; border-color: #A9D0C8 !important; }
         
-        /* Modal Transitions & Overlay */
-        .modal-overlay { background-color: rgba(25, 49, 46, 0.6); backdrop-filter: blur(4px); }
-        
         /* Smooth hover for table rows */
         .table-row-hover { transition: background-color 0.2s ease; }
         .table-row-hover:hover { background-color: theme('colors.mi.soft'); cursor: pointer; }
@@ -130,6 +127,50 @@
         /* Mobile Submenu Animation */
         .mobile-submenu { display: none; opacity: 0; transform: translateY(10px); transition: all 0.2s ease; }
         .mobile-submenu.active { display: flex; opacity: 1; transform: translateY(0); }
+
+        .wa-preview-bg {
+            background-color: #efeae2;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); /* subtle texture */
+        }
+
+        /* Modal Transitions & Overlay untuk Modal Umum */
+        .modal-overlay { background-color: rgba(25, 49, 46, 0.6); backdrop-filter: blur(4px); z-index: 0; }
+
+        /* CSS KHUSUS MODAL - MENCEGAH BUG BLANK/Z-INDEX */
+        .modal-container-fixed {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 999999 !important;
+        }
+
+        .modal-container-fixed.hidden {
+            display: none !important;
+        }
+
+        .modal-container-fixed:not(.hidden) {
+            display: block !important;
+        }
+
+        .modal-container-fixed .modal-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        .modal-container-fixed .modal-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        .modal-container-fixed .modal-content-box {
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Transition icon WA settings */
+        .rotate-180 { transform: rotate(180deg); }
     </style>
 </head>
 <body class="antialiased min-h-screen pb-24 md:pb-12 lg:pb-0 relative">
@@ -527,7 +568,7 @@
                         <h3 class="text-sm font-bold text-mi-text1">Manajemen Hari Libur Sekolah</h3>
                         <p class="text-xs text-mi-text2">Data kalender digunakan untuk menghitung Hari Efektif pada periode presensi.</p>
                     </div>
-                    <button onclick="addHolidayPrompt()" class="w-full sm:w-auto px-4 py-2 bg-mi-primary hover:bg-mi-dark text-white rounded-xl text-xs md:text-sm font-medium transition-colors shadow-sm flex items-center justify-center gap-2">
+                    <button onclick="openHolidayModal()" class="w-full sm:w-auto px-4 py-2 bg-mi-primary hover:bg-mi-dark text-white rounded-xl text-xs md:text-sm font-medium transition-colors shadow-sm flex items-center justify-center gap-2">
                         <i class="fa-solid fa-plus"></i> Tambah Hari Libur
                     </button>
                 </div>
@@ -565,7 +606,7 @@
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 transition-opacity modal-overlay" aria-hidden="true" onclick="closeModal('modalStudent')"></div>
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div class="inline-block align-bottom bg-mi-surface rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl w-full border border-mi-border">
+            <div class="inline-block align-bottom bg-mi-surface rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl w-full border border-mi-border relative z-10">
                 <div class="px-4 md:px-6 pt-5 md:pt-6 pb-5 md:pb-6">
                     <div class="flex justify-between items-start mb-5 md:mb-6">
                         <div class="flex items-center gap-3 md:gap-4">
@@ -651,31 +692,188 @@
     </div>
 
     <!-- Modal Laporan WhatsApp -->
-    <div id="modalWhatsApp" class="fixed inset-0 z-50 hidden overflow-y-auto">
-        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 transition-opacity modal-overlay" aria-hidden="true" onclick="closeModal('modalWhatsApp')"></div>
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div class="inline-block align-bottom bg-mi-surface rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md w-full border border-mi-border">
-                <div class="px-4 md:px-6 pt-5 md:pt-6 pb-4">
-                    <div class="flex justify-between items-center mb-4 md:mb-5">
+    <div id="modalWhatsApp" class="modal-container-fixed hidden" aria-hidden="true">
+        <!-- OVERLAY -->
+        <div class="modal-overlay bg-[#19312E]/60 backdrop-blur-sm" onclick="closeModal('modalWhatsApp')"></div>
+
+        <!-- MODAL WRAPPER (flex container) -->
+        <div class="modal-wrapper w-full h-full flex items-center justify-center p-3 sm:p-4 pointer-events-none">
+            
+            <!-- MODAL CONTAINER (actual content) -->
+            <div class="modal-content-box pointer-events-auto w-full lg:w-[90vw] max-w-6xl max-h-[92vh] bg-white rounded-2xl shadow-2xl border border-mi-border overflow-hidden flex flex-col">
+                
+                <!-- Modal Header -->
+                <div class="px-4 md:px-6 py-4 border-b border-mi-border flex justify-between items-center bg-white shrink-0">
+                    <div>
                         <h3 class="text-base md:text-lg font-bold text-mi-text1 flex items-center gap-2">
-                            <i class="fa-brands fa-whatsapp text-green-500 text-xl md:text-2xl"></i> Preview WhatsApp
+                            <i class="fa-brands fa-whatsapp text-[#25D366] text-xl md:text-2xl"></i> Bagikan Laporan Presensi
                         </h3>
-                        <button onclick="closeModal('modalWhatsApp')" class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-mi-bg hover:bg-gray-200 text-mi-text2 flex items-center justify-center transition-colors">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
+                        <p class="text-[10px] md:text-xs text-mi-text2 mt-1">Sesuaikan isi laporan sebelum dibagikan melalui WhatsApp.</p>
                     </div>
-                    <div class="bg-[#efeae2] p-3 md:p-4 rounded-xl border border-mi-border shadow-inner h-64 md:h-[26rem] overflow-y-auto">
-                        <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm text-xs md:text-[13px] text-gray-800 whitespace-pre-wrap font-sans" id="waPreviewText" style="line-height: 1.5;"></div>
-                    </div>
-                    <p class="text-[10px] md:text-[11px] text-mi-text2 mt-2 md:mt-3 font-medium">*Pesan dihasilkan otomatis berdasarkan filter periode dan kelas.</p>
-                </div>
-                <div class="bg-mi-bg/50 px-4 md:px-6 py-3 md:py-4 flex flex-col sm:flex-row-reverse gap-2 md:gap-3 border-t border-mi-border">
-                    <button type="button" onclick="shareToWhatsApp()" class="w-full inline-flex justify-center items-center rounded-xl px-4 md:px-5 py-2 md:py-2.5 bg-green-600 hover:bg-green-700 text-sm font-medium text-white transition-colors sm:w-auto shadow-sm">
-                        <i class="fa-brands fa-whatsapp mr-2"></i> Share WhatsApp
+                    <button onclick="closeModal('modalWhatsApp')" class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-mi-bg hover:bg-rose-100 hover:text-rose-600 text-mi-text2 flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
-                    <button type="button" onclick="copyWhatsAppReport()" class="w-full inline-flex justify-center items-center rounded-xl border border-mi-border shadow-sm px-4 md:px-5 py-2 md:py-2.5 bg-white text-sm font-medium text-mi-text1 hover:bg-gray-50 transition-colors sm:w-auto">
-                        <i class="fa-regular fa-copy mr-2"></i> Salin Pesan
+                </div>
+
+                <!-- Modal Body -->
+                <div class="flex-grow overflow-y-auto p-4 md:p-6 flex flex-col lg:flex-row gap-6 bg-gray-50">
+                    
+                    <!-- Left Column: Settings -->
+                    <div class="w-full lg:w-5/12 flex flex-col gap-5 bg-white p-4 md:p-5 rounded-xl border border-mi-border shadow-sm">
+                        
+                        <!-- Format Laporan -->
+                        <div>
+                            <label class="block text-xs md:text-sm font-bold text-mi-text1 uppercase tracking-wide mb-2.5">Pilihan Format Laporan</label>
+                            <div class="flex gap-2 w-full">
+                                <button type="button" onclick="setWaFormat('format_1')" id="btnWaFormat1" class="flex-1 wa-format-btn text-center px-2 py-2.5 rounded-xl border-2 transition-all font-bold text-xs md:text-sm border-mi-primary bg-mi-soft text-mi-primary">
+                                    Format 1
+                                </button>
+                                <button type="button" onclick="setWaFormat('format_2')" id="btnWaFormat2" class="flex-1 wa-format-btn text-center px-2 py-2.5 rounded-xl border-2 transition-all font-bold text-xs md:text-sm border-gray-200 bg-white text-gray-500 hover:bg-gray-50">
+                                    Format 2
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Accordion Pengaturan Isi -->
+                        <div class="border border-mi-border rounded-xl bg-white shadow-sm flex flex-col overflow-hidden">
+                            <button type="button" onclick="toggleWaSettings()" class="w-full px-4 py-3 flex justify-between items-center bg-mi-soft/30 hover:bg-mi-soft/60 transition-colors">
+                                <span class="font-bold text-xs md:text-sm text-mi-text1"><i class="fa-solid fa-gear mr-2 text-mi-primary"></i>Pengaturan Isi Laporan</span>
+                                <i id="waAccordionIcon" class="fa-solid fa-chevron-down text-mi-text2 transition-transform duration-300"></i>
+                            </button>
+                            
+                            <!-- Content -->
+                            <div id="waSettingsContent" class="wa-accordion-content border-t border-mi-border">
+                                <div class="px-4 py-4 flex flex-col gap-5">
+                                    
+                                    <!-- Ringkasan Checkbox -->
+                                    <div class="pb-4 border-b border-gray-100">
+                                        <label class="flex items-center gap-2 cursor-pointer text-sm font-bold text-mi-text1">
+                                            <input type="checkbox" id="cbWaModeRingkas" onchange="toggleWaModeRingkas()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Ringkas
+                                        </label>
+                                        <p class="text-[10px] text-mi-text2 mt-1 ml-6">Sembunyikan rekapitulasi per kelas dan daftar nama siswa.</p>
+                                    </div>
+
+                                    <!-- Opsi Info Laporan -->
+                                    <div>
+                                        <div class="text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wide mb-2">Informasi Laporan</div>
+                                        <div class="grid grid-cols-2 gap-2 text-xs md:text-sm text-mi-text1">
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaTotal" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Total Siswa</label>
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaEfektif" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Hari Efektif</label>
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaLibur" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Hari Libur</label>
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaHadir" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Hadir</label>
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaSakit" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Sakit</label>
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaIzin" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Izin</label>
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaAlpa" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Alpa</label>
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaPersentase" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> % Kehadiran</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Opsi Rekap Kelas -->
+                                    <div id="waRekapGroup" class="pt-4 border-t border-mi-border transition-opacity">
+                                        <div class="text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wide mb-2">Rekapitulasi</div>
+                                        <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm text-mi-text1">
+                                            <input type="checkbox" id="cbWaRekapKelas" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Rekap Per Kelas
+                                        </label>
+                                    </div>
+
+                                    <!-- Opsi Daftar Nama -->
+                                    <div id="waNameGroup" class="pt-4 border-t border-mi-border transition-opacity">
+                                        <div class="text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wide mb-2">Daftar Nama Siswa</div>
+                                        <div class="flex flex-col gap-2 text-xs md:text-sm text-mi-text1">
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaNameSakit" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Daftar Siswa Sakit</label>
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaNameIzin" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Daftar Siswa Izin</label>
+                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaNameAlpa" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Daftar Siswa Alpa</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Opsi Penutup -->
+                                    <div class="pt-4 border-t border-mi-border">
+                                        <div class="text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wide mb-2">Pesan Penutup</div>
+                                        <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm text-mi-text1">
+                                            <input type="checkbox" id="cbWaPesanPenutup" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Sertakan Pesan Doa / Harapan
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column: Preview -->
+                    <div class="w-full lg:w-7/12 flex flex-col h-[50vh] lg:h-auto">
+                        <label class="block text-xs md:text-sm font-bold text-mi-text1 uppercase tracking-wide mb-2.5">Preview WhatsApp</label>
+                        <div class="wa-preview-bg rounded-xl border border-mi-border shadow-inner flex-grow overflow-y-auto relative p-3 md:p-5">
+                            <!-- Bubble WA -->
+                            <div class="bg-white p-3.5 md:p-5 rounded-xl rounded-tl-sm shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-xs md:text-[13px] text-gray-800 whitespace-pre-wrap font-sans max-w-full break-words" id="waPreviewText" style="line-height: 1.5;"></div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <!-- Modal Footer -->
+                <div class="bg-white px-4 md:px-6 py-3 md:py-4 flex w-full gap-2 sm:gap-3 border-t border-mi-border shrink-0">
+                    <button type="button" onclick="copyWhatsAppReport()" class="flex-1 inline-flex justify-center items-center rounded-xl border border-[#B8D9D2] shadow-sm px-2 sm:px-4 py-2.5 sm:py-3 bg-[#E8F3F0] text-xs sm:text-sm font-bold text-[#124F47] hover:bg-[#D9EEE8] transition-colors">
+                        <i class="fa-regular fa-copy mr-1.5 sm:mr-2 text-base sm:text-lg"></i> Salin Pesan
+                    </button>
+                    <button type="button" onclick="shareToWhatsApp()" class="flex-1 inline-flex justify-center items-center rounded-xl px-2 sm:px-4 py-2.5 sm:py-3 bg-[#25D366] hover:bg-[#1DA851] text-xs sm:text-sm font-bold text-white transition-colors shadow-sm">
+                        <i class="fa-brands fa-whatsapp mr-1.5 sm:mr-2 text-base sm:text-lg"></i> Share WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Hari Libur -->
+    <div id="modalAddHoliday" class="modal-container-fixed hidden" aria-hidden="true">
+        <!-- OVERLAY -->
+        <div class="modal-overlay bg-[#19312E]/60 backdrop-blur-sm" onclick="closeModal('modalAddHoliday')"></div>
+
+        <div class="modal-wrapper min-h-screen w-full flex items-center justify-center p-3 sm:p-4 pointer-events-none">
+            
+            <div class="modal-content-box pointer-events-auto relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-mi-border flex flex-col">
+                
+                <div class="px-4 md:px-6 py-4 border-b border-mi-border flex justify-between items-center bg-white rounded-t-2xl shrink-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-mi-soft text-mi-primary flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-umbrella-beach"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base md:text-lg font-bold text-mi-text1 leading-tight">Tambah Hari Libur</h3>
+                            <p class="text-[10px] md:text-xs text-mi-text2 mt-0.5">Tambahkan tanggal libur sekolah ke kalender presensi.</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('modalAddHoliday')" class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-mi-bg hover:bg-rose-100 hover:text-rose-600 text-mi-text2 flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <div class="p-4 md:p-6 flex flex-col gap-4">
+                    <input type="hidden" id="holOldDateInput" value="">
+                    <div>
+                        <label class="block text-xs font-bold text-mi-text2 uppercase tracking-wide mb-1.5">Tanggal</label>
+                        <input type="date" id="holDateInput" class="w-full border border-mi-border rounded-xl bg-white py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary text-sm text-mi-text1 transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-mi-text2 uppercase tracking-wide mb-1.5">Jenis Libur</label>
+                        <select id="holTypeInput" class="w-full border border-mi-border rounded-xl bg-white py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary text-sm text-mi-text1 transition-all">
+                            <option value="Libur Nasional">Libur Nasional</option>
+                            <option value="Libur Sekolah">Libur Sekolah</option>
+                            <option value="Cuti Bersama">Cuti Bersama</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-mi-text2 uppercase tracking-wide mb-1.5">Keterangan</label>
+                        <input type="text" id="holDescInput" placeholder="Contoh: Hari Kemerdekaan RI" class="w-full border border-mi-border rounded-xl bg-white py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-mi-primary/20 focus:border-mi-primary text-sm text-mi-text1 transition-all">
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 px-4 md:px-6 py-4 flex w-full gap-2 sm:gap-3 border-t border-mi-border rounded-b-2xl">
+                    <button onclick="closeModal('modalAddHoliday')" class="flex-1 inline-flex justify-center items-center rounded-xl border border-mi-border shadow-sm px-2 sm:px-4 py-2.5 bg-white text-xs sm:text-sm font-bold text-gray-500 hover:bg-gray-50 transition-colors">
+                        Batal
+                    </button>
+                    <button onclick="saveHoliday()" class="flex-1 inline-flex justify-center items-center rounded-xl px-2 sm:px-4 py-2.5 bg-mi-primary hover:bg-mi-dark text-xs sm:text-sm font-bold text-white transition-colors shadow-sm gap-2">
+                        <i class="fa-solid fa-save"></i> Simpan Hari Libur
                     </button>
                 </div>
             </div>
@@ -749,7 +947,6 @@
         let attendanceMaster = []; 
         
         // --- DATABASE HARI LIBUR (KALENDER) ---
-        // Diperbarui dengan property type untuk mendukung kategori libur
         let holidaysMaster = [
             { date: '2026-09-02', type: 'Libur Sekolah', desc: 'Rapat Dinas Guru' },
             { date: '2026-09-17', type: 'Libur Nasional', desc: 'Maulid Nabi Muhammad SAW' }
@@ -768,6 +965,9 @@
             riwayat: { page: 1, limit: 25 },
             rekap: { page: 1, limit: 25 }
         };
+
+        // State untuk modal WA
+        let waFormat = 'format_1'; // format_1, format_2
 
         function formatDateYYYYMMDD(date) {
             const y = date.getFullYear();
@@ -836,7 +1036,6 @@
 
             let classStr = '';
             if (selectedClass !== 'all') {
-                // Bersihkan karakter ilegal dan replace spasi
                 let sanitizedClass = selectedClass.replace(/[\\/:*?"<>|]/g, '_').replace(/\s+/g, '_');
                 sanitizedClass = sanitizedClass.replace(/_+/g, '_');
                 classStr = sanitizedClass + '_';
@@ -848,7 +1047,7 @@
         function initializeDummyData() {
             let studentIdCounter = 1;
             CLASS_LIST.forEach(className => {
-                const numStudents = Math.floor(Math.random() * 5) + 22; // 22 - 26 students
+                const numStudents = Math.floor(Math.random() * 5) + 22; 
                 for(let i=0; i<numStudents; i++) {
                     const fName = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)];
                     const lName = LAST_NAMES[Math.floor(Math.random() * LAST_NAMES.length)];
@@ -867,11 +1066,9 @@
             thirtyDaysAgo.setDate(today.getDate() - 29);
 
             for (let d = new Date(thirtyDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
-                // Jangan buat data dummy untuk Sabtu (6) dan Minggu (0)
                 if (d.getDay() === 0 || d.getDay() === 6) continue;
                 
                 const dateStr = formatDateYYYYMMDD(d);
-                // Jangan buat data dummy untuk Hari Libur
                 if (holidaysMaster.some(h => h.date === dateStr)) continue;
                 
                 studentsMaster.forEach(student => {
@@ -907,6 +1104,31 @@
             }
         }
 
+        // --- DEFAULT HARI INI SAAT LOAD ---
+        function setDefaultTodayPeriod() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const todayString = `${year}-${month}-${day}`;
+
+            const periodSelect = document.getElementById('filterPeriode');
+            const startDate = document.getElementById('filterStartDate');
+            const endDate = document.getElementById('filterEndDate');
+
+            if (startDate && !startDate.value) {
+                startDate.value = todayString;
+            }
+
+            if (endDate && !endDate.value) {
+                endDate.value = todayString;
+            }
+
+            if (periodSelect && !periodSelect.value) {
+                periodSelect.value = 'today';
+            }
+        }
+
         function initFilterUI() {
             const classSelect = document.getElementById('filterKelas');
             CLASS_LIST.forEach(c => {
@@ -916,8 +1138,7 @@
                 classSelect.appendChild(opt);
             });
 
-            document.getElementById('filterPeriode').value = 'today';
-            handlePeriodChange();
+            setDefaultTodayPeriod();
         }
 
         function handlePeriodChange() {
@@ -960,7 +1181,6 @@
         }
 
         function applyFilters() {
-            // Reset page on filter apply
             pgState.riwayat.page = 1;
             pgState.rekap.page = 1;
 
@@ -979,12 +1199,10 @@
             }
             const studentIds = new Set(filteredStudents.map(s => s.id));
 
-            // Setup valid attendance records
             currentFilteredAttendance = attendanceMaster.filter(record => {
                 if (record.date < startDate || record.date > endDate) return false;
                 if (!studentIds.has(record.studentId)) return false;
                 
-                // Cek Libur & Akhir pekan (Filter keamanan ganda)
                 let d = new Date(record.date);
                 if (d.getDay() === 0 || d.getDay() === 6) return false;
                 if (holidaysMaster.some(h => h.date === record.date)) return false;
@@ -1000,9 +1218,13 @@
 
             calculateSummary(filteredStudents, startDate, endDate);
             updateUI();
+            
+            const modalWa = document.getElementById('modalWhatsApp');
+            if (modalWa && !modalWa.classList.contains('hidden')) {
+                generateWhatsAppReport();
+            }
         }
 
-        // Logic Utama Menghitung Hari Efektif
         function getEffectiveDaysInfo(startDateStr, endDateStr) {
             let eff = 0;
             let hols = 0;
@@ -1012,7 +1234,7 @@
             let end = new Date(endDateStr);
 
             for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-                if (d.getDay() !== 0 && d.getDay() !== 6) { // Senin-Jumat saja
+                if (d.getDay() !== 0 && d.getDay() !== 6) { 
                     const dStr = formatDateYYYYMMDD(d);
                     const holiday = holidaysMaster.find(h => h.date === dStr);
                     if (holiday) {
@@ -1049,7 +1271,6 @@
             currentSummary.i = i;
             currentSummary.a = a;
             
-            // Persentase Kehadiran = Total Hadir / (Total Siswa * Hari Efektif)
             let maxExpectedRecords = currentSummary.totalStudents * effInfo.effective;
             currentSummary.pct = calculatePercentage(h, maxExpectedRecords);
             
@@ -1069,7 +1290,7 @@
                     name: student.name,
                     className: student.className,
                     h: sh, s: ss, i: si, a: sa,
-                    pct: calculatePercentage(sh, effInfo.effective) // % personal = hadir / hari efektif
+                    pct: calculatePercentage(sh, effInfo.effective) 
                 });
             });
             
@@ -1096,7 +1317,6 @@
             });
         }
 
-        // --- PENGENDALIAN PAGINATION ---
         function changePageLimit(tab, val) {
             pgState[tab].limit = parseInt(val);
             pgState[tab].page = 1;
@@ -1273,7 +1493,6 @@
                 });
 
             } else if (rekapMode === 'harian') {
-                // Tampilan matriks per hari
                 let thHtml = `
                     <tr>
                         <th scope="col" class="px-3 py-3 text-left text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wider w-10 sticky left-0 bg-mi-bg/95 z-20">No</th>
@@ -1383,86 +1602,66 @@
             });
         }
 
-        function addHolidayPrompt() {
-            Swal.fire({
-                title: 'Tambah Hari Libur',
-                html: `
-                    <input type="date" id="swal-hol-date" class="w-full border border-gray-300 rounded-xl p-2 mb-3 text-sm focus:ring-2 focus:ring-mi-primary/20 outline-none">
-                    <select id="swal-hol-type" class="w-full border border-gray-300 rounded-xl p-2 mb-3 text-sm focus:ring-2 focus:ring-mi-primary/20 outline-none">
-                        <option value="Libur Nasional">Libur Nasional</option>
-                        <option value="Libur Sekolah">Libur Sekolah</option>
-                        <option value="Cuti Bersama">Cuti Bersama</option>
-                    </select>
-                    <input type="text" id="swal-hol-desc" class="w-full border border-gray-300 rounded-xl p-2 text-sm focus:ring-2 focus:ring-mi-primary/20 outline-none" placeholder="Keterangan Libur (cth: Idul Fitri)">
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'Simpan',
-                cancelButtonText: 'Batal',
-                confirmButtonColor: '#124F47',
-                preConfirm: () => {
-                    const date = document.getElementById('swal-hol-date').value;
-                    const type = document.getElementById('swal-hol-type').value;
-                    const desc = document.getElementById('swal-hol-desc').value;
-                    if(!date || !desc) {
-                        Swal.showValidationMessage('Tanggal dan Keterangan wajib diisi!');
-                        return false;
-                    }
-                    if(holidaysMaster.find(h => h.date === date)) {
-                        Swal.showValidationMessage('Tanggal tersebut sudah diatur sebagai hari libur!');
-                        return false;
-                    }
-                    return {date, type, desc};
+        function openHolidayModal() {
+            const modal = document.getElementById('modalAddHoliday');
+            if(!modal) return;
+            
+            if(modal.parentElement !== document.body) {
+                document.body.appendChild(modal);
+            }
+            
+            document.getElementById('holOldDateInput').value = '';
+            document.getElementById('holDateInput').value = '';
+            document.getElementById('holTypeInput').value = 'Libur Nasional';
+            document.getElementById('holDescInput').value = '';
+            
+            modal.classList.remove('hidden');
+        }
+
+        function saveHoliday() {
+            const oldDate = document.getElementById('holOldDateInput').value;
+            const date = document.getElementById('holDateInput').value;
+            const type = document.getElementById('holTypeInput').value;
+            const desc = document.getElementById('holDescInput').value;
+
+            if(!date || !desc) {
+                Swal.fire({icon: 'error', title: 'Oops...', text: 'Tanggal dan Keterangan wajib diisi!'});
+                return;
+            }
+
+            if (oldDate) {
+                if(date !== oldDate && holidaysMaster.find(h => h.date === date)) {
+                    Swal.fire({icon: 'error', title: 'Oops...', text: 'Tanggal tersebut sudah diatur sebagai hari libur lain!'});
+                    return;
                 }
-            }).then((res) => {
-                if(res.isConfirmed) {
-                    holidaysMaster.push({ date: res.value.date, type: res.value.type, desc: res.value.desc });
-                    Swal.fire({title:'Tersimpan', icon:'success', toast:true, position:'top-end', showConfirmButton:false, timer:1500});
-                    applyFilters(); 
+                const index = holidaysMaster.findIndex(h => h.date === oldDate);
+                holidaysMaster[index] = { date, type, desc };
+            } else {
+                if(holidaysMaster.find(h => h.date === date)) {
+                    Swal.fire({icon: 'error', title: 'Oops...', text: 'Tanggal tersebut sudah diatur sebagai hari libur!'});
+                    return;
                 }
-            });
+                holidaysMaster.push({ date, type, desc });
+            }
+
+            closeModal('modalAddHoliday');
+            Swal.fire({title: 'Tersimpan', icon: 'success', toast: true, position: 'top-end', showConfirmButton: false, timer: 1500});
+            applyFilters();
         }
 
         function editHolidayPrompt(oldDate) {
             const hol = holidaysMaster.find(h => h.date === oldDate);
             if (!hol) return;
 
-            Swal.fire({
-                title: 'Edit Hari Libur',
-                html: `
-                    <input type="date" id="swal-hol-date" class="w-full border border-gray-300 rounded-xl p-2 mb-3 text-sm focus:ring-2 focus:ring-mi-primary/20 outline-none" value="${hol.date}">
-                    <select id="swal-hol-type" class="w-full border border-gray-300 rounded-xl p-2 mb-3 text-sm focus:ring-2 focus:ring-mi-primary/20 outline-none">
-                        <option value="Libur Nasional" ${hol.type === 'Libur Nasional' ? 'selected' : ''}>Libur Nasional</option>
-                        <option value="Libur Sekolah" ${hol.type === 'Libur Sekolah' ? 'selected' : ''}>Libur Sekolah</option>
-                        <option value="Cuti Bersama" ${hol.type === 'Cuti Bersama' ? 'selected' : ''}>Cuti Bersama</option>
-                    </select>
-                    <input type="text" id="swal-hol-desc" class="w-full border border-gray-300 rounded-xl p-2 text-sm focus:ring-2 focus:ring-mi-primary/20 outline-none" value="${hol.desc}" placeholder="Keterangan Libur">
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'Simpan Perubahan',
-                cancelButtonText: 'Batal',
-                confirmButtonColor: '#124F47',
-                preConfirm: () => {
-                    const date = document.getElementById('swal-hol-date').value;
-                    const type = document.getElementById('swal-hol-type').value;
-                    const desc = document.getElementById('swal-hol-desc').value;
-                    if(!date || !desc) {
-                        Swal.showValidationMessage('Tanggal dan Keterangan wajib diisi!');
-                        return false;
-                    }
-                    if(date !== oldDate && holidaysMaster.find(h => h.date === date)) {
-                        Swal.showValidationMessage('Tanggal tersebut sudah digunakan libur lain!');
-                        return false;
-                    }
-                    return {date, type, desc};
-                }
-            }).then((res) => {
-                if(res.isConfirmed) {
-                    const index = holidaysMaster.findIndex(h => h.date === oldDate);
-                    holidaysMaster[index] = { date: res.value.date, type: res.value.type, desc: res.value.desc };
-                    Swal.fire({title:'Diperbarui', icon:'success', toast:true, position:'top-end', showConfirmButton:false, timer:1500});
-                    applyFilters(); 
-                }
-            });
+            const modal = document.getElementById('modalAddHoliday');
+            if(modal.parentElement !== document.body) document.body.appendChild(modal);
+            
+            document.getElementById('holOldDateInput').value = hol.date;
+            document.getElementById('holDateInput').value = hol.date;
+            document.getElementById('holTypeInput').value = hol.type;
+            document.getElementById('holDescInput').value = hol.desc;
+            
+            modal.classList.remove('hidden');
         }
 
         function deleteHoliday(date) {
@@ -1602,17 +1801,14 @@
             });
         }
 
-        // --- MANAJEMEN TAB & RESPONSIVE MENU ---
         function switchTab(tabId) {
             currentTab = tabId;
             closeAllMobileMenus();
             
-            // Sync Desktop Tabs
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             const activeDesktopBtn = document.getElementById(`tab-${tabId}`);
             if (activeDesktopBtn) activeDesktopBtn.classList.add('active');
             
-            // Sync Mobile Nav (Reset all first)
             const navIds = ['nav-riwayat', 'nav-rekap', 'nav-lainnya', 'nav-export'];
             navIds.forEach(nav => {
                 const el = document.getElementById(nav);
@@ -1622,7 +1818,6 @@
                 }
             });
             
-            // Set active state on mobile
             if(tabId === 'riwayat' || tabId === 'rekap') {
                 const activeMobileNav = document.getElementById(`nav-${tabId}`);
                 if (activeMobileNav) {
@@ -1635,7 +1830,6 @@
                 navLainnya.classList.add('text-mi-primary', 'bg-mi-soft', 'font-semibold');
             }
 
-            // Sync Contents
             ['rekap', 'riwayat', 'analisa', 'kalender'].forEach(id => {
                 document.getElementById(`content-${id}`).classList.add('hidden');
                 document.getElementById(`content-${id}`).classList.remove('flex');
@@ -1657,13 +1851,12 @@
             const overlay = document.getElementById('mobile-menu-overlay');
             const isActive = menu.classList.contains('active');
             
-            closeAllMobileMenus(); // tutup yg lain dulu
+            closeAllMobileMenus(); 
 
             if(!isActive) {
                 menu.classList.add('active');
                 overlay.classList.remove('hidden');
                 
-                // Add temp active state to trigger button
                 const btn = document.getElementById(buttonId);
                 btn.classList.remove('text-gray-400');
                 btn.classList.add('text-mi-primary', 'font-bold');
@@ -1673,13 +1866,11 @@
         function closeAllMobileMenus() {
             document.querySelectorAll('.mobile-submenu').forEach(m => m.classList.remove('active'));
             document.getElementById('mobile-menu-overlay').classList.add('hidden');
-            // reset trigger styles
             const navIds = ['nav-lainnya', 'nav-export'];
             navIds.forEach(id => {
-                const btn = document.getElementById(id);
-                // Kembalikan style dasar KECUALI tab tersebut sedang aktif sebagai content
                 if (id === 'nav-lainnya' && (currentTab === 'analisa' || currentTab === 'kalender')) return;
                 
+                const btn = document.getElementById(id);
                 btn.classList.remove('text-mi-primary', 'font-bold');
                 btn.classList.add('text-gray-400');
             });
@@ -1694,8 +1885,15 @@
         }
 
         function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-            if(id === 'modalStudent') currentStudentId = null;
+            const modal = document.getElementById(id);
+            if (!modal) return;
+            
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
+            
+            if(id === 'modalStudent') {
+                currentStudentId = null;
+            }
         }
 
         function showStudentDetail(studentId) {
@@ -1739,54 +1937,329 @@
             document.getElementById('modalStudent').classList.remove('hidden');
         }
 
-        // --- WHATSAPP ---
+        // --- NEW & SAFE WHATSAPP LOGIC ---
+        
         let currentWAText = "";
-        function openWhatsAppModal() {
+        
+        const getWaChecked = (id) => {
+            const el = document.getElementById(id);
+            return el ? el.checked : false;
+        };
+
+        function getWhatsAppReportTitle() {
+            const filterKelasEl = document.getElementById('filterKelas');
+            const selectedClass = filterKelasEl ? filterKelasEl.value : 'all';
+            
+            if (selectedClass === 'all') {
+                return `📢 *REKAP PRESENSI KESELURUHAN*`;
+            } else {
+                return `📢 *LAPORAN PRESENSI KELAS ${selectedClass.toUpperCase()}*`;
+            }
+        }
+        
+        function setWaFormat(format) {
+            try {
+                waFormat = format;
+                
+                // Reset styling pada semua tombol
+                document.querySelectorAll('.wa-format-btn').forEach(btn => {
+                    btn.classList.remove('border-mi-primary', 'bg-mi-soft', 'text-mi-primary', 'shadow-sm');
+                    btn.classList.add('border-gray-200', 'bg-white', 'text-gray-500');
+                });
+                
+                // Terapkan styling pada tombol aktif
+                let activeBtnId = format === 'format_1' ? 'btnWaFormat1' : 'btnWaFormat2';
+                let activeBtn = document.getElementById(activeBtnId);
+                if (activeBtn) {
+                    activeBtn.classList.remove('border-gray-200', 'bg-white', 'text-gray-500');
+                    activeBtn.classList.add('border-mi-primary', 'bg-mi-soft', 'text-mi-primary', 'shadow-sm');
+                }
+
+                generateWhatsAppReport();
+            } catch (error) {
+                console.error("Error in setWaFormat:", error);
+            }
+        }
+
+        function toggleWaModeRingkas() {
+            const isRingkas = document.getElementById('cbWaModeRingkas').checked;
+            const rekapGroup = document.getElementById('waRekapGroup');
+            const nameGroup = document.getElementById('waNameGroup');
+            
+            const checkboxesToDisable = ['cbWaRekapKelas', 'cbWaNameSakit', 'cbWaNameIzin', 'cbWaNameAlpa'];
+            
+            if (isRingkas) {
+                if (rekapGroup) rekapGroup.classList.add('opacity-50');
+                if (nameGroup) nameGroup.classList.add('opacity-50');
+                checkboxesToDisable.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.disabled = true;
+                });
+            } else {
+                if (rekapGroup) rekapGroup.classList.remove('opacity-50');
+                if (nameGroup) nameGroup.classList.remove('opacity-50');
+                checkboxesToDisable.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.disabled = false;
+                });
+            }
             generateWhatsAppReport();
-            document.getElementById('waPreviewText').innerText = currentWAText;
-            document.getElementById('modalWhatsApp').classList.remove('hidden');
+        }
+
+        function toggleWaSettings() {
+            try {
+                const content = document.getElementById('waSettingsContent');
+                const icon = document.getElementById('waAccordionIcon');
+                
+                if(!content || !icon) return;
+                
+                if(!content.classList.contains('hidden')) {
+                    content.classList.add('hidden');
+                    content.classList.remove('flex');
+                    icon.classList.remove('rotate-180');
+                } else {
+                    content.classList.remove('hidden');
+                    content.classList.add('flex');
+                    icon.classList.add('rotate-180');
+                }
+            } catch (error) {
+                console.error("Error toggling WA settings:", error);
+            }
+        }
+
+        function openWhatsAppModal() {
+            const modal = document.getElementById('modalWhatsApp');
+            
+            if (!modal) {
+                console.error('modalWhatsApp tidak ditemukan');
+                return;
+            }
+
+            if (modal.parentElement !== document.body) {
+                document.body.appendChild(modal);
+            }
+
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+
+            requestAnimationFrame(() => {
+                try {
+                    if (typeof waFormat === 'undefined' || !waFormat || (waFormat !== 'format_1' && waFormat !== 'format_2')) {
+                        waFormat = 'format_1';
+                    }
+                    setWaFormat(waFormat);
+                } catch (error) {
+                    console.error('Gagal membuka modal WhatsApp:', error);
+                    const preview = document.getElementById('waPreviewText');
+                    if (preview) {
+                        preview.textContent = 'Preview laporan belum dapat dibuat. Silakan periksa filter dan data presensi.';
+                    }
+                }
+            });
+        }
+
+        // Helper untuk memecah logic per kelas pada format 1 / 2
+        function generateClassBreakdownWA(selClass, formatType, showTot, showH, showS, showI, showA, showPct) {
+            let res = "";
+            let classesToProcess = selClass === 'all' ? CLASS_LIST : [selClass];
+            let hasData = false;
+            
+            classesToProcess.forEach(c => {
+                if (currentSummary.classRecap && currentSummary.classRecap[c]) {
+                    hasData = true;
+                    const cr = currentSummary.classRecap[c];
+                    let totalClassRecs = cr.studentCount * currentSummary.hariEfektif;
+
+                    res += `🔹 *${c.toUpperCase()}*\n`;
+                    if (formatType === 'format_1') {
+                        if(showTot) res += `👥 ${cr.studentCount} siswa\n`;
+                        if(showH) res += `✅ Hadir: ${cr.h} (${calculatePercentage(cr.h, totalClassRecs).toFixed(2).replace('.',',')}%)\n`;
+                        if(showS) res += `🤒 Sakit: ${cr.s} (${calculatePercentage(cr.s, totalClassRecs).toFixed(2).replace('.',',')}%)\n`;
+                        if(showI) res += `📝 Izin: ${cr.i} (${calculatePercentage(cr.i, totalClassRecs).toFixed(2).replace('.',',')}%)\n`;
+                        if(showA) res += `❌ Alpa: ${cr.a} (${calculatePercentage(cr.a, totalClassRecs).toFixed(2).replace('.',',')}%)\n`;
+                        res += `\n`;
+                    } else if (formatType === 'format_2') {
+                        let classStats = [];
+                        if(showH) classStats.push(`H: ${cr.h}`);
+                        if(showS) classStats.push(`S: ${cr.s}`);
+                        if(showI) classStats.push(`I: ${cr.i}`);
+                        if(showA) classStats.push(`A: ${cr.a}`);
+                        let statLine = classStats.join(' | ');
+                        if(showPct && statLine !== "") statLine += ` (${formatPercentage(cr.pct)})`;
+                        
+                        if(statLine !== "") res += statLine + `\n\n`;
+                        else res += `\n`;
+                    }
+                }
+            });
+            if(!hasData) res += `(Tidak ada data presensi kelas)\n\n`;
+            return res;
+        }
+
+        // Helper untuk memecah daftar nama
+        function getNamesWA(selClass, status) {
+            let list = [];
+            if (selClass !== 'all') {
+                extractNamesByStatus(selClass, status).forEach(n => list.push(`${n} (${selClass})`));
+            } else {
+                CLASS_LIST.forEach(c => {
+                    extractNamesByStatus(c, status).forEach(n => list.push(`${n} (${c})`));
+                });
+            }
+            return list;
+        }
+
+        function generateStudentListsWA(selClass, showS, showI, showA) {
+            let res = "";
+            if (showS) {
+                res += `━━━━━━━━━━━━━━━━━━\n🤒 *DAFTAR SISWA SAKIT*\n━━━━━━━━━━━━━━━━━━\n`;
+                let list = getNamesWA(selClass, 'Sakit');
+                if(list.length > 0) list.forEach(n => res += `- ${n}\n`);
+                else res += `- Tidak ada\n`;
+                res += `\n`;
+            }
+            if (showI) {
+                res += `━━━━━━━━━━━━━━━━━━\n📝 *DAFTAR SISWA IZIN*\n━━━━━━━━━━━━━━━━━━\n`;
+                let list = getNamesWA(selClass, 'Izin');
+                if(list.length > 0) list.forEach(n => res += `- ${n}\n`);
+                else res += `- Tidak ada\n`;
+                res += `\n`;
+            }
+            if (showA) {
+                res += `━━━━━━━━━━━━━━━━━━\n❌ *DAFTAR SISWA ALPA*\n━━━━━━━━━━━━━━━━━━\n`;
+                let list = getNamesWA(selClass, 'Alpa');
+                if(list.length > 0) list.forEach(n => res += `- ${n}\n`);
+                else res += `- Tidak ada\n`;
+                res += `\n`;
+            }
+            return res;
         }
 
         function generateWhatsAppReport() {
-            const startD = document.getElementById('filterStartDate').value;
-            const endD = document.getElementById('filterEndDate').value;
-            const selectedClass = document.getElementById('filterKelas').value;
-            
-            let dateStr = startD === endD ? `📅 Tanggal: ${formatDateIndo(startD)}` : `📅 Periode: ${formatDateIndo(startD)} – ${formatDateIndo(endD)}`;
-            let text = "";
-
-            if (selectedClass !== 'all') {
-                text += `📢 *LAPORAN PRESENSI KELAS ${selectedClass.toUpperCase()}*\n${dateStr}\n`;
-                text += `👥 Total Siswa: ${currentSummary.totalStudents}\n`;
-                text += `🗓️ Hari Efektif: ${currentSummary.hariEfektif}\n\n`;
+            try {
+                const startD = document.getElementById('filterStartDate') ? document.getElementById('filterStartDate').value : '';
+                const endD = document.getElementById('filterEndDate') ? document.getElementById('filterEndDate').value : '';
+                const filterKelasEl = document.getElementById('filterKelas');
+                const selectedClass = filterKelasEl ? filterKelasEl.value : 'all';
                 
-                text += `✅ Hadir: ${currentSummary.h}\n🤒 Sakit: ${currentSummary.s}\n📝 Izin: ${currentSummary.i}\n❌ Alpa: ${currentSummary.a}\n\n`;
-                text += `📊 *Persentase Kehadiran: ${formatPercentage(currentSummary.pct)}*\n\n`;
-
-                const sakitList = extractNamesByStatus(selectedClass, 'Sakit');
-                if (sakitList.length > 0) text += `🤒 *Sakit (${sakitList.length} anak):*\n${sakitList.map(n => `- ${n}`).join('\n')}\n\n`;
+                let dateStr = "";
+                if(startD && endD) {
+                    dateStr = startD === endD ? `📅 Periode: ${formatDateIndo(startD)}` : `📅 Periode: ${formatDateIndo(startD)} – ${formatDateIndo(endD)}`;
+                } else {
+                    dateStr = "📅 Periode: Belum ditentukan";
+                }
                 
-                const izinList = extractNamesByStatus(selectedClass, 'Izin');
-                if (izinList.length > 0) text += `📝 *Izin (${izinList.length} anak):*\n${izinList.map(n => `- ${n}`).join('\n')}\n\n`;
+                let text = "";
 
-                const alpaList = extractNamesByStatus(selectedClass, 'Alpa');
-                if (alpaList.length > 0) text += `❌ *Alpa (${alpaList.length} anak):*\n${alpaList.map(n => `- ${n}`).join('\n')}\n\n`;
-            } else {
-                text += `📢 *REKAP PRESENSI KESELURUHAN*\n🏫 *SMP IT MENTARI ILMU*\n${dateStr}\n━━━━━━━━━━━━━━━━━━\n`;
-                text += `👥 Total Siswa: ${currentSummary.totalStudents}\n🗓️ Hari Efektif: ${currentSummary.hariEfektif}\n`;
-                text += `✅ H: ${currentSummary.h} | 🤒 S: ${currentSummary.s} | 📝 I: ${currentSummary.i} | ❌ A: ${currentSummary.a}\n`;
-                text += `📈 *Persentase: ${formatPercentage(currentSummary.pct)}*\n━━━━━━━━━━━━━━━━━━\n`;
+                // --- HEADER REPORT ---
+                text += getWhatsAppReportTitle() + "\n";
+                text += `🏫 *SMP IT MENTARI ILMU*\n`;
+                text += `${dateStr}\n\n`;
+
+                // Gather stats
+                const cr = currentSummary;
+                const eff = cr.hariEfektif || 0;
+                const lib = cr.hariLibur || 0;
+                const tot = cr.totalStudents || 0;
+                const h = cr.h || 0;
+                const s = cr.s || 0;
+                const i = cr.i || 0;
+                const a = cr.a || 0;
+                const pct = formatPercentage(cr.pct);
+
+                // Settings Checkboxes
+                const isRingkas = getWaChecked('cbWaModeRingkas');
                 
-                CLASS_LIST.forEach(c => {
-                    if(currentSummary.classRecap[c]) {
-                        const cr = currentSummary.classRecap[c];
-                        text += `🔹 *${c.toUpperCase()}*\n`;
-                        text += `H: ${cr.h} | S: ${cr.s} | I: ${cr.i} | A: ${cr.a} (${formatPercentage(cr.pct)})\n\n`;
+                const showTotal = getWaChecked('cbWaTotal');
+                const showEff = getWaChecked('cbWaEfektif');
+                const showLib = getWaChecked('cbWaLibur');
+                const showH = getWaChecked('cbWaHadir');
+                const showS = getWaChecked('cbWaSakit');
+                const showI = getWaChecked('cbWaIzin');
+                const showA = getWaChecked('cbWaAlpa');
+                const showPct = getWaChecked('cbWaPersentase');
+                
+                const showRekap = !isRingkas && getWaChecked('cbWaRekapKelas');
+                const showNameS = !isRingkas && getWaChecked('cbWaNameSakit');
+                const showNameI = !isRingkas && getWaChecked('cbWaNameIzin');
+                const showNameA = !isRingkas && getWaChecked('cbWaNameAlpa');
+                const showMsg = getWaChecked('cbWaPesanPenutup');
+
+                // --- RENDER CONTENT BASED ON FORMAT & SETTINGS ---
+                if (waFormat === 'format_1') {
+                    text += `━━━━━━━━━━━━━━━━━━\n`;
+                    text += `📊 *REKAP KESELURUHAN*\n`;
+                    text += `━━━━━━━━━━━━━━━━━━\n\n`;
+                    
+                    let totalRecords = tot * eff; // expected records
+                    if(showTotal) text += `👥 Total Siswa: ${tot}\n`;
+                    if(showEff) text += `🗓️ Hari Efektif: ${eff}\n`;
+                    if(showLib) text += `🏖️ Hari Libur: ${lib}\n`;
+                    if(showH) text += `✅ Hadir: ${h} (${calculatePercentage(h, totalRecords).toFixed(2).replace('.',',')}%)\n`;
+                    if(showS) text += `🤒 Sakit: ${s} (${calculatePercentage(s, totalRecords).toFixed(2).replace('.',',')}%)\n`;
+                    if(showI) text += `📝 Izin: ${i} (${calculatePercentage(i, totalRecords).toFixed(2).replace('.',',')}%)\n`;
+                    if(showA) text += `❌ Alpa: ${a} (${calculatePercentage(a, totalRecords).toFixed(2).replace('.',',')}%)\n`;
+                    if(showPct) text += `📈 *Persentase Kehadiran: ${pct}*\n`;
+                    text += `\n`;
+                } else if (waFormat === 'format_2') {
+                    text += `━━━━━━━━━━━━━━━━━━\n\n`;
+                    if(showTotal) text += `👥 Total Siswa: ${tot}\n`;
+                    if(showEff) text += `🗓️ Hari Efektif: ${eff}\n`;
+                    if(showLib) text += `🏖️ Hari Libur: ${lib}\n`;
+                    
+                    let statsLine = [];
+                    if(showH) statsLine.push(`✅ H: ${h}`);
+                    if(showS) statsLine.push(`🤒 S: ${s}`);
+                    if(showI) statsLine.push(`📝 I: ${i}`);
+                    if(showA) statsLine.push(`❌ A: ${a}`);
+                    if(statsLine.length > 0) text += statsLine.join(' | ') + `\n`;
+                    
+                    if(showPct) text += `📈 *Persentase: ${pct}*\n`;
+                    text += `\n━━━━━━━━━━━━━━━━━━\n\n`;
+                }
+
+                // If not Ringkas mode, add the detailed sections
+                if (!isRingkas) {
+                    if (showRekap) {
+                        if (waFormat === 'format_1') {
+                            text += `━━━━━━━━━━━━━━━━━━\n`;
+                            text += `📚 *REKAP PER KELAS*\n`;
+                            text += `━━━━━━━━━━━━━━━━━━\n\n`;
+                        }
+                        text += generateClassBreakdownWA(selectedClass, waFormat, showTotal, showH, showS, showI, showA, showPct);
                     }
-                });
+                    text += generateStudentListsWA(selectedClass, showNameS, showNameI, showNameA);
+                }
+
+                // --- FOOTER & TIMESTAMP ---
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace(':', '.');
+                
+                const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                const tsDay = now.getDate();
+                const tsMonth = months[now.getMonth()];
+                const tsYear = now.getFullYear();
+                
+                text += `🕐 Laporan dibuat: ${tsDay} ${tsMonth} ${tsYear}, ${timeStr} WIB\n\n`;
+
+                if (showMsg) {
+                    text += `Semoga siswa yang berhalangan hadir segera kembali dalam kondisi sehat.\n\n`;
+                }
+                text += `_Pesan otomatis dikirim oleh Sistem Presensi SMP IT Mentari Ilmu_`;
+
+                currentWAText = text;
+                const previewEl = document.getElementById('waPreviewText');
+                if (previewEl) {
+                    previewEl.innerText = currentWAText;
+                }
+            } catch (error) {
+                console.error("Error generating WA report:", error);
+                const previewEl = document.getElementById('waPreviewText');
+                if (previewEl) {
+                    previewEl.innerText = "Preview laporan belum dapat dibuat. Silakan periksa filter dan data presensi.";
+                }
+                currentWAText = "";
             }
-            text += `_Sistem Presensi SMP IT Mentari Ilmu_`;
-            currentWAText = text;
         }
 
         function extractNamesByStatus(className, status) {
@@ -1795,12 +2268,37 @@
         }
 
         function copyWhatsAppReport() {
-            navigator.clipboard.writeText(currentWAText).then(() => {
-                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Tersalin!', showConfirmButton: false, timer: 3000, background: '#124F47', color: '#fff', iconColor: '#34D399' });
-            });
+            try {
+                // Regen untuk memastikan timestamp update (jika diperlukan)
+                generateWhatsAppReport();
+                
+                if(!currentWAText) {
+                    Swal.fire('Gagal', 'Tidak ada pesan yang bisa disalin.', 'warning');
+                    return;
+                }
+                navigator.clipboard.writeText(currentWAText).then(() => {
+                    Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Pesan berhasil disalin', showConfirmButton: false, timer: 3000, background: '#124F47', color: '#fff', iconColor: '#34D399' });
+                }).catch(err => {
+                    console.error('Gagal menyalin:', err);
+                    Swal.fire('Error', 'Gagal menyalin pesan ke clipboard.', 'error');
+                });
+            } catch (error) {
+                console.error("Error di copyWhatsAppReport:", error);
+            }
         }
+        
         function shareToWhatsApp() {
-            window.open(`https://wa.me/?text=${encodeURIComponent(currentWAText)}`, '_blank');
+            try {
+                generateWhatsAppReport(); // update timestamp
+                
+                if(!currentWAText) {
+                    Swal.fire('Gagal', 'Tidak ada pesan untuk dibagikan.', 'warning');
+                    return;
+                }
+                window.open(`https://wa.me/?text=${encodeURIComponent(currentWAText)}`, '_blank');
+            } catch(error) {
+                console.error("Error di shareToWhatsApp:", error);
+            }
         }
 
         // --- EXPORT MASTER ---
@@ -1809,6 +2307,8 @@
             else if (currentTab === 'riwayat') exportHistoryExcel();
             else if (currentTab === 'analisa') {
                 if (typeof exportAnalysisExcel === 'function') exportAnalysisExcel();
+            } else if (currentTab === 'kalender') {
+                if (typeof exportKalenderExcel === 'function') exportKalenderExcel();
             }
         }
         function exportPDF() {
@@ -1816,10 +2316,11 @@
             else if (currentTab === 'riwayat') exportHistoryPDF();
             else if (currentTab === 'analisa') {
                 if (typeof exportAnalysisPDF === 'function') exportAnalysisPDF();
+            } else if (currentTab === 'kalender') {
+                if (typeof exportKalenderPDF === 'function') exportKalenderPDF();
             }
         }
 
-        // EXPORT REKAP (Menyesuaikan Ringkas/Harian)
         function exportRecapExcel() {
             if(currentSummary.recapData.length === 0) return Swal.fire('Data Kosong', '', 'info');
             
@@ -1881,7 +2382,7 @@
                 currentSummary.datesObj.forEach((dObj, idx) => {
                     if (dObj.isHoliday) {
                         tableCols.push('Lbr');
-                        holidayColIndices.push(idx + 3); // +3 karena ada No, Nama, Kelas di awal
+                        holidayColIndices.push(idx + 3); 
                     } else {
                         tableCols.push(dObj.date.split('-')[2]);
                     }
@@ -1911,26 +2412,22 @@
                 headStyles: { fillColor: [18, 79, 71] },
                 didParseCell: function(data) {
                     if (rekapMode === 'harian') {
-                        // Warnai header libur
                         if (data.section === 'head' && holidayColIndices.includes(data.column.index)) {
-                            data.cell.styles.fillColor = [254, 205, 211]; // rose-200
-                            data.cell.styles.textColor = [190, 18, 60]; // rose-700
+                            data.cell.styles.fillColor = [254, 205, 211]; 
+                            data.cell.styles.textColor = [190, 18, 60]; 
                         }
-                        // Warnai isi cell libur
                         if (data.section === 'body' && (data.cell.raw === 'LIBUR' || data.cell.raw === 'Lbr')) {
-                            data.cell.styles.fillColor = [255, 241, 242]; // rose-50
-                            data.cell.styles.textColor = [190, 18, 60]; // rose-700
+                            data.cell.styles.fillColor = [255, 241, 242]; 
+                            data.cell.styles.textColor = [190, 18, 60]; 
                             data.cell.styles.fontStyle = 'bold';
                         }
                     }
                 }
             });
-            
             const fileName = generateExportFileName('Rekap_Presensi', 'pdf');
             doc.save(fileName);
         }
 
-        // Export History
         function exportHistoryExcel() {
             if(currentFilteredAttendance.length === 0) return Swal.fire('Data Kosong', '', 'info');
             const data = [...currentFilteredAttendance].sort((a,b) => new Date(b.date) - new Date(a.date)).map((r, i) => ({
@@ -1944,6 +2441,7 @@
             const fileName = generateExportFileName('Riwayat_Presensi', 'xlsx');
             XLSX.writeFile(wb, fileName);
         }
+        
         function exportHistoryPDF() {
             if(currentFilteredAttendance.length === 0) return Swal.fire('Data Kosong', '', 'info');
             const { jsPDF } = window.jspdf; const doc = new jsPDF();
@@ -1957,30 +2455,43 @@
             doc.save(fileName);
         }
 
-        // Detail Siswa Export
+        function exportAnalysisExcel() { Swal.fire('Fitur Terbatas', 'Export Excel untuk chart Analisa belum didukung penuh secara visual.', 'info'); }
+        function exportAnalysisPDF() { Swal.fire('Fitur Terbatas', 'Export PDF untuk chart Analisa belum didukung penuh secara visual.', 'info'); }
+        function exportKalenderExcel() {
+            const ws = XLSX.utils.json_to_sheet(holidaysMaster);
+            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Kalender");
+            XLSX.writeFile(wb, generateExportFileName('Kalender_Presensi', 'xlsx', 'kalender'));
+        }
+        function exportKalenderPDF() {
+            const { jsPDF } = window.jspdf; const doc = new jsPDF();
+            doc.text("Daftar Hari Libur", 14, 20);
+            doc.autoTable({ head: [["Tanggal", "Jenis", "Keterangan"]], body: holidaysMaster.map(h => [h.date, h.type, h.desc]), startY: 30 });
+            doc.save(generateExportFileName('Kalender_Presensi', 'pdf', 'kalender'));
+        }
+
         function exportStudentDetailExcel() {
             if(!currentStudentId) return;
             const history = currentFilteredAttendance.filter(r => r.studentId === currentStudentId).sort((a,b) => new Date(b.date) - new Date(a.date));
             const ws = XLSX.utils.json_to_sheet(history.map((r,i) => ({"No": i+1, "Tanggal": r.date, "Status": r.status, "Keterangan": r.notes})));
             const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Detail");
             
-            const student = studentsMaster.find(s=>s.id===currentStudentId);
-            const baseName = `Detail_Siswa_${student.name.replace(/[\\/:*?"<>|]/g, '_').replace(/\s+/g, '_')}`;
-            const fileName = generateExportFileName(baseName, 'xlsx');
-            XLSX.writeFile(wb, fileName);
+            const studentName = studentsMaster.find(s=>s.id===currentStudentId).name.replace(/[\/\\:*?"<>|]/g, '').replace(/\s+/g, '_');
+            const dateStr = generateExportFileName('Detail_Siswa', 'xlsx').split('_').slice(2).join('_');
+            XLSX.writeFile(wb, `Detail_Siswa_${studentName}_${dateStr}`);
         }
+        
         function exportStudentDetailPDF() {
             if(!currentStudentId) return;
             const history = currentFilteredAttendance.filter(r => r.studentId === currentStudentId).sort((a,b) => new Date(b.date) - new Date(a.date));
             const { jsPDF } = window.jspdf; const doc = new jsPDF();
             
-            const student = studentsMaster.find(s=>s.id===currentStudentId);
-            doc.text(`Detail Presensi - ${student.name}`, 14, 20);
+            const studentName = studentsMaster.find(s=>s.id===currentStudentId).name;
+            doc.text(`Detail Presensi - ${studentName}`, 14, 20);
             doc.autoTable({ head: [["No","Tanggal","Status","Keterangan"]], body: history.map((r,i)=>[i+1, r.date, r.status, r.notes]), startY: 30, theme:'grid' });
             
-            const baseName = `Detail_Siswa_${student.name.replace(/[\\/:*?"<>|]/g, '_').replace(/\s+/g, '_')}`;
-            const fileName = generateExportFileName(baseName, 'pdf');
-            doc.save(fileName);
+            const cleanName = studentName.replace(/[\/\\:*?"<>|]/g, '').replace(/\s+/g, '_');
+            const dateStr = generateExportFileName('Detail_Siswa', 'pdf').split('_').slice(2).join('_');
+            doc.save(`Detail_Siswa_${cleanName}_${dateStr}`);
         }
 
         window.onload = function() {
@@ -1997,3 +2508,4 @@
     </script>
 </body>
 </html>
+```
