@@ -133,6 +133,11 @@
             background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); /* subtle texture */
         }
 
+        /* Set max-height for modal wrapper to ensure scrollbars appear inside */
+        .modal-body-scrollable {
+            max-height: calc(92vh - 130px); /* Adjust based on header/footer height */
+        }
+
         /* Modal Transitions & Overlay untuk Modal Umum */
         .modal-overlay { background-color: rgba(25, 49, 46, 0.6); backdrop-filter: blur(4px); z-index: 0; }
 
@@ -267,6 +272,7 @@
                         <option value="Sakit">Sakit</option>
                         <option value="Izin">Izin</option>
                         <option value="Alpa">Alpa</option>
+                        <option value="Belum Diisi">Belum Diisi</option>
                     </select>
                 </div>
 
@@ -715,104 +721,106 @@
                     </button>
                 </div>
 
-                <!-- Modal Body -->
-                <div class="flex-grow overflow-y-auto p-4 md:p-6 flex flex-col lg:flex-row gap-6 bg-gray-50">
+                <!-- Modal Body - Independent Scroll Areas -->
+                <div class="flex-1 flex flex-col lg:flex-row bg-gray-50 overflow-hidden min-h-0">
                     
-                    <!-- Left Column: Settings -->
-                    <div class="w-full lg:w-5/12 flex flex-col gap-5 bg-white p-4 md:p-5 rounded-xl border border-mi-border shadow-sm">
-                        
-                        <!-- Format Laporan -->
-                        <div>
-                            <label class="block text-xs md:text-sm font-bold text-mi-text1 uppercase tracking-wide mb-2.5">Pilihan Format Laporan</label>
-                            <div class="flex gap-2 w-full">
-                                <button type="button" onclick="setWaFormat('format_1')" id="btnWaFormat1" class="flex-1 wa-format-btn text-center px-2 py-2.5 rounded-xl border-2 transition-all font-bold text-xs md:text-sm border-mi-primary bg-mi-soft text-mi-primary">
-                                    Format 1
-                                </button>
-                                <button type="button" onclick="setWaFormat('format_2')" id="btnWaFormat2" class="flex-1 wa-format-btn text-center px-2 py-2.5 rounded-xl border-2 transition-all font-bold text-xs md:text-sm border-gray-200 bg-white text-gray-500 hover:bg-gray-50">
-                                    Format 2
-                                </button>
+                    <!-- Left Column: Settings (Scrollable) -->
+                    <div class="w-full lg:w-5/12 flex flex-col bg-white border-r border-mi-border shadow-sm shrink-0 lg:shrink min-h-0 overflow-y-auto">
+                        <div class="p-4 md:p-5 flex flex-col gap-5">
+                            <!-- Format Laporan -->
+                            <div>
+                                <label class="block text-xs md:text-sm font-bold text-mi-text1 uppercase tracking-wide mb-2.5">Pilihan Format Laporan</label>
+                                <div class="flex flex-row gap-2 w-full">
+                                    <button type="button" onclick="setWaFormat('format_1')" id="btnWaFormat1" class="flex-1 wa-format-btn text-center px-2 py-2.5 rounded-xl border-2 transition-all font-bold text-xs md:text-sm border-mi-primary bg-mi-soft text-mi-primary">
+                                        Format 1
+                                    </button>
+                                    <button type="button" onclick="setWaFormat('format_2')" id="btnWaFormat2" class="flex-1 wa-format-btn text-center px-2 py-2.5 rounded-xl border-2 transition-all font-bold text-xs md:text-sm border-gray-200 bg-white text-gray-500 hover:bg-gray-50">
+                                        Format 2
+                                    </button>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Accordion Pengaturan Isi -->
-                        <div class="border border-mi-border rounded-xl bg-white shadow-sm flex flex-col overflow-hidden">
-                            <button type="button" onclick="toggleWaSettings()" class="w-full px-4 py-3 flex justify-between items-center bg-mi-soft/30 hover:bg-mi-soft/60 transition-colors">
-                                <span class="font-bold text-xs md:text-sm text-mi-text1"><i class="fa-solid fa-gear mr-2 text-mi-primary"></i>Pengaturan Isi Laporan</span>
-                                <i id="waAccordionIcon" class="fa-solid fa-chevron-down text-mi-text2 transition-transform duration-300"></i>
-                            </button>
-                            
-                            <!-- Content -->
-                            <div id="waSettingsContent" class="wa-accordion-content border-t border-mi-border">
-                                <div class="px-4 py-4 flex flex-col gap-5">
-                                    
-                                    <!-- Ringkasan Checkbox -->
-                                    <div class="pb-4 border-b border-gray-100">
-                                        <label class="flex items-center gap-2 cursor-pointer text-sm font-bold text-mi-text1">
-                                            <input type="checkbox" id="cbWaModeRingkas" onchange="toggleWaModeRingkas()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Ringkas
-                                        </label>
-                                        <p class="text-[10px] text-mi-text2 mt-1 ml-6">Sembunyikan rekapitulasi per kelas dan daftar nama siswa.</p>
-                                    </div>
-
-                                    <!-- Opsi Info Laporan -->
-                                    <div>
-                                        <div class="text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wide mb-2">Informasi Laporan</div>
-                                        <div class="grid grid-cols-2 gap-2 text-xs md:text-sm text-mi-text1">
-                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaTotal" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Total Siswa</label>
-                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaEfektif" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Hari Efektif</label>
-                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaLibur" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Hari Libur</label>
-                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaHadir" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Hadir</label>
-                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaSakit" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Sakit</label>
-                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaIzin" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Izin</label>
-                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaAlpa" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Alpa</label>
-                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaPersentase" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> % Kehadiran</label>
+                            <!-- Accordion Pengaturan Isi -->
+                            <div class="border border-mi-border rounded-xl bg-white shadow-sm flex flex-col overflow-hidden">
+                                <button type="button" onclick="toggleWaSettings()" class="w-full px-4 py-3 flex justify-between items-center bg-mi-soft/30 hover:bg-mi-soft/60 transition-colors shrink-0">
+                                    <span class="font-bold text-xs md:text-sm text-mi-text1"><i class="fa-solid fa-gear mr-2 text-mi-primary"></i>Pengaturan Isi Laporan</span>
+                                    <i id="waAccordionIcon" class="fa-solid fa-chevron-down text-mi-text2 transition-transform duration-300"></i>
+                                </button>
+                                
+                                <!-- Content -->
+                                <div id="waSettingsContent" class="wa-accordion-content border-t border-mi-border">
+                                    <div class="px-4 py-4 flex flex-col gap-5">
+                                        
+                                        <!-- Ringkasan Checkbox -->
+                                        <div class="pb-4 border-b border-gray-100">
+                                            <label class="flex items-center gap-2 cursor-pointer text-sm font-bold text-mi-text1">
+                                                <input type="checkbox" id="cbWaModeRingkas" onchange="toggleWaModeRingkas()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Ringkas
+                                            </label>
+                                            <p class="text-[10px] text-mi-text2 mt-1 ml-6">Sembunyikan rekapitulasi per kelas dan daftar nama siswa.</p>
                                         </div>
-                                    </div>
 
-                                    <!-- Opsi Rekap Kelas -->
-                                    <div id="waRekapGroup" class="pt-4 border-t border-mi-border transition-opacity">
-                                        <div class="text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wide mb-2">Rekapitulasi</div>
-                                        <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm text-mi-text1">
-                                            <input type="checkbox" id="cbWaRekapKelas" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Rekap Per Kelas
-                                        </label>
-                                    </div>
-
-                                    <!-- Opsi Daftar Nama -->
-                                    <div id="waNameGroup" class="pt-4 border-t border-mi-border transition-opacity">
-                                        <div class="text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wide mb-2">Daftar Nama Siswa</div>
-                                        <div class="flex flex-col gap-2 text-xs md:text-sm text-mi-text1">
-                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaNameSakit" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Daftar Siswa Sakit</label>
-                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaNameIzin" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Daftar Siswa Izin</label>
-                                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaNameAlpa" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Daftar Siswa Alpa</label>
+                                        <!-- Opsi Info Laporan -->
+                                        <div>
+                                            <div class="text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wide mb-2">Informasi Laporan</div>
+                                            <div class="grid grid-cols-2 gap-2 text-xs md:text-sm text-mi-text1">
+                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaTotal" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Total Siswa</label>
+                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaEfektif" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Hari Efektif</label>
+                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaLibur" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Hari Libur</label>
+                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaHadir" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Hadir</label>
+                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaSakit" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Sakit</label>
+                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaIzin" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Izin</label>
+                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaAlpa" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Alpa</label>
+                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaPersentase" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> % Kehadiran</label>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <!-- Opsi Penutup -->
-                                    <div class="pt-4 border-t border-mi-border">
-                                        <div class="text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wide mb-2">Pesan Penutup</div>
-                                        <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm text-mi-text1">
-                                            <input type="checkbox" id="cbWaPesanPenutup" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Sertakan Pesan Doa / Harapan
-                                        </label>
-                                    </div>
+                                        <!-- Opsi Rekap Kelas -->
+                                        <div id="waRekapGroup" class="pt-4 border-t border-mi-border transition-opacity">
+                                            <div class="text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wide mb-2">Rekapitulasi</div>
+                                            <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm text-mi-text1">
+                                                <input type="checkbox" id="cbWaRekapKelas" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Rekap Per Kelas
+                                            </label>
+                                        </div>
 
+                                        <!-- Opsi Daftar Nama -->
+                                        <div id="waNameGroup" class="pt-4 border-t border-mi-border transition-opacity">
+                                            <div class="text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wide mb-2">Daftar Nama Siswa</div>
+                                            <div class="flex flex-col gap-2 text-xs md:text-sm text-mi-text1">
+                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaNameSakit" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Daftar Siswa Sakit</label>
+                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaNameIzin" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Daftar Siswa Izin</label>
+                                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cbWaNameAlpa" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Daftar Siswa Alpa</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Opsi Penutup -->
+                                        <div class="pt-4 border-t border-mi-border">
+                                            <div class="text-[10px] md:text-xs font-bold text-mi-text2 uppercase tracking-wide mb-2">Pesan Penutup</div>
+                                            <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm text-mi-text1">
+                                                <input type="checkbox" id="cbWaPesanPenutup" checked onchange="generateWhatsAppReport()" class="w-4 h-4 text-mi-primary rounded border-gray-300 focus:ring-mi-primary"> Sertakan Pesan Doa / Harapan
+                                            </label>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
-                    <!-- Right Column: Preview -->
-                    <div class="w-full lg:w-7/12 flex flex-col h-[50vh] lg:h-auto">
-                        <label class="block text-xs md:text-sm font-bold text-mi-text1 uppercase tracking-wide mb-2.5">Preview WhatsApp</label>
-                        <div class="wa-preview-bg rounded-xl border border-mi-border shadow-inner flex-grow overflow-y-auto relative p-3 md:p-5">
-                            <!-- Bubble WA -->
-                            <div class="bg-white p-3.5 md:p-5 rounded-xl rounded-tl-sm shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-xs md:text-[13px] text-gray-800 whitespace-pre-wrap font-sans max-w-full break-words" id="waPreviewText" style="line-height: 1.5;"></div>
+                    <!-- Right Column: Preview (Scrollable) -->
+                    <div class="w-full lg:w-7/12 flex flex-col min-h-0 bg-gray-50">
+                        <div class="p-4 md:p-5 flex flex-col h-full min-h-0">
+                            <label class="block text-xs md:text-sm font-bold text-mi-text1 uppercase tracking-wide mb-2.5 shrink-0">Preview WhatsApp</label>
+                            <div class="wa-preview-bg rounded-xl border border-mi-border shadow-inner flex-1 overflow-y-auto relative p-3 md:p-5 min-h-[300px] lg:min-h-0">
+                                <!-- Bubble WA -->
+                                <div class="bg-white p-3.5 md:p-5 rounded-xl rounded-tl-sm shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-xs md:text-[13px] text-gray-800 whitespace-pre-wrap font-sans max-w-full break-words" id="waPreviewText" style="line-height: 1.5;"></div>
+                            </div>
                         </div>
                     </div>
 
                 </div>
                 
                 <!-- Modal Footer -->
-                <div class="bg-white px-4 md:px-6 py-3 md:py-4 flex w-full gap-2 sm:gap-3 border-t border-mi-border shrink-0">
+                <div class="bg-white px-4 md:px-6 py-3 md:py-4 flex flex-row w-full gap-2 sm:gap-3 border-t border-mi-border shrink-0">
                     <button type="button" onclick="copyWhatsAppReport()" class="flex-1 inline-flex justify-center items-center rounded-xl border border-[#B8D9D2] shadow-sm px-2 sm:px-4 py-2.5 sm:py-3 bg-[#E8F3F0] text-xs sm:text-sm font-bold text-[#124F47] hover:bg-[#D9EEE8] transition-colors">
                         <i class="fa-regular fa-copy mr-1.5 sm:mr-2 text-base sm:text-lg"></i> Salin Pesan
                     </button>
@@ -1008,6 +1016,10 @@
                 case 'Sakit': return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#ffedd5] text-[#9a3412]"><i class="fa-solid fa-thermometer-half mr-1 md:mr-1.5 mt-0.5"></i> Sakit</span>`;
                 case 'Izin':  return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#cffafe] text-[#155e75]"><i class="fa-solid fa-envelope-open-text mr-1 md:mr-1.5 mt-0.5"></i> Izin</span>`;
                 case 'Alpa':  return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-[#ffe4e6] text-[#9f1239]"><i class="fa-solid fa-xmark mr-1 md:mr-1.5 mt-0.5"></i> Alpa</span>`;
+                case 'Belum Diisi': 
+                case 'BDI': 
+                    return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-gray-100 text-gray-600"><i class="fa-solid fa-clock-rotate-left mr-1 md:mr-1.5 mt-0.5"></i> Belum Diisi</span>`;
+                case 'Libur': return `<span class="px-2 md:px-2.5 py-1 inline-flex text-[10px] md:text-[11px] font-bold rounded-md bg-purple-100 text-purple-700"><i class="fa-solid fa-umbrella-beach mr-1 md:mr-1.5 mt-0.5"></i> Libur</span>`;
                 default: return status;
             }
         }
@@ -1084,9 +1096,11 @@
                         if(rand < 0.20) status = 'Sakit';
                         else if(rand < 0.25) status = 'Izin';
                     } else {
+                        // Some chance of missing a record intentionally to simulate "Belum Diisi"
                         if(rand < 0.02) status = 'Alpa';
                         else if(rand < 0.05) status = 'Izin';
                         else if(rand < 0.08) status = 'Sakit';
+                        else if(rand < 0.10) return; // Skip saving to database to simulate "Belum Diisi"
                     }
 
                     if (status === 'Sakit') notes = REASONS['Sakit'][Math.floor(Math.random() * REASONS['Sakit'].length)];
@@ -1197,24 +1211,58 @@
             if (searchQuery) {
                 filteredStudents = filteredStudents.filter(s => s.name.toLowerCase().includes(searchQuery));
             }
-            const studentIds = new Set(filteredStudents.map(s => s.id));
 
-            currentFilteredAttendance = attendanceMaster.filter(record => {
-                if (record.date < startDate || record.date > endDate) return false;
-                if (!studentIds.has(record.studentId)) return false;
-                
-                let d = new Date(record.date);
-                if (d.getDay() === 0 || d.getDay() === 6) return false;
-                if (holidaysMaster.some(h => h.date === record.date)) return false;
+            // Create complete expected records combining actual DB records + Belum Diisi + Libur
+            let completeRecords = [];
+            let start = new Date(startDate);
+            let end = new Date(endDate);
 
-                if (currentTab === 'riwayat' && selectedStatus !== 'all' && record.status !== selectedStatus) return false;
-                return true;
-            });
+            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                if (d.getDay() === 0 || d.getDay() === 6) continue; // Skip weekends
 
-            currentFilteredAttendance = currentFilteredAttendance.map(record => {
-                const s = studentsMaster.find(x => x.id === record.studentId);
-                return { ...record, studentName: s.name, className: s.className };
-            });
+                const dStr = formatDateYYYYMMDD(d);
+                const isHoliday = holidaysMaster.some(h => h.date === dStr);
+                const holDesc = isHoliday ? holidaysMaster.find(h => h.date === dStr).desc : '-';
+
+                filteredStudents.forEach(student => {
+                    let actualRecord = attendanceMaster.find(r => r.studentId === student.id && r.date === dStr);
+                    
+                    if (isHoliday) {
+                        completeRecords.push({
+                            id: actualRecord ? actualRecord.id : `V_${student.id}_${dStr}`,
+                            studentId: student.id,
+                            studentName: student.name,
+                            className: student.className,
+                            date: dStr,
+                            status: 'Libur',
+                            notes: holDesc
+                        });
+                    } else if (actualRecord) {
+                        completeRecords.push({
+                            ...actualRecord,
+                            studentName: student.name,
+                            className: student.className
+                        });
+                    } else {
+                        completeRecords.push({
+                            id: `V_${student.id}_${dStr}`,
+                            studentId: student.id,
+                            studentName: student.name,
+                            className: student.className,
+                            date: dStr,
+                            status: 'Belum Diisi',
+                            notes: '-'
+                        });
+                    }
+                });
+            }
+
+            // Apply selected status filter on the fully generated complete records
+            if (currentTab === 'riwayat' && selectedStatus !== 'all') {
+                currentFilteredAttendance = completeRecords.filter(r => r.status === selectedStatus);
+            } else {
+                currentFilteredAttendance = completeRecords;
+            }
 
             calculateSummary(filteredStudents, startDate, endDate);
             updateUI();
@@ -1544,8 +1592,7 @@
                                 else if(rec.status==='Sakit') { content = 'S'; css = 'font-bold text-orange-500'; }
                                 else if(rec.status==='Izin') { content = 'I'; css = 'font-bold text-cyan-600'; }
                                 else if(rec.status==='Alpa') { content = 'A'; css = 'font-bold text-rose-600'; }
-                            } else {
-                                content = 'A'; css = 'font-bold text-rose-600';
+                                else if(rec.status==='Belum Diisi' || rec.status==='BDI') { content = 'BDI'; css = 'font-bold text-gray-500 bg-gray-100 rounded px-1'; }
                             }
                             tdHtml += `<td class="px-1 py-2 text-center text-xs ${css} border-t border-r border-mi-border">${content}</td>`;
                         }
@@ -2342,7 +2389,11 @@
                         if(dObj.isHoliday) obj[shortDate] = 'LIBUR';
                         else {
                             let rec = currentFilteredAttendance.find(a => a.studentId === row.id && a.date === dObj.date);
-                            obj[shortDate] = rec ? rec.status.charAt(0) : 'A';
+                            if (rec && rec.status === 'Belum Diisi') {
+                                obj[shortDate] = 'BDI';
+                            } else {
+                                obj[shortDate] = rec ? rec.status.charAt(0) : 'A';
+                            }
                         }
                     });
                     obj["H"] = row.h; obj["S"] = row.s; obj["I"] = row.i; obj["A"] = row.a;
@@ -2377,53 +2428,90 @@
             if (rekapMode === 'ringkas') {
                 tableCols = ["No", "Nama Siswa", "Kelas", "Hr Efektif", "H", "S", "I", "A", "%"];
                 tableRows = sortedData.map((r, i) => [i + 1, r.name, r.className, currentSummary.hariEfektif, r.h, r.s, r.i, r.a, formatPercentage(r.pct)]);
+                
+                doc.autoTable({ 
+                    head: [tableCols], 
+                    body: tableRows, 
+                    startY: 38, 
+                    theme: 'grid', 
+                    styles: { fontSize: 7, cellPadding: 1 }, 
+                    headStyles: { fillColor: [18, 79, 71] }
+                });
             } else {
-                tableCols = ["No", "Nama", "Kelas"];
+                // Two-tier header implementation for Harian Mode
+                doc.text(`Keterangan: BDI = Belum Diisi`, 14, 38);
+
+                let headRow1 = [
+                    { content: 'No', rowSpan: 2 },
+                    { content: 'Nama', rowSpan: 2 },
+                    { content: 'Kelas', rowSpan: 2 }
+                ];
+                let headRow2 = [];
+
+                const daysMap = ['M', 'S', 'S', 'R', 'K', 'J', 'S']; // Minggu - Sabtu
+
                 currentSummary.datesObj.forEach((dObj, idx) => {
+                    let dateObj = new Date(dObj.date);
+                    let dayInitial = daysMap[dateObj.getDay()];
+                    let dateNum = dateObj.getDate().toString();
+
+                    headRow1.push({ content: dayInitial, styles: { halign: 'center' } });
+                    headRow2.push({ content: dateNum, styles: { halign: 'center' } });
+
                     if (dObj.isHoliday) {
-                        tableCols.push('Lbr');
                         holidayColIndices.push(idx + 3); 
-                    } else {
-                        tableCols.push(dObj.date.split('-')[2]);
                     }
                 });
-                tableCols.push("H","S","I","A","%");
+
+                headRow1.push(
+                    { content: 'H', rowSpan: 2 },
+                    { content: 'S', rowSpan: 2 },
+                    { content: 'I', rowSpan: 2 },
+                    { content: 'A', rowSpan: 2 },
+                    { content: '%', rowSpan: 2 }
+                );
+
+                tableCols = [headRow1, headRow2];
                 
                 tableRows = sortedData.map((r, i) => {
                     let rowArr = [i + 1, r.name, r.className];
                     currentSummary.datesObj.forEach(dObj => {
-                        if(dObj.isHoliday) rowArr.push('LIBUR');
-                        else {
+                        if(dObj.isHoliday) {
+                            rowArr.push('LIBUR');
+                        } else {
                             let rec = currentFilteredAttendance.find(a => a.studentId === r.id && a.date === dObj.date);
-                            rowArr.push(rec ? rec.status.charAt(0) : 'A');
+                            if (rec && rec.status === 'Hadir') rowArr.push('H');
+                            else if (rec && rec.status === 'Sakit') rowArr.push('S');
+                            else if (rec && rec.status === 'Izin') rowArr.push('I');
+                            else if (rec && rec.status === 'Alpa') rowArr.push('A');
+                            else rowArr.push('BDI'); // Belum Diisi
                         }
                     });
                     rowArr.push(r.h, r.s, r.i, r.a, formatPercentage(r.pct));
                     return rowArr;
                 });
-            }
 
-            doc.autoTable({ 
-                head: [tableCols], 
-                body: tableRows, 
-                startY: 38, 
-                theme: 'grid', 
-                styles: { fontSize: 7, cellPadding: 1 }, 
-                headStyles: { fillColor: [18, 79, 71] },
-                didParseCell: function(data) {
-                    if (rekapMode === 'harian') {
+                doc.autoTable({ 
+                    head: tableCols, 
+                    body: tableRows, 
+                    startY: 42, 
+                    theme: 'grid', 
+                    styles: { fontSize: 7, cellPadding: 1 }, 
+                    headStyles: { fillColor: [18, 79, 71], halign: 'center', valign: 'middle' },
+                    didParseCell: function(data) {
                         if (data.section === 'head' && holidayColIndices.includes(data.column.index)) {
                             data.cell.styles.fillColor = [254, 205, 211]; 
                             data.cell.styles.textColor = [190, 18, 60]; 
                         }
-                        if (data.section === 'body' && (data.cell.raw === 'LIBUR' || data.cell.raw === 'Lbr')) {
+                        if (data.section === 'body' && data.cell.raw === 'LIBUR') {
                             data.cell.styles.fillColor = [255, 241, 242]; 
                             data.cell.styles.textColor = [190, 18, 60]; 
                             data.cell.styles.fontStyle = 'bold';
                         }
                     }
-                }
-            });
+                });
+            }
+
             const fileName = generateExportFileName('Rekap_Presensi', 'pdf');
             doc.save(fileName);
         }
@@ -2508,4 +2596,3 @@
     </script>
 </body>
 </html>
-```
